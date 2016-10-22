@@ -1,0 +1,101 @@
+/* version: 201604132300 */
+.HTable {border: 0px solid #666666; margin: 0px; padding: 0px; 
+			border-spacing:0px; border-collapse:collapse;}
+.TdHTable {text-align: left; vertical-align: top; line-height: 150%; 
+			margin: 1px; padding: 0px;}
+            
+.TdH10{width: 24px;} .TdH20{width: 78px;}  .TdH30{width: 70px;}
+.TdH4{width: 24px;} .TdH60{width: 20px; padding-top: 8px;}
+.TdH70{width: 56px; padding-top: 6px;}
+
+.TdH11{width: 24px;} .TdH21{width: 78px;}  .TdH31{width: 74px;}
+.TdH5{width: 12px;} .TdH61{width: 20px; padding-top: 8px;}
+.TdH71{width: 56px; padding-top:6px;} .TdH8{width: 102px;} .TdH9{width:127px;}
+
+.CtrlHTable0 {color: #2996cc;  padding: 3px; 
+			margin: 1px; text-align: left; background-color: transparent; 
+			border: 1px solid #666666; font-size: 11px;  
+			font-family: Arial;}
+.CtrlHTable1 {color: #2996cc;  padding: 3px; 
+			margin: 1px; text-align: left; background-color: transparent; 
+			border: 1px solid #666666; font-size: 13px;  
+			font-family: Arial;}
+            
+.CtrlH10 {width: 22px; height: 32px;} .CtrlH20 {width: 68px; height: 24px;}
+.CtrlH30 {width: 68px; height: 32px;} .CtrlH4 {width: 22px; height: 32px;} 
+.CtrlH70 {border: 0px solid #666666;}
+
+.CtrlH11 {width: 22px; height: 32px;} .CtrlH21 {width: 68px; height: 24px;} 
+.CtrlH31 {width: 72px; height: 32px;} .CtrlH71 {border: 0px solid #666666;} 
+.CtrlH8 {width:100px; height: 32px;} .CtrlH9 {width:125px; height: 32px;}
+
+.MCTable {border: 1px solid #666666; margin: 0px; padding: 0px; 
+			border-spacing:0px; border-collapse:collapse;}
+.MCThP {color: #2996cc; padding:10px; margin: 0px;}            
+.MCTh0 {text-align: left; vertical-align: top; padding: 0px; 
+		border: 0px solid #cccccc; font-size: 12px;} 
+.MCThA10 {text-decoration: none; color: #666666;}
+.MCThA20 {text-decoration: none; color: #2996cc;} 
+.MCThA30 {text-decoration: none; color: #3cd86d;}
+.MCFTd0 {text-align: left; vertical-align: top; padding: 0px; 
+		line-height: 150%; border: 1px solid #666666; font-size: 11px;} 
+
+.MCTh1 {text-align: left; vertical-align: top; padding: 0px; 
+		border: 0px solid #cccccc; font-size: 14px;} 
+.MCThA11 {text-decoration: none; color: #2996cc;}  
+.MCThA21 {text-decoration: none; color: #2996cc;}  
+.MCThA31 {text-decoration: none; color: #2996cc;}
+.MCFTd1 {text-align: left; vertical-align: top; padding: 0px; 
+		line-height: 150%; border: 1px solid #666666; font-size: 13px;}
+
+.MCSpan1 {color: #2996cc;}      
+.MCTdP0 {color: #2996cc; padding: 2px; margin: 0px;}
+.MCTd0 {text-align: left; vertical-align: top; padding: 0px; 
+		line-height: 130%; border: 1px solid #666666; 
+		font-size:11px; width: 28px;}
+.MCEd0 {color: #666666; font-size: 11px;}
+
+.MCAnchor {text-decoration: none; color: #2996cc; } 
+.MCTdP1 {color: #2996cc; padding: 5px; margin: 0px; } 
+.MCTd1 {text-align: left; vertical-align: top; padding: 0px; 
+		line-height: 150%; border: 1px solid #666666; 
+		font-size: 13px; width: 99px;} 
+.MCEd1 {color: #666666; font-size: 14px;}
+
+.MCEdToday0 {color: #f51f55; font-weight: bold;
+    text-shadow: 1px 1px 2px #2996cc; font-size:11px;} 
+.MCEdHol0 {color: #f69124; font-size: 11px;} 
+.MCEdWkEnd0 {color: #f69124; font-size: 11px;} 
+.MCEdInaccu0 {color: #f51f55; font-size: 11px;} 
+.MCSabbath0 {font-family: Arial; color: #f69124; 
+			font-size: 8px; margin: 0px; padding: 0px;}
+            
+.MCEdToday1 {color: #f51f55; font-weight: bold;
+    text-shadow: 1px 1px 2px #2996cc; font-size:14px;} 
+.MCEdHol1 {color: #f69124; font-size: 14px;} 
+.MCEdWkEnd1 {color: #2996cc; font-size: 14px;} 
+.MCEdInaccu1 {color: #f51f55; font-size: 14px;} 
+.MCSabbath1 {color: #2996cc; font-size: 12px;  text-decoration: none;}
+
+.MCMd2 {color: #2996cc;} .MCMd3 {color: #3cd86d;} 
+.MCArr { font-family: Arial; color: #666666;}
+
+.MCMm {color: #666666; font-size: 12px; text-decoration: none;} 
+.MCMs {color: #666666; font-size: 12px; text-decoration: none;}
+.MCMdSb {color: #2996cc; text-decoration: none;}
+.MCMd {color: #666666; text-decoration: none;} 
+.MCHol { color: #f69124; font-size: 12px; text-decoration: none;} 
+.MCNote { color: #2996cc; font-size: 12px; text-decoration: none;} 
+.MCAstro { color: #666666;  font-size: 10px; text-decoration: none;} 
+.MCJDN {font-size: 9px; font-family: Arial; color: #666666;}
+.MCFoot {font-size: 14px; font-family: 'Myanmar Text',Padauk,
+    'Myanmar MN','Droid Sans',Myanmar3,Tharlon,Arial; color: #666666;}
+.MCFootIM {font-size: 14px; font-family: 'Myanmar Text',Padauk,
+    'Myanmar MN','Droid Sans',Myanmar3,Tharlon,Arial; color: #f51f55;}
+.MCFNNo {color: #2996cc; font-size: 12px;}
+.FM {border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+	width: 10px; height: 10px; background: #ffffcc; border: solid #666666 1px;}
+.NM {border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+	width: 10px; height: 10px; background: #666666; border: solid #666666 1px;}
+.RU_DYN {text-decoration: none; color: #2996cc; }
+.RU_DT {text-decoration: none; color: #2996cc; }
