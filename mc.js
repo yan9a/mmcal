@@ -1,4 +1,4 @@
-//Version: 201604132300
+//Version: 201702121800
 //File: mc.js
 //Description: Core functions for Myanmar Calendrical Calculations
 //-------------------------------------------------------------------------
@@ -15,12 +15,12 @@
 //   Attribution — You may give appropriate credit, provide a link to the license,
 //                   but it is not compulsory.
 //-------------------------------------------------------------------------
-//Usage example to calculate Myanmar calendar date 
+//Usage example to calculate Myanmar calendar date
 // j=w2j(year,month,day); //get julian day number
 // M=j2m(j); //get Myanmar date
 // Then
 //     M.my = Myanmar year
-//     M.mm = Myanmar month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+//     M.mm = Myanmar month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5,
 //      Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11, Tabaung=12 ]
 //     M.mp = [0=waxing, 1=full moon, 2=waning, or 3=new moon]
 //     M.d = fortnight day
@@ -30,41 +30,39 @@
 
 //-------------------------------------------------------------------------
 //Check watat (intercalary month)
-//input: (my -myanmar year,
-  //  rf - referred source [Optional argument: 0=Evidence based (default), 1=Tin Naing Toe])
+//input: (my -myanmar year)
 //output:  ( watat - intercalary month [1=watat, 0=common]
   //  fm - full moon day of 2nd Waso in jdn [valid for watat years only])
-//dependency: chk_exception(my,rf,fm,watat,ei)
-function chk_watat(my,rf) { rf=rf||0;
+//dependency: chk_exception(my,fm,watat,ei)
+function chk_watat(my) {
 	var SY=1577917828/4320000; //solar year (365.2587565)
 	var LM=1577917828/53433336; //lunar month (29.53058795)
 	var MO=1954168.050623; //beginning of 0 ME
 	// [ < 1100 ME - 1st era early], [ < 1217 ME - 1st era late],
 	//[ < 1312 ME - 2nd era],[ >= 1312 ME - 3rd era]
 	var e1=(my >= 1100)?1:0; var e2=(my >= 1217)?1:0; var e3=(my >= 1312)?1:0;
-	var ei=e1+e2+e3; 
+	var ei=e1+e2+e3;
 	var NM=e2*5+e3*4-1;//number of months to find excess days
 	//offset to adjust full moon day depending on era
-	var WO=e1*0.25-e2*0.15+e3*0.5-1.1; 
+	var WO=e1*0.25-e2*0.15+e3*0.5-1.1;
 	var TA=(SY/12-LM)*(12-NM); //threshold to adjust
 	var ed=(SY*(my+3739))%LM; // excess day
 	if(ed < TA) ed+=LM;//adjust excess days
-	var fm=Math.round(SY*my+MO-ed+4.5*LM+WO);//full moon day of 2nd Waso 
-	var TW=0,watat=0;//find watat 
+	var fm=Math.round(SY*my+MO-ed+4.5*LM+WO);//full moon day of 2nd Waso
+	var TW=0,watat=0;//find watat
 	if (ei >= 2) {//if 2nd era or later find watat based on excess days
-		TW=LM-(SY/12-LM)*NM; watat=(ed >= TW); } 
+		TW=LM-(SY/12-LM)*NM; watat=(ed >= TW); }
 	else {//if 1st era,find watat by 19 years metonic cycle
 //Myanmar year is divided by 19 and there is intercalary month
 //if the remainder is 2,5,7,10,13,15,18
 //https://github.com/kanasimi/CeJS/blob/master/data/date/calendar.js#L2330
 		watat=(my*7+2)%19; if (watat < 0) watat+=19;
-		watat=Math.floor(watat/12);	}  
-	return chk_exception(my,rf,fm,watat,ei);
+		watat=Math.floor(watat/12);	}
+	return chk_exception(my,fm,watat,ei);
 }
 //-------------------------------------------------------------------------
 //Check exception for full moom day and watat (intercalary month)
 //input: (my -myanmar year,
-  //  rf - referred source [0=Evidence based, 1=Tin Naing Toe],
   //  watat - intercalary month [1=watat, 0=common]
   //  fm - full moon day of 2nd Waso in jdn [valid for watat years only],
   //  ei - era index [0=1st era early, 1=1st era late, 2=2nd era, 3=3rd era])
@@ -81,47 +79,46 @@ var fmCE=[[205,1],[246,1],[572,-1],[651,1],[653,2],[656,1],[672,1],[729,1],
 	  [767,-1],[813,-1],[849,-1],[851,-1],[854,-1],[927,-1],[933,-1],[936,-1],[938,-1],
 	  [949,-1],[952,-1],[963,-1],[968,-1],[1039,-1]];
   //		Ref 1: Tin Naing Toe & Dr. Than Tun
-var fmTNT=[[205,1],[246,1],[813,-1],[854,-1],[1039,-1]];
-function chk_exception(my,rf,fm,watat,ei){ var i=0;
+//var fmTNT=[[205,1],[246,1],[813,-1],[854,-1],[1039,-1]];
+function chk_exception(my,fm,watat,ei){ var i=0;
 	if (ei){ //adjust for exceptions for well known years
 		i=bSearch(my,wt1); if (i >= 0) watat=wt1[i][1];
 		if(watat) {i=bSearch(my,fm1); if(i >= 0) fm+=fm1[i][1]; }}
 	else if(watat){ //for the first era earlier years, use referred sources
-	//to adjust for exceptions 
-		if (rf==1) {// Tin Naing Toe & Dr. Than Tun
-			i=bSearch(my,fmTNT); if(i >= 0) fm+=fmTNT[i][1]; 	}
-		else {// Cool Emerald- Based on various evidence
+	//to adjust for exceptions
+		//if (rf==1) {// Tin Naing Toe & Dr. Than Tun
+		//	i=bSearch(my,fmTNT); if(i >= 0) fm+=fmTNT[i][1]; 	}
+		//else {// Cool Emerald- Based on various evidence
 		//such as inscriptions, books, etc...
-			i=bSearch(my,fmCE); if(i >= 0) fm+=fmCE[i][1]; 	}	} 
+			i=bSearch(my,fmCE); if(i >= 0) fm+=fmCE[i][1]; 	//}
+		}
 	return {fm:fm,watat:watat};
 }
 //-------------------------------------------------------------------------
 //Check Myanmar Year
-//input: (my -myanmar year,
-  // rf - referred source [Optional argument: 0=Evidence based (default), 1=Tin Naing Toe])
+//input: (my -myanmar year)
 //output:  (myt :year type [0=common, 1=little watat, 2=big watat],
   //tg1 : the 1st day of Tagu as Julian Day Number
   //fm : full moon day of [2nd] Waso as Julain Day Number)
   //werr: watat error
-//dependency: chk_watat(my,rf)
-function chk_my(my,rf) { rf=rf||0; 
+//dependency: chk_watat(my)
+function chk_my(my) {
 	var yd=0,y1,nd=0,werr=0,fm=0;
-	var y2=chk_watat(my,rf); var myt=y2.watat;
-	do{ yd++; y1=chk_watat(my-yd,rf);}while(y1.watat==0 && yd < 3);
+	var y2=chk_watat(my); var myt=y2.watat;
+	do{ yd++; y1=chk_watat(my-yd);}while(y1.watat==0 && yd < 3);
 	if(myt) { nd=(y2.fm-y1.fm)%354; myt=Math.floor(nd/31)+1;
 		fm=y2.fm; if(nd!=30 && nd!=31) {werr=1;} }
 	else fm=y1.fm+354*yd;
-	var tg1=y1.fm+354*yd-102;	
+	var tg1=y1.fm+354*yd-102;
 	return {myt:myt,tg1:tg1,fm:fm,werr:werr};
 }
 //-------------------------------------------------------------------------
 //Julian date to Myanmar date
-//input: (jd -julian date,
-  // rf - referred source [Optional argument: 0=Evidence based (default), 1=Tin Naing Toe])
+//input: (jd -julian date)
 //output:  (my : year,
   //myt :year type [0=common, 1=little watat, 2=big watat],
   //myl: year length [354, 384, or 385 days],
-  //mm: month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, Tawthalin=6, 
+  //mm: month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, Tawthalin=6,
   //    Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11, Tabaung=12 ],
   //mmt: month type [1=hnaung, 0= Oo],
   //mml: month length [29 or 30 days],
@@ -129,14 +126,14 @@ function chk_my(my,rf) { rf=rf||0;
   //fd: fortnight day [1 to 15],
   //mp :moon phase [0=waxing, 1=full moon, 2=waning, 3=new moon],
   //wd: week day [0=sat, 1=sun, ..., 6=fri] )
-//dependency: chk_my(my,rf)
-function j2m(jd,rf) {
+//dependency: chk_my(my)
+function j2m(jd) {
 	var SY=1577917828/4320000; //solar year (365.2587565)
 	var MO=1954168.050623; //beginning of 0 ME
-	var jdn,my,yo,dd,myl,mmt,a,b,c,mm,md,mml,mp,fd,wd;
-	rf=rf||0; jdn=Math.round(jd);//convert jd to jdn
+	var jdn,my,yo,dd,myl,mmt,a,b,c,e,f,mm,md,mml,mp,fd,wd;
+	jdn=Math.round(jd);//convert jd to jdn
 	my=Math.floor((jdn-0.5-MO)/SY);//Myanmar year
-	yo=chk_my(my,rf);//check year
+	yo=chk_my(my);//check year
 	dd=jdn-yo.tg1+1;//day count
 	b=Math.floor(yo.myt/2); c=Math.floor(1/(yo.myt+1)); //big wa and common yr
 	myl=354+(1-c)*30+b;//year length
@@ -156,17 +153,16 @@ function j2m(jd,rf) {
 //-------------------------------------------------------------------------
 //Myanmar date to Julian date
 //input:  (my : year,
-  //mm: month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, Tawthalin=6, 
+  //mm: month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, Tawthalin=6,
   //    Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11, Tabaung=12 ],
   //mmt: month type [1=hnaung, 0=Oo],
   //mp :moon phase [0=waxing, 1=full moon, 2=waning, 3=new moon],
-  //fd: fortnight day [1 to 15],
-  //rf - referred source [Optional argument: 0=Evidence based (default), 1=Tin Naing Toe])
+  //fd: fortnight day [1 to 15])
 //output: (jd -julian day number)
-//dependency: chk_my(my,rf)
-function m2j(my,mm,mmt,mp,fd,rf) {
+//dependency: chk_my(my)
+function m2j(my,mm,mmt,mp,fd) {
 	var b,c,mml,m1,m2,md,dd;
-	rf=rf||0; yo=chk_my(my);//check year
+	yo=chk_my(my);//check year
 	b=Math.floor(yo.myt/2); c=(yo.myt==0); //if big watat and common year
 	mml=30-mm%2;//month length
 	if (mm==3) mml+=b;//adjust if Nayon in big watat
@@ -203,7 +199,7 @@ function j2w(jd,ct,SG) {
 		d=Math.floor((d+4)/4); m=Math.floor((5*d-3)/153); d=5*d-3-153*m;
 		d=Math.floor((d+5)/5); y=100*y+j;
 		if(m<10) {m+=3;}
-		else {m-=9; y=y+1;}		
+		else {m-=9; y=y+1;}
 	}
 	jf*=24; h=Math.floor(jf); jf=(jf-h)*60; n=Math.floor(jf); s=(jf-n)*60;
 	return {y:y,m:m,d:d,h:h,n:n,s:s};
@@ -250,7 +246,7 @@ function astro(mm,mml,md,wd) {
 	sabbath=0; if((md==8)||(md==15)||(md==23)||(md==mml)) sabbath=1;
 	sabbatheve=0;if((md==7)||(md==14)||(md==22)||(md==(mml-1))) sabbatheve=1;
 	yatyaza=0; m1=mm%4; wd1=Math.floor(m1/2)+4;
-	wd2=((1-Math.floor(m1/2))+m1%2)*(1+2*(m1%2)); 
+	wd2=((1-Math.floor(m1/2))+m1%2)*(1+2*(m1%2));
 	if((wd==wd1)||(wd==wd2)) yatyaza=1;
 	pyathada=0; wda=[1,3,3,0,2,1,2]; if(m1==wda[wd]) pyathada=1;
 	if((m1==0)&&(wd==4)) pyathada=2;//afternoon pyathada
@@ -259,7 +255,7 @@ function astro(mm,mml,md,wd) {
 	amyeittasote=0; wda=[5,8,3,7,2,4,1]; if(d==wda[wd]) amyeittasote=1;
 	warameittugyi=0; wda=[7,1,4,8,9,6,3]; if(d==wda[wd]) warameittugyi=1;
 	warameittunge=0; wn=(wd+6)%7; if((12-d)==wn) warameittunge=1;
-	yatpote=0; wda=[8,1,4,6,9,8,7]; if(d==wda[wd]) yatpote=1; 
+	yatpote=0; wda=[8,1,4,6,9,8,7]; if(d==wda[wd]) yatpote=1;
 	thamaphyu=0; wda=[1,2,6,6,5,6,7];  if(d==wda[wd]) thamaphyu=1;
 	wda=[0,1,0,0,0,3,3]; if(d==wda[wd]) thamaphyu=1;
 	if((d==4) && (wd==5)) thamaphyu=1;
@@ -270,7 +266,7 @@ function astro(mm,mml,md,wd) {
 	mahayatkyan=0; m1=(Math.floor((mm%12)/2)+4)%6+1; if(d==m1) mahayatkyan=1;
 	shanyat=0; sya=[8,8,2,2,9,3,3,5,1,4,7,4]; if(d==sya[mm-1]) shanyat=1;
 	nagahle=Math.floor((mm%12)/3);
-	
+
 	return {sabbath:sabbath,sabbatheve:sabbatheve,yatyaza:yatyaza,
 	pyathada:pyathada,thamanyo:thamanyo,amyeittasote:amyeittasote,
 	warameittugyi:warameittugyi,warameittunge:warameittunge,
@@ -290,10 +286,36 @@ function emLen(y,m,t) {
 			if((y%4==0 && y%100!=0) || y%400==0) leap=1;
 		}
 		else if(y%4==0) leap=1;
-		mLen+=leap-2; 
-	} 
+		mLen+=leap-2;
+	}
 	if (y==1752 && m==9 && t==0) mLen=19;
 	return mLen;
+}
+//----------------------------------------------------------------------------
+//Search first dimension in a 2D array
+//input: (k=key,A=array)
+//output: (i=index)
+function bSearch(k,A) {
+	var i=0; var l=0; var u=A.length-1;
+	while(u>=l) {
+		i=Math.floor((l+u)/2);
+		if (A[i][0]>k)  u=i-1;
+		else if (A[i][0]<k) l=i+1;
+		else return i;
+	} return -1;
+}
+//-----------------------------------------------------------------------------
+//Search a 1D array
+//input: (k=key,A=array)
+//output: (i=index)
+function bSearch1(k,A) {
+	var i=0; var l=0; var u=A.length-1;
+	while(u>=l) {
+		i=Math.floor((l+u)/2);
+		if (A[i]>k)  u=i-1;
+		else if (A[i]<k) l=i+1;
+		else return i;
+	} return -1;
 }
 //End of kernel ###############################################################
 
@@ -333,7 +355,7 @@ function ehol(gy,gm,gd) {
 	else if((gy>=1958) && (gm==3) && (gd==2)) {hs[h++]="Peasants Day";}
 	else if((gy>=1945) && (gm==3) && (gd==27)) {hs[h++]="Resistance Day";}
 	else if((gy>=1923) && (gm==5) && (gd==1)) {hs[h++]="Labour Day";}
-	else if((gy>=1947) && (gm==7) && (gd==19)) {hs[h++]="Martyrs Day";} 
+	else if((gy>=1947) && (gm==7) && (gd==19)) {hs[h++]="Martyrs Day";}
 	else if((gm==12) && (gd==25)) {hs[h++]="Christmas Day";}
 	return {h:h,hs:hs};
 }
@@ -353,13 +375,13 @@ function mhol(my,mm,md,mp) {
 	return {h:h,hs:hs};
 }
 //----------------------------------------------------------------------------
-//input: (j: Julian Day Number, 
+//input: (j: Julian Day Number,
 // ct:calendar type [Optional argument: 0=english (default), 1=Gregorian, 2=Julian])
 //output: (h=flag [true=1, false=0], hs=string)
 //dependency: DoE(), j2w()
 //external variables: ghEid2,ghCNY
 var ghEid2=[2456936,2457290,2457644];
-var ghCNY=[2456689,2456690,2457073,2457074,2457427,2457428];
+var ghCNY=[2456689,2456690,2457073,2457074,2457427,2457428,2457782,2457783];
 function ecd(j,ct) {
 	ct=ct||0; var h=0; var hs=["","",""];
 	var g=j2w(j,ct);
@@ -373,7 +395,7 @@ function ecd(j,ct) {
 	else if((g.y>=1947) && (g.m==10) && (g.d==24)) {hs[h++]="United Nations Day";}
 	else if((g.y>=1753) && (g.m==10) && (g.d==31)) {hs[h++]="Halloween";}
 	if((g.y>=1876) && (j==doe)) {hs[h++]="Easter";}
-	else if((g.y>=1876) && (j==(doe-2))) {hs[h++]="Good Friday";}	
+	else if((g.y>=1876) && (j==(doe-2))) {hs[h++]="Good Friday";}
 	else if(bSearch1(j,ghEid2)>=0) {hs[h++]="Eid";}
 	if(bSearch1(j,ghCNY)>=0) {hs[h++]="Chinese New Year";}
 	return {h:h,hs:hs};
@@ -388,15 +410,15 @@ function ecd(j,ct) {
 //output: (j=julian day number)
 //dependency: w2j()
 function DoE(y) {
-	a=y%19; 
-	b=Math.floor(y/100); c=y%100; 
-	d=Math.floor(b/4); e=b%4; 
-	f=Math.floor((b+8)/25); 
-	g=Math.floor((b-f+1)/3); 
-	h=(19*a+b-d-g+15)%30; 
-	i=Math.floor(c/4); k=c%4; 
-	l=(32+2*e+2*i-h-k)%7; 
-	m=Math.floor((a+11*h+22*l)/451); 
+	a=y%19;
+	b=Math.floor(y/100); c=y%100;
+	d=Math.floor(b/4); e=b%4;
+	f=Math.floor((b+8)/25);
+	g=Math.floor((b-f+1)/3);
+	h=(19*a+b-d-g+15)%30;
+	i=Math.floor(c/4); k=c%4;
+	l=(32+2*e+2*i-h-k)%7;
+	m=Math.floor((a+11*h+22*l)/451);
 	q=h+l-7*m+114; p=(q%31)+1; n=Math.floor(q/31);
 	return w2j(y,n,p,1);// this is for Gregorian
 }
@@ -417,7 +439,7 @@ function mcd(my,mm,md,mp) {
 		{hs[h++]="Mothers Day";}//Pyatho full moon
 	else if((my>=1370) && (mm==12) && (mp==1))
 		{hs[h++]="Fathers Day";}//Tabaung full moon
-	else if((mm==5) && (mp==1)) {hs[h++]="Metta Day"; 
+	else if((mm==5) && (mp==1)) {hs[h++]="Metta Day";
 		//if(my>=1324)  {hs[h++]="Mon Revolution Day";}//Mon Revolution day
 	}//Waguang full moon
 	else if((mm==5) && (md==10)) {hs[h++]="Taungpyone Pwe";}//Taung Pyone Pwe
@@ -431,216 +453,18 @@ function mcd(my,mm,md,mp) {
 //input: (jd: Julian day number)
 //output: (h=flag [true=1, false=0], hs=string)
 //external variables: ghDiWali,ghEid
-var ghDiwali=[2456599,2456953,2457337,2457691];
-var ghEid=[2456513,2456867,2457221,2457576];
+var ghDiwali=[2456599,2456953,2457337,2457691,2458045];
+var ghEid=[2456513,2456867,2457221,2457576,2457930];
 function ohol(jd) {
 	var h=0; var hs=["","",""];
 	if(bSearch1(jd,ghDiwali)>=0) {hs[h++]="Diwali";}
 	if(bSearch1(jd,ghEid)>=0) {hs[h++]="Eid";}
 	return {h:h,hs:hs};
 }
-//End of checking holidays ####################################################
-
-//Search first dimension in a 2D array
-//input: (k=key,A=array)
-//output: (i=index)
-function bSearch(k,A) {
-	var i=0; var l=0; var u=A.length-1;
-	while(u>=l) {
-		i=Math.floor((l+u)/2);
-		if (A[i][0]>k)  u=i-1;
-		else if (A[i][0]<k) l=i+1;
-		else return i;
-	} return -1;
-}
-//-----------------------------------------------------------------------------
-//Search a 1D array
-//input: (k=key,A=array)
-//output: (i=index)
-function bSearch1(k,A) {
-	var i=0; var l=0; var u=A.length-1;
-	while(u>=l) {
-		i=Math.floor((l+u)/2);
-		if (A[i]>k)  u=i-1;
-		else if (A[i]<k) l=i+1;
-		else return i;
-	} return -1;
-}
-//-----------------------------------------------------------------------------
-//Start of Internationalization (language) ####################################
-var X;
-var g_Lang="Myanmar";
-function LanguageCatalog(a) {X=a;}
-//Credit: Mon Language Translation by 'ITVilla' : http://it-villa.blogspot.com/
-//and Proof reading by Mikau Nyan
-
-//-------------------------------------------------------------------------
-//Select language
-//input: (L: number[0=Myanmar, 1=English, 2=Mon, 3=Zawgyi]) 
-function SelectLang(L){
-	if (L==1 || L=="English" || L=="my-En" || L=="my-en") {g_Lang="English"; }
-	else if (L==2 || L=="Mon" || L=="my-Mon" || L=="my-mon") { g_Lang="Mon";}
-	else if (L==3 || L=="Zawgyi" || L=="my-Z1" || L=="my-z1" || L=="Zawgyi-One") { g_Lang="Zawgyi";}
-	else {g_Lang="Myanmar";}
-	return g_Lang;
-}
-//-------------------------------------------------------------------------
-//Translate to selected language from a string in English -defined in mc_l.js
-//input: (es: text in english) output: (ts: translated text)
-function T(es){
-	try {
-		var ts=X[g_Lang][es];
-	}
-	catch(err){
-		ts=undefined;
-	}
-	if (ts===undefined) {return es;}
-	else return ts;
-}
 //----------------------------------------------------------------------------
-//Convert a number to string in the selected language
-//input: (n=number, X: global variable that holds the language catalog)
-//output: (s: string)
-function n2s(n) { var r=0,s="",g=""; if(n<0){g="-"; n=Math.abs(n);}
-n=Math.floor(n); do{ r=n%10; n=Math.floor(n/10);
-s=T(r.toString())+s; }while(n>0);  return (g+s); }
-//-----------------------------------------------------------------------------
 //Get holiday string
 //input: hd : holiday object
 //output: string
-function Holiday2String(hd){ var str=""; var k=0;  for(k=0;k<hd.h;k++) str+=T(hd.hs[k])+" ";  return str; }
-//End of Internationalization (language)  #####################################
+function Holiday2String(hd){ var str=""; var k=0;  for(k=0;k<hd.h;k++) str+=" <br/>"+T(hd.hs[k]);  return str; }
+//End of checking holidays ####################################################
 //-----------------------------------------------------------------------------
-//Start of chronical dates ####################################################
-
-//Credit: Thanks to U Aung Zeya for listing and sending most of the chronical dates listed in this calendar.
-var g_History;
-function ChronicalDates(a) {g_History=a;}
-
-//Month number enumeration
-var mme={"First Waso":0,"Tagu":1,"Kason":2,"Nayon":3,"Waso":4,"Wagung":5,"Tawthalin":6,
-	"Thadingyut":7,"Tazaungmon":8,"Nadaw":9,"Pyatho":10,"Tabodwe":11,"Tabaung":12,
-	"Hnaung Tagu":13,"Hnaung Kason":14,"Late Tagu":13,"Late Kason":14,"Second Waso":15};
-	
-//Moon phase enumeration
-var mpe={"Waxing":0, "Full moon":1, "Waning":2, "New moon":3};
-
-//Week day enumeration
-var wde={"Saturday":0, "Sunday":1, "Monday":2, "Tuesday":3, "Wednesday":4, "Thursday":5,"Friday":6};
-//-----------------------------------------------------------------------------
-//Search jd in chronical dates
-//input: (jd=Julian day number)
-//output: (i= index, f=flag [0: not found, 1: found], my: Myanmar year,
-// myt: Myanmar year type [0: common year, 1: watat],
-// mm: Myanmar month, mmt: Myanmar month type [0: Oo, 1: Hnaung],
-// mp: moon phase, fd: fortnight day, wd: day of the week,
-// dt: description, hl: URL)
-function hSearch(jd)
-{
-	var myt=0,mmt=0,mm=1,ho;
-	var ho_mm,ho_mp,ho_fd,ho_my,ho_wd,ho_dt;
-	var i=0; var l=0; var u=g_History.length-1; 
-	while(u>=l) {		
-		i = Math.floor((l+u)/2); // calculate midpoint
-		ho=g_History[i];
-		if (ho["Julian Day Number"]<jd) l=i+1;
-		else if (ho["Julian Day Number"]>jd)  u=i-1;
-        else { // found
-			ho_mm=mme[ho["Myanmar Month"]];
-			ho_mp=mpe[ho["Moon Phase"]];
-			ho_fd=ho["Fortnight Day"];
-			ho_my=ho["Myanmar Year"];
-			ho_wd= wde[ho["Day of the Week"]];
-			ho_dt=ho["Description"];
-			if(ho_mm==15){myt=1; mm=4;} 
-			else {mmt=Math.floor(ho_mm/13); mm=ho_mm%13+mmt;}
-			return {i:i,f:1,my:ho_my,myt:myt,mm:mm,mmt:mmt,
-				mp:ho_mp,fd:ho_fd,wd:ho_wd,dt:ho_dt};
-		}
-    }
-return {i:-1,f:0,my:0,myt:0,mm:0,mmt:0,mp:0,fd:0,wd:0,dt:""};//not found
-}
-//End of chronical dates ######################################################
-
-//Start of Rulers in Myanmar history ##########################################
-//Description: Rulers (kings) in Myanmar history
-//    Ref:
-//         https://en.wikipedia.org/wiki/List_of_Burmese_monarchs
-//          https://en.wikipedia.org/wiki/List_of_colonial_governors_of_Burma
-//          https://en.wikipedia.org/wiki/List_of_Presidents_of_Myanmar
-//          https://my.wikipedia.org/wiki/%E1%80%9B%E1%80%81%E1%80%AD%E1%80%AF%E1%80%84%E1%80%BA%E1%80%99%E1%80%84%E1%80%BA%E1%80%B8%E1%80%86%E1%80%80%E1%80%BA
-//          https://my.wikipedia.org/wiki/%E1%80%95%E1%80%BB%E1%80%89%E1%80%BA%E1%80%95%E1%80%BC%E1%80%AC%E1%80%B8%E1%80%99%E1%80%84%E1%80%BA%E1%80%B8
-
-var g_RulerList=[];// list of rulers
-var g_Rulers;
-function Rulers(a) {g_Rulers=a;}
-var g_dyn_str={
-	"Konbaung":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Konbaung_Dynasty'>Konbaung (ကုန်းဘောင်ခေတ်)</a>",
-	"Restored_Hanthawaddy":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Restored_Hanthawaddy_Kingdom'>Restored Hanthawaddy Kingdom (ဟံသာဝတီပဲခူးတိုင်းပြည်)</a>",
-	"Taungoo":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Taungoo_Dynasty'>Taungoo (တောင်ငူခေတ်)</a>",
-	"Mrauk_U":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Kingdom_of_Mrauk_U'>Mrauk-U Dynasty (မြောက်‌ဦး)</a>",
-	"Hanthawaddy":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Hanthawaddy_Kingdom'>Hanthawaddy Dynasty (ဟံသာဝတီ)</a>",
-	"Prome":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Prome_Kingdom'>Prome Dynasty (ဒုတိယ သရေခေတ္တရာ)</a>",
-	"Ava":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Kingdom_of_Ava'>Ava Dynasty (အင်းဝခေတ်)</a>",
-	"Sagaing":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Sagaing_Kingdom'>Sagaing Kingdom (စစ်ကိုင်းခေတ်)</a>",
-	"Pinya":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Pinya_Kingdom'>Pinya Kingdom (ပင်းယခေတ်)</a>",
-	"Myinsaing":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Myinsaing_Kingdom'>Myinsaing Kingdom (မြင်စိုင်းခေတ်)</a>",
-	"Pagan":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Pagan_Kingdom'>Pagan Kingdom (ပုဂံခေတ်)</a>",
-	"Early_Pagan":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Early_Pagan_Kingdom'>Early Pagan Kingdom (ခေတ်ဦး ပုဂံ ပြည်)</a>",
-	"British_Colonial_Period":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/British_rule_in_Burma'>British Colonial Period (ဗြိတိသျှကိုလိုနီခေတ်)</a>",
-	"Japanese_Occupation":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Japanese_occupation_of_Burma'>Japanese Occupation (ဂျပန်ခေတ်)</a>",
-	"Union_of_Burma":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Post-independence_Burma,_1948%E2%80%9362'>Union of Burma</a>",
-	"Socialist_Republic":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Burmese_Way_to_Socialism'>Socialist Republic of the Union of Burma</a>",
-	"Union_of_Myanmar":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/State_Peace_and_Development_Council'>Union of Myanmar</a>",
-	"Republic_Myanmar":"<a class='RU_DYN' href='https://en.wikipedia.org/wiki/Myanmar'>Republic of the Union of Myanmar</a>"
-};
-//-----------------------------------------------------------------------------
-//Search jd in ruler records,  input: (jd=Julian day number), output: (no output, just update g_RulerList)
-function mc_rSearch(jd)
-{	var ro;	var i=0; var u=g_Rulers.length; 
-	for(i=0;i<u;i++) { ro=g_Rulers[i]; if (jd>=ro.Beginning_JDN && jd<=ro.Ending_JDN) mc_rPush(ro); }
-}
-//-----------------------------------------------------------------------------
-//Add an entry to ruler records, input: (ro= ruler object), output: (no output, just update ro_list)
-function mc_rPush(ro)
-{   var i=0; var f=1; var u=g_RulerList.length; 
-	for(i=0;i<u;i++) if (ro.Name==g_RulerList[i].Name) f=0; // found
-	if (f) g_RulerList[u]=ro;
-}
-//-----------------------------------------------------------------------------
-//Clear ruler records
-function mc_rClear() { g_RulerList.length=0; }//g_RulerList.splice(0,g_RulerList.length);
-//-----------------------------------------------------------------------------
-//check if there is ruler records, input: (no input), output: (length)
-function mc_rLength() { return g_RulerList.length; }
-//-----------------------------------------------------------------------------
-//Get description from g_RulerList, input: (no input), output: (str= description text)
-function mc_rDescription() {
-	var i=0; var str=""; var u=g_RulerList.length; 
-	for(i=0;i<u;i++) str+=mc_rText(g_RulerList[i])+(i==(u-1)?".":",<br/>");
-	return str;
-}
-//-----------------------------------------------------------------------------
-//Get description for a record, input: (record), output: (str= description text)
-function mc_rText(r) {
-	var dt=new Date(); var j=w2j(dt.getFullYear(),(1+dt.getMonth()),dt.getDate());
-	var str="<a class='RU_DT' href='"+r.URL+"'>"+r.Name+"</a>";
-	str+=", "+mc_j2d(r.Beginning_JDN,0)+" to ";
-	str+=(j>r.Ending_JDN)?mc_j2d(r.Ending_JDN,0):" present";
-	str+=", "+g_dyn_str[r.Dynasty]; 	return str;
-}
-//-------------------------------------------------------------------------
-// jdn to date string
-function mc_j2d(jd,rf) {
-	var M=j2m(jd,rf);
-	var hmma=["First Waso","Tagu","Kason","Nayon","Waso","Wagaung","Tawthalin",
-		 "Thadingyut","Tazaungmon","Nadaw","Pyatho","Tabodwe","Tabaung"];
-	var hmpa=["Waxing","Full moon","Waning","New moon"];
-	var hwda=['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday']; 
-	var str="ME "+M.my.toString()+" "; if(M.mmt) str+="Late ";
-	if(M.myt && M.mm==4) str+="Second "; str+=hmma[M.mm]+" "+hmpa[M.mp];
-	if((M.mp%2)==0) str+=" "+M.fd.toString(); str+=" "+hwda[M.wd];
-	return str;
-}
-//-------------------------------------------------------------------------
-//End of Rulers in Myanmar history ############################################

@@ -1,101 +1,457 @@
-/* version: 201604132300 */
-.HTable {border: 0px solid #666666; margin: 0px; padding: 0px; 
-			border-spacing:0px; border-collapse:collapse;}
-.TdHTable {text-align: left; vertical-align: top; line-height: 150%; 
-			margin: 1px; padding: 0px;}
-            
-.TdH10{width: 24px;} .TdH20{width: 78px;}  .TdH30{width: 70px;}
-.TdH4{width: 24px;} .TdH60{width: 20px; padding-top: 8px;}
-.TdH70{width: 56px; padding-top: 6px;}
+/* Version: 201702121800 */
 
-.TdH11{width: 24px;} .TdH21{width: 78px;}  .TdH31{width: 74px;}
-.TdH5{width: 12px;} .TdH61{width: 20px; padding-top: 8px;}
-.TdH71{width: 56px; padding-top:6px;} .TdH8{width: 102px;} .TdH9{width:127px;}
+/* include font */
+@font-face {
+  font-family: 'Tharlon';
+  font-style: normal;
+  font-weight: 400;
+  src: url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.eot);
+  src: url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.eot?#iefix) format('embedded-opentype'),
+       url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.woff2) format('woff2'),
+       url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.woff) format('woff'),
+       url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.ttf) format('truetype');
+}
 
-.CtrlHTable0 {color: #2996cc;  padding: 3px; 
-			margin: 1px; text-align: left; background-color: transparent; 
-			border: 1px solid #666666; font-size: 11px;  
-			font-family: Arial;}
-.CtrlHTable1 {color: #2996cc;  padding: 3px; 
-			margin: 1px; text-align: left; background-color: transparent; 
-			border: 1px solid #666666; font-size: 13px;  
-			font-family: Arial;}
-            
-.CtrlH10 {width: 22px; height: 32px;} .CtrlH20 {width: 68px; height: 24px;}
-.CtrlH30 {width: 68px; height: 32px;} .CtrlH4 {width: 22px; height: 32px;} 
-.CtrlH70 {border: 0px solid #666666;}
+body {
+  background-color: #111111;
+}
 
-.CtrlH11 {width: 22px; height: 32px;} .CtrlH21 {width: 68px; height: 24px;} 
-.CtrlH31 {width: 72px; height: 32px;} .CtrlH71 {border: 0px solid #666666;} 
-.CtrlH8 {width:100px; height: 32px;} .CtrlH9 {width:125px; height: 32px;}
+/*
+.DivMain {
+    margin-left: auto;
+    margin-right: auto;
+}
+*/
 
-.MCTable {border: 1px solid #666666; margin: 0px; padding: 0px; 
-			border-spacing:0px; border-collapse:collapse;}
-.MCThP {color: #2996cc; padding:10px; margin: 0px;}            
-.MCTh0 {text-align: left; vertical-align: top; padding: 0px; 
-		border: 0px solid #cccccc; font-size: 12px;} 
-.MCThA10 {text-decoration: none; color: #666666;}
-.MCThA20 {text-decoration: none; color: #2996cc;} 
-.MCThA30 {text-decoration: none; color: #3cd86d;}
-.MCFTd0 {text-align: left; vertical-align: top; padding: 0px; 
-		line-height: 150%; border: 1px solid #666666; font-size: 11px;} 
+/* Div container for month*/
+.DivContainerMonth {
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+    width: 840px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-.MCTh1 {text-align: left; vertical-align: top; padding: 0px; 
-		border: 0px solid #cccccc; font-size: 14px;} 
-.MCThA11 {text-decoration: none; color: #2996cc;}  
-.MCThA21 {text-decoration: none; color: #2996cc;}  
-.MCThA31 {text-decoration: none; color: #2996cc;}
-.MCFTd1 {text-align: left; vertical-align: top; padding: 0px; 
-		line-height: 150%; border: 1px solid #666666; font-size: 13px;}
+/* Div container for month*/
+.DivContainerDay {
+    width: 330px;
+    font-family: Tharlon,"Myanmar Text",Padauk,"Myanmar MN","Droid Sans",Myanmar3,Arial;
+    color: #999999;
+    background-color: #222222;
+		padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+		box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+    font-size: 16px;
+    line-height: 200%;
+    text-align: left;
+}
 
-.MCSpan1 {color: #2996cc;}      
-.MCTdP0 {color: #2996cc; padding: 2px; margin: 0px;}
-.MCTd0 {text-align: left; vertical-align: top; padding: 0px; 
-		line-height: 130%; border: 1px solid #666666; 
-		font-size:11px; width: 28px;}
-.MCEd0 {color: #666666; font-size: 11px;}
+/* Table container for controls*/
+.TableContainerCtrl {
+    border: 0px solid #333333;
+    margin: 2px;
+    padding: 0px;
+    border-spacing:0px;
+    border-collapse:collapse;
+}
 
-.MCAnchor {text-decoration: none; color: #2996cc; } 
-.MCTdP1 {color: #2996cc; padding: 5px; margin: 0px; } 
-.MCTd1 {text-align: left; vertical-align: top; padding: 0px; 
-		line-height: 150%; border: 1px solid #666666; 
-		font-size: 13px; width: 99px;} 
-.MCEd1 {color: #666666; font-size: 14px;}
+/* Table cell container for decrease month control*/
+.TdContainerBtnDec {
+    text-align: left;
+    vertical-align: top;
+    line-height: 150%;
+    margin: 0px;
+    padding: 0px;
+    width: 24px;
+}
 
-.MCEdToday0 {color: #f51f55; font-weight: bold;
-    text-shadow: 1px 1px 2px #2996cc; font-size:11px;} 
-.MCEdHol0 {color: #f69124; font-size: 11px;} 
-.MCEdWkEnd0 {color: #f69124; font-size: 11px;} 
-.MCEdInaccu0 {color: #f51f55; font-size: 11px;} 
-.MCSabbath0 {font-family: Arial; color: #f69124; 
-			font-size: 8px; margin: 0px; padding: 0px;}
-            
-.MCEdToday1 {color: #f51f55; font-weight: bold;
-    text-shadow: 1px 1px 2px #2996cc; font-size:14px;} 
-.MCEdHol1 {color: #f69124; font-size: 14px;} 
-.MCEdWkEnd1 {color: #2996cc; font-size: 14px;} 
-.MCEdInaccu1 {color: #f51f55; font-size: 14px;} 
-.MCSabbath1 {color: #2996cc; font-size: 12px;  text-decoration: none;}
+/* Button control decrease month */
+.BtnDec {
+    color: #999999;
+    padding: 3px;
+    margin: 0px;
+    text-align: left;
+    background-color: transparent;
+    border: 1px solid #333333;
+    font-size: 14px;
+    font-family: Arial;
+    width: 22px;
+    height: 32px;
+}
 
-.MCMd2 {color: #2996cc;} .MCMd3 {color: #3cd86d;} 
-.MCArr { font-family: Arial; color: #666666;}
+/* Table cell container for year control*/
+.TdContainerYear {
+    text-align: left;
+    vertical-align: top;
+    line-height: 150%;
+    margin: 0px;
+    padding: 0px;
+    width: 78px;
+}
 
-.MCMm {color: #666666; font-size: 12px; text-decoration: none;} 
-.MCMs {color: #666666; font-size: 12px; text-decoration: none;}
-.MCMdSb {color: #2996cc; text-decoration: none;}
-.MCMd {color: #666666; text-decoration: none;} 
-.MCHol { color: #f69124; font-size: 12px; text-decoration: none;} 
-.MCNote { color: #2996cc; font-size: 12px; text-decoration: none;} 
-.MCAstro { color: #666666;  font-size: 10px; text-decoration: none;} 
-.MCJDN {font-size: 9px; font-family: Arial; color: #666666;}
-.MCFoot {font-size: 14px; font-family: 'Myanmar Text',Padauk,
-    'Myanmar MN','Droid Sans',Myanmar3,Tharlon,Arial; color: #666666;}
-.MCFootIM {font-size: 14px; font-family: 'Myanmar Text',Padauk,
-    'Myanmar MN','Droid Sans',Myanmar3,Tharlon,Arial; color: #f51f55;}
-.MCFNNo {color: #2996cc; font-size: 12px;}
-.FM {border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
-	width: 10px; height: 10px; background: #ffffcc; border: solid #666666 1px;}
-.NM {border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
-	width: 10px; height: 10px; background: #666666; border: solid #666666 1px;}
-.RU_DYN {text-decoration: none; color: #2996cc; }
-.RU_DT {text-decoration: none; color: #2996cc; }
+/* Input year control*/
+.InpYear {
+    color: #999999;
+    padding: 3px;
+    margin: 0px;
+    text-align: left;
+    background-color: transparent;
+    border: 1px solid #333333;
+    font-size: 14px;
+    font-family: Arial;
+    width: 68px;
+    height: 24px;
+}
+
+/* Table cell container for month control*/
+.TdContainerMonth {
+    text-align: left;
+    vertical-align: top;
+    line-height: 150%;
+    margin: 0px;
+    padding: 0px;
+    width: 74px;
+}
+
+/* Select month control*/
+.InpMonth {
+    color: #999999;
+    padding: 3px;
+    margin: 0px;
+    text-align: left;
+    background-color: transparent;
+    border: 1px solid #333333;
+    font-size: 14px;
+    font-family: Arial;
+    width: 72px;
+    height: 32px;
+    appearance:none;
+    -moz-appearance:none; /* Firefox */
+    -webkit-appearance:none; /* Safari and Chrome */
+}
+
+/* Table cell container for increase month control*/
+.TdContainerBtnInc {
+    text-align: left;
+    vertical-align: top;
+    line-height: 150%;
+    margin: 0px;
+    padding: 0px;
+    width: 24px;
+}
+
+/* Button control increase month */
+.BtnInc {
+    color: #999999;
+    padding: 3px;
+    margin: 0px;
+    text-align: left;
+    background-color: transparent;
+    border: 1px solid #333333;
+    font-size: 14px;
+    font-family: Arial;
+    width: 22px;
+    height: 32px;
+}
+
+/* Table cell container for empty space*/
+.TdContainerSpace {
+    text-align: left;
+    vertical-align: top;
+    line-height: 150%;
+    margin: 0px;
+    padding: 0px;
+    width: 436px;
+}
+
+/* Table cell container for calendar type control*/
+.TdContainerType {
+    text-align: left;
+    vertical-align: top;
+    line-height: 150%;
+    margin: 0px;
+    padding: 0px;
+    width: 102px;
+}
+
+/* Select calendar type control*/
+.InpType {
+    color: #999999;
+    padding: 3px;
+    margin: 0px;
+    text-align: left;
+    background-color: transparent;
+    border: 1px solid #333333;
+    font-size: 14px;
+    font-family: Arial;
+    width: 100px;
+    height: 32px;
+    appearance:none;
+    -moz-appearance:none; /* Firefox */
+    -webkit-appearance:none; /* Safari and Chrome */
+}
+
+/* Table cell container for language control*/
+.TdContainerLanguage {
+    text-align: left;
+    vertical-align: top;
+    line-height: 150%;
+    margin: 0px;
+    padding: 0px;
+    width: 102px;
+}
+
+/* Select language control*/
+.InpLanguage {
+    color: #999999;
+    padding: 3px;
+    margin: 0px;
+    text-align: left;
+    background-color: transparent;
+    border: 1px solid #333333;
+    font-size: 14px;
+    font-family: Arial;
+    width: 100px;
+    height: 32px;
+    appearance:none;
+    -moz-appearance:none; /* Firefox */
+    -webkit-appearance:none; /* Safari and Chrome */
+}
+
+/* Table for Myanmar Calendar*/
+.TableMC {
+  border: 1px solid #333333; margin: 0px;
+  padding: 0px;
+	border-spacing:0px;
+  border-collapse:collapse;
+}
+
+/* Table header row for Myanmar Calendar*/
+.ThMC {
+  vertical-align: top;
+  padding: 0px;
+	border: 0px solid #333333;
+  background-color: #444444;
+}
+
+/* Paragraph for table header row for Myanmar Calendar*/
+.PThMC {
+  text-align: left;
+  color: #CCCCCC;
+  padding:10px;
+  margin: 0px;
+  font-size: 16px;
+}
+
+/* Table footer row for Myanmar Calendar*/
+.TdFootMC {
+  text-align: left;
+  vertical-align: top;
+  padding: 0px;
+	line-height: 150%;
+  border: 1px solid #333333;
+  font-size: 14px;
+  background-color: #444444;
+}
+
+/* Paragraph for table cell for weekdays*/
+.PTdWeekdayMC {
+  color: #cca6f2;
+  padding: 5px;
+  margin: 0px;
+}
+
+/* Paragraph for table cell for weekend*/
+.PTdWeekendMC {
+  color: #ff8080;
+  padding: 5px;
+  margin: 0px;
+}
+
+/* Paragraph for table cell for Myanmar Calendar*/
+.PTdMC {
+  color: #999999;
+  padding: 8px;
+  margin: 0px;
+}
+
+/* Anchor for table foot for Myanmar Calendar*/
+.AnchorFootMC {
+  text-decoration: none;
+  color: #cca6f2;
+}
+
+/* Anchor for Myanmar Calendar*/
+.AnchorMC {
+  text-decoration: none;
+  color: #cca6f2;
+}
+
+/* Table cell for Myanmar Calendar*/
+.TdMC {
+  text-align: left;
+  vertical-align: top;
+  padding: 0px;
+	line-height: 170%;
+  border: 1px solid #333333;
+	font-size: 14px;
+  width: 120px;
+  background-color: #222222;
+}
+
+/* Primary day*/
+.PriDay {
+  color: #CCCCCC;
+  font-size: 18px;
+}
+
+/* Primary day as today*/
+.PriDayToday {
+  color: #cca6f2;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #ff8080;
+  border: 1px solid #333333;
+  padding-top: -8px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: -8px;
+  background-color: #662222;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+/* Primary day as holiday*/
+.PriDayHoliday {
+  color: #ff8080;
+  font-size: 18px;
+}
+
+/* Primary day as weekend*/
+.PriDayWeekend {
+  color: #ff8080;
+  font-size: 18px;
+}
+
+/* Primary day as inaccuate*/
+.PriDayInaccu {
+  color: #cca6f2;
+  font-size: 18px;
+}
+
+/* Sabbath day*/
+.MCSabbath {
+  color: #7ece7e;
+  font-size: 12px;
+}
+
+/* Secondary day*/
+.SecDay {
+  color: #999999;
+  font-size: 14px;
+}
+
+/* Secondary day holiday*/
+.SecDayH {
+  color: #ff8080;
+  font-size: 14px;
+}
+
+/* Public Holiday description*/
+.MCPubHol {
+  color: #ff8080;
+  font-size: 12px;
+}
+
+/* Holiday description*/
+.MCHol {
+  color: #cca6f2;
+  font-size: 12px;
+}
+
+/* Yatyaza and Pyathada*/
+.MCYatyaza {
+  color: #7ece7e;
+  font-size: 12px;
+}
+
+/* Astrological day description*/
+.MCAstro {
+  color: #555555;
+  font-size: 12px;
+}
+
+/*Full moon picture*/
+.FM {
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+	width: 10px;
+  height: 10px;
+  background: #ffffcc;
+  border: solid #CCCCCC 1px;
+}
+
+/*New moon picture*/
+.NM {
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+	width: 10px;
+  height: 10px;
+  background: #666666;
+  border: solid #CCCCCC 1px;
+}
+
+/* Button back to main */
+.BtnBack {
+    color: #999999;
+    padding: 3px;
+    margin: auto;
+    text-align: center;
+    background-color: transparent;
+    border: 1px solid #333333;
+    font-size: 14px;
+    font-family: Arial;
+    width: 100px;
+    height: 32px;
+    display: block;
+}
+
+/*font size for day display*/
+.DayFontSize {
+  font-size: 16px;
+}
+
+/* Historical day*/
+.HLabel {
+  color: #7ece7e;
+  font-size: 12px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #ff8080;
+  border: 1px solid #333333;
+  padding-top: -8px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: -8px;
+  background-color: #662222;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+/*Header for day display*/
+.DayHead {
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+	line-height: 150%;
+  border: 1px solid #333333;
+  font-size: 18px;
+  background-color: #444444;
+  font-family: Arial, Helvetica, sans-serif;
+   color: #7ece7e;
+}

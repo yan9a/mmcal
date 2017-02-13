@@ -1,3 +1,56 @@
+//-----------------------------------------------------------------------------
+//Start of chronical dates ####################################################
+
+//Credit: Thanks to U Aung Zeya for listing and sending most of the chronical dates listed in this calendar.
+var g_History;
+function ChronicalDates(a) {g_History=a;}
+
+//Month number enumeration
+var mme={"First Waso":0,"Tagu":1,"Kason":2,"Nayon":3,"Waso":4,"Wagung":5,"Tawthalin":6,
+	"Thadingyut":7,"Tazaungmon":8,"Nadaw":9,"Pyatho":10,"Tabodwe":11,"Tabaung":12,
+	"Hnaung Tagu":13,"Hnaung Kason":14,"Late Tagu":13,"Late Kason":14,"Second Waso":15};
+
+//Moon phase enumeration
+var mpe={"Waxing":0, "Full moon":1, "Waning":2, "New moon":3};
+
+//Week day enumeration
+var wde={"Saturday":0, "Sunday":1, "Monday":2, "Tuesday":3, "Wednesday":4, "Thursday":5,"Friday":6};
+//-----------------------------------------------------------------------------
+//Search jd in chronical dates
+//input: (jd=Julian day number)
+//output: (i= index, f=flag [0: not found, 1: found], my: Myanmar year,
+// myt: Myanmar year type [0: common year, 1: watat],
+// mm: Myanmar month, mmt: Myanmar month type [0: Oo, 1: Hnaung],
+// mp: moon phase, fd: fortnight day, wd: day of the week,
+// dt: description, hl: URL)
+function hSearch(jd)
+{
+	var myt=0,mmt=0,mm=1,ho;
+	var ho_mm,ho_mp,ho_fd,ho_my,ho_wd,ho_dt,ho_lk;
+	var i=0; var l=0; var u=g_History.length-1;
+	while(u>=l) {
+		i = Math.floor((l+u)/2); // calculate midpoint
+		ho=g_History[i];
+		if (ho["Julian Day Number"]<jd) l=i+1;
+		else if (ho["Julian Day Number"]>jd)  u=i-1;
+        else { // found
+			ho_mm=mme[ho["Myanmar Month"]];
+			ho_mp=mpe[ho["Moon Phase"]];
+			ho_fd=ho["Fortnight Day"];
+			ho_my=ho["Myanmar Year"];
+			ho_wd= wde[ho["Day of the Week"]];
+			ho_dt=ho["Description"];
+			ho_lk=ho["Link"];//link
+			if(ho_lk==undefined) ho_lk="index.htm";
+			if(ho_mm==15){myt=1; mm=4;}
+			else {mmt=Math.floor(ho_mm/13); mm=ho_mm%13+mmt;}
+			return {i:i,f:1,my:ho_my,myt:myt,mm:mm,mmt:mmt,
+				mp:ho_mp,fd:ho_fd,wd:ho_wd,dt:ho_dt,link:ho_lk};
+		}
+    }
+return {i:-1,f:0,my:0,myt:0,mm:0,mmt:0,mp:0,fd:0,wd:0,dt:"",link:"index.htm"};//not found
+}
+//-----------------------------------------------------------------------------
 ChronicalDates(
 [
 {
@@ -1415,3 +1468,5 @@ ChronicalDates(
 }
 ]
 );
+
+//End of chronical dates ######################################################

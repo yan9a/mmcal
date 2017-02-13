@@ -1,3 +1,48 @@
+//Start of Internationalization (language) ####################################
+var X;
+var g_Lang="Myanmar";
+function LanguageCatalog(a) {X=a;}
+//Credit: Mon Language Translation by 'ITVilla' : http://it-villa.blogspot.com/
+//and Proof reading by Mikau Nyan
+
+//-------------------------------------------------------------------------
+//Select language
+//input: (L: number[0=Myanmar, 1=English, 2=Mon, 3=Zawgyi])
+function SelectLang(L){
+	if (L==1 || L=="English" || L=="my-En" || L=="my-en") {g_Lang="English"; }
+	else if (L==2 || L=="Mon" || L=="my-Mon" || L=="my-mon") { g_Lang="Mon";}
+	else if (L==3 || L=="Zawgyi" || L=="my-Z1" || L=="my-z1" || L=="Zawgyi-One") { g_Lang="Zawgyi";}
+	else {g_Lang="Myanmar";}
+	return g_Lang;
+}
+//-------------------------------------------------------------------------
+//Translate to selected language from a string in English -defined in mc_l.js
+//input: (es: text in english) output: (ts: translated text)
+function T(es){
+	try {
+		var ts=X[g_Lang][es];
+	}
+	catch(err){
+		ts=undefined;
+	}
+	if (ts===undefined) {return es;}
+	else return ts;
+}
+//----------------------------------------------------------------------------
+//Convert a number to string in the selected language
+//input: (n=number, X: global variable that holds the language catalog)
+//output: (s: string)
+function n2s(n) {
+	var r=0,s="",g="";
+	if(n<0){g="-"; n=Math.abs(n);}
+	n=Math.floor(n);
+	do{
+		r=n%10; n=Math.floor(n/10);
+		s=T(r.toString())+s;
+	}while(n>0);
+	return (g+s);
+}
+//-----------------------------------------------------------------------------
 LanguageCatalog(
 {
   "Myanmar": {
@@ -469,3 +514,4 @@ LanguageCatalog(
   }
 }
 );
+//End of Internationalization (language)  #####################################

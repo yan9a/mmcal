@@ -1,0 +1,119 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name='description' content='Chronicle'/>
+<meta name='keywords' content='Myanmar, History, Chronicle' />
+<meta name='author' content='Yan Naing Aye' />
+<title>Myanmar Chronicle</title>
+<style type="text/css">
+/* include font */
+@font-face {
+  font-family: 'Tharlon';
+  font-style: normal;
+  font-weight: 400;
+  src: url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.eot);
+  src: url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.eot?#iefix) format('embedded-opentype'),
+       url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.woff2) format('woff2'),
+       url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.woff) format('woff'),
+       url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.ttf) format('truetype');
+}
+ body {
+		font-size: 16px;
+		background-color: #111111;
+		font-family: 'VT323', monospace;
+		text-align: left;
+		line-height: 1.5;
+    color: #7ece7e;
+	}
+	a {
+    text-decoration: none;
+    color: #cca6f2;
+	}
+	a:hover
+	{
+		text-decoration: underline;
+		color: #cca6f2;
+	}
+	h1,h3 {
+		color: #cca6f2;
+	}
+	.DW
+	{
+		margin-left: auto;
+		margin-right: auto;
+		position: relative;
+		width: 800px;
+		background-color: #222222;
+		padding: 50px;
+		box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+	}
+  td,th {
+    padding: 5px;
+		font-size: 16px;
+   		border: 1px solid #333333;
+  }
+  table {
+    border: 1px solid #333333; margin: 0px;
+    padding: 0px;
+  	border-spacing:0px;
+    border-collapse:collapse;
+  }
+  pre,textarea,input {
+    color: #7ece7e;
+    background-color: #111111;
+    border: 1px solid #333333;
+		padding: 5px;
+		font-family: 'VT323', monospace;
+		font-size: 16px;
+  }
+  hr {
+    border: 1px solid #333333;
+  }
+</style>
+<script src='../mc_h.js'></script>
+<script type="text/javascript">
+//-------------------------------------------------------------------------
+	function GetChro()
+	{
+		var oce = document.getElementById("oc");
+		var str="";
+		var i;
+		var hs;
+		var n=g_History.length;
+		str+="<table>";
+		for(i=0;i<n;i++){
+			hs=g_History[i];
+			str+="<tr>";
+			str+="<td>"+(i+1)+"</td>";
+			if(hs["Link"]==undefined) str+="<td>"+hs["Description"]+"</td>";
+			else str+="<td><a class='AnchorFootMC' href='./"+hs["Link"]+"'>"+hs["Description"]+"</a></td>";
+			str+="<td>ME:"+hs["Myanmar Year"]+"</td>";
+			str+="<td>"+hs["Myanmar Month"]+"</td>";
+			str+="<td>"+hs["Moon Phase"]+"</td>";
+			str+="<td>"+hs["Fortnight Day"]+"</td>";
+			str+="<td>"+hs["Day of the Week"]+"</td>";
+			str+="</tr>";
+		}
+		str+="</table>";
+		oce.innerHTML=str;
+	}
+//-------------------------------------------------------------------------
+</script>
+
+</head>
+<body>
+<div class='DW'>
+<h3>Myanmar Chronicle</h3>
+<hr/>
+<div id='oc'>
+
+</div>
+<hr/>
+<div>
+	<a href='http://coolemerald.blogspot.com'>Cool Emerald</a>
+</div>
+</div>
+<script type="text/javascript">GetChro();</script>
+</div>
+</body>
+</html>

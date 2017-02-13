@@ -1,0 +1,137 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name='description' content='Julian Date Converter'/>
+<meta name='keywords' content='Julian Date, Converter' />
+<meta name='author' content='Yan Naing Aye' />
+<title>Julian Date Converter</title>
+<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+<style type="text/css">
+ body {
+		font-size: 16px;
+		background-color: #111111;
+		font-family: 'VT323', monospace;
+		text-align: left;
+		line-height: 1.5;
+    color: #7ece7e;
+	}
+	a {
+    text-decoration: none;
+    color: #cca6f2;
+	}
+	a:hover
+	{
+		text-decoration: underline;
+		color: #cca6f2;
+	}
+	h1,h3 {
+		color: #cca6f2;
+	}
+	.DW
+	{
+		margin-left: auto;
+		margin-right: auto;
+		position: relative;
+		width: 400px;
+		background-color: #222222;
+		padding: 50px;
+		box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+	}
+  td,th {
+    padding: 5px;
+		font-size: 16px;
+    /*border: 1px solid #666666;*/
+  }
+  table {
+    /*border: 1px solid #666666; margin: 0px;*/
+    padding: 0px;
+  	border-spacing:0px;
+    border-collapse:collapse;
+  }
+  pre,textarea,input,select {
+    color: #7ece7e;
+    background-color: #111111;
+    border: 1px solid #333333;
+		padding: 5px;
+		font-family: 'VT323', monospace;
+		font-size: 16px;
+  }
+  hr {
+    border: 1px solid #333333;
+  }
+</style>
+<script type="text/javascript">
+function cal()
+{
+	var te = document.getElementById("calType"); var ct=te.value;
+	var ye = document.getElementById("y"); var yn=Number(ye.value); ye.value=yn;
+	var me = document.getElementById("m"); var mn=Number(me.value); me.value=mn;
+	var de = document.getElementById("d"); var dn=Number(de.value); de.value=dn;
+	var he = document.getElementById("h"); var hn=Number(he.value); he.value=hn;
+	var ne = document.getElementById("n"); var nn=Number(ne.value); ne.value=nn;
+	var se = document.getElementById("s"); var sn=Number(se.value); se.value=sn;
+	var jde = document.getElementById("jd");
+
+	jde.innerHTML="Julian Date (JD): "+(w2j(yn,mn,dn,ct)+t2d(hn,nn,sn)).toString();
+}
+//-------------------------------------------------------------------------
+//Western date to Julian day number
+//Credit4 Gregorian 2 JD: http://www.cs.utsa.edu/~cs1063/projects/Spring2011/Project1/jdn-explanation.html
+//input: (y: year, m: month, d: day,
+  // ct:calendar type [Optional argument: 0=english (default), 1=Gregorian, 2=Julian]
+  // SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
+//output: Julian day number
+function w2j(y,m,d,ct,SG) {
+	ct=ct||0; SG=SG||2361222;//Gregorian start in English calendar (1752/Sep/14)
+	var a=Math.floor((14-m)/12); y=y+4800-a; m=m+(12*a)-3;
+	var jd=d+Math.floor((153*m+2)/5)+(365*y)+Math.floor(y/4);
+	if (ct==1) jd=jd-Math.floor(y/100)+Math.floor(y/400)-32045;
+	else if (ct==2) jd=jd-32083;
+	else {
+		jd=jd-Math.floor(y/100)+Math.floor(y/400)-32045;
+		if(jd<SG) {
+			jd=d+Math.floor((153*m+2)/5)+(365*y)+Math.floor(y/4)-32083;
+			if(jd>SG) jd=SG;
+		}
+	}
+	return jd;
+}
+//-------------------------------------------------------------------------
+//Time to Fraction of day starting from 12 noon
+//input: (h=hour, n=minute, s=second) output: (d: fraction of day)
+function t2d(h,n,s) { return ((h-12)/24+n/1440+s/86400);}
+//-------------------------------------------------------------------------
+</script>
+</head>
+<body>
+<div class='DW'>
+<h3>Julian Date Converter</h3>
+<br/>
+<table>
+<tr>
+<td>Calendar type </td>
+<td>
+<select  id='calType' onchange='cal()' >
+	<option value='0'  selected>British </option> 
+	<option value='1'>Gregorian </option> 
+	<option value='2'>Julian </option> 
+</select>
+</td>
+</tr>
+<tr><td>Year </td><td><input type="number" id="y"  min="-3000" max="3000" value="2013" onchange='cal()'></td></tr>
+<tr><td>Month </td><td><input type="number" id="m"  min="1" max="12"  value="10" onchange='cal()'></td></tr>
+<tr><td>Day </td><td><input type="number" id="d"  min="1" max="31"  value="25" onchange='cal()'></td></tr>
+<tr><td>Hour (0-23) </td><td><input type="number" id="h"  min="0" max="23" value="12" onchange='cal()'></td></tr>
+<tr><td>Minute </td><td><input type="number" id="n"  min="0" max="59"  value="0" onchange='cal()'></td></tr>
+<tr><td>Second </td><td><input type="number" id="s"  min="0" max="59"  value="0" onchange='cal()'></td></tr>
+</table>
+<hr/>
+<div id="jd"></div>
+<hr/>
+<div>
+	<a href='http://coolemerald.blogspot.com'>Cool Emerald</a>
+</div>
+<script type="text/javascript">cal();</script>
+</div>
+</body>
+</html>

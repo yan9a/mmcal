@@ -1,3 +1,130 @@
+//Start of Rulers in Myanmar history ##########################################
+//Description: Rulers (kings) in Myanmar history
+//    Ref:
+//         https://en.wikipedia.org/wiki/List_of_Burmese_monarchs
+//          https://en.wikipedia.org/wiki/List_of_colonial_governors_of_Burma
+//          https://en.wikipedia.org/wiki/List_of_Presidents_of_Myanmar
+//          https://my.wikipedia.org/wiki/%E1%80%9B%E1%80%81%E1%80%AD%E1%80%AF%E1%80%84%E1%80%BA%E1%80%99%E1%80%84%E1%80%BA%E1%80%B8%E1%80%86%E1%80%80%E1%80%BA
+//          https://my.wikipedia.org/wiki/%E1%80%95%E1%80%BB%E1%80%89%E1%80%BA%E1%80%95%E1%80%BC%E1%80%AC%E1%80%B8%E1%80%99%E1%80%84%E1%80%BA%E1%80%B8
+
+var g_RulerList=[];// list of rulers
+var g_Rulers;
+function Rulers(a) {g_Rulers=a;}
+var g_dyn;
+function Dynasties(a) {g_dyn=a;}
+//-----------------------------------------------------------------------------
+//Search jd in ruler records,  input: (jd=Julian day number), output: (no output, just update g_RulerList)
+function mc_rSearch(jd)
+{	var ro;	var i=0; var u=g_Rulers.length; 
+	for(i=0;i<u;i++) { ro=g_Rulers[i]; if (jd>=ro.Beginning_JDN && jd<=ro.Ending_JDN) mc_rPush(ro); }
+}
+//-----------------------------------------------------------------------------
+//Add an entry to ruler records, input: (ro= ruler object), output: (no output, just update ro_list)
+function mc_rPush(ro)
+{   var i=0; var f=1; var u=g_RulerList.length; 
+	for(i=0;i<u;i++) if (ro.Name==g_RulerList[i].Name) f=0; // found
+	if (f) g_RulerList[u]=ro;//only add if it is not there
+}
+//-----------------------------------------------------------------------------
+//Clear ruler records
+function mc_rClear() { g_RulerList.length=0; }//g_RulerList.splice(0,g_RulerList.length);
+//-----------------------------------------------------------------------------
+//check if there is ruler records, input: (no input), output: (length)
+function mc_rLength() { return g_RulerList.length; }
+//-------------------------------------------------------------------------
+// jdn to date string
+function mc_j2d(jd,rf) {
+	var M=j2m(jd,rf);
+	var hmma=["First Waso","Tagu","Kason","Nayon","Waso","Wagaung","Tawthalin",
+		 "Thadingyut","Tazaungmon","Nadaw","Pyatho","Tabodwe","Tabaung"];
+	var hmpa=["Waxing","Full moon","Waning","New moon"];
+	var hwda=['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday']; 
+	var str="ME "+M.my.toString()+" "; if(M.mmt) str+="Late ";
+	if(M.myt && M.mm==4) str+="Second "; str+=hmma[M.mm]+" "+hmpa[M.mp];
+	if((M.mp%2)==0) str+=" "+M.fd.toString(); str+=" "+hwda[M.wd];
+	return str;
+}
+//-------------------------------------------------------------------------
+//End of Rulers in Myanmar history ############################################
+
+Dynasties(
+{
+"Konbaung":{
+		"Description":"Konbaung (ကုန်းဘောင်ခေတ်)",
+		"URL":"https://en.wikipedia.org/wiki/Konbaung_Dynasty"
+	},
+"Restored_Hanthawaddy":{
+		"Description":"Restored Hanthawaddy Kingdom (ဟံသာဝတီပဲခူးတိုင်းပြည်)",
+		"URL":"https://en.wikipedia.org/wiki/Restored_Hanthawaddy_Kingdom"
+	},
+"Taungoo":{
+		"Description":"Taungoo (တောင်ငူခေတ်)",
+		"URL":"https://en.wikipedia.org/wiki/Taungoo_Dynasty"
+	},
+"Mrauk_U":{
+		"Description":"Mrauk-U Dynasty (မြောက်‌ဦး)",
+		"URL":"https://en.wikipedia.org/wiki/Kingdom_of_Mrauk_U"
+	},
+"Hanthawaddy":{
+		"Description":"Hanthawaddy Dynasty (ဟံသာဝတီ)",
+		"URL":"https://en.wikipedia.org/wiki/Hanthawaddy_Kingdom"
+	},
+"Prome":{
+		"Description":"Prome Dynasty (ဒုတိယ သရေခေတ္တရာ)",
+		"URL":"https://en.wikipedia.org/wiki/Prome_Kingdom"
+	},
+"Ava":{
+		"Description":"Ava Dynasty (အင်းဝခေတ်)",
+		"URL":"https://en.wikipedia.org/wiki/Kingdom_of_Ava"
+	},
+"Sagaing":{
+		"Description":"Sagaing Kingdom (စစ်ကိုင်းခေတ်)",
+		"URL":"https://en.wikipedia.org/wiki/Sagaing_Kingdom"
+	},
+"Pinya":{
+		"Description":"Pinya Kingdom (ပင်းယခေတ်)",
+		"URL":"https://en.wikipedia.org/wiki/Pinya_Kingdom"
+	},
+"Myinsaing":{
+		"Description":"Myinsaing Kingdom (မြင်စိုင်းခေတ်)",
+		"URL":"https://en.wikipedia.org/wiki/Myinsaing_Kingdom"
+	},
+"Pagan":{
+		"Description":"Pagan Kingdom (ပုဂံခေတ်)",
+		"URL":"https://en.wikipedia.org/wiki/Pagan_Kingdom"
+	},
+"Early_Pagan":{
+		"Description":"Early Pagan Kingdom (ခေတ်ဦး ပုဂံ ပြည်)",
+		"URL":"https://en.wikipedia.org/wiki/Early_Pagan_Kingdom"
+	},
+"British_Colonial_Period":{
+		"Description":"British Colonial Period (ဗြိတိသျှကိုလိုနီခေတ်)",
+		"URL":"https://en.wikipedia.org/wiki/British_rule_in_Burma"
+	},
+"Japanese_Occupation":{
+		"Description":"Japanese Occupation (ဂျပန်ခေတ်)",
+		"URL":"https://en.wikipedia.org/wiki/Japanese_occupation_of_Burma"
+	},
+"Union_of_Burma":{
+		"Description":"Union of Burma",
+		"URL":"https://en.wikipedia.org/wiki/Post-independence_Burma,_1948%E2%80%9362"
+	},
+"Socialist_Republic":{
+		"Description":"Socialist Republic of the Union of Burma",
+		"URL":"https://en.wikipedia.org/wiki/Burmese_Way_to_Socialism"
+	},
+"Union_of_Myanmar":{
+		"Description":"Union of Myanmar",
+		"URL":"https://en.wikipedia.org/wiki/State_Peace_and_Development_Council"
+	},
+"Republic_Myanmar":{
+		"Description":"Republic of the Union of Myanmar",
+		"URL":"https://en.wikipedia.org/wiki/Myanmar"
+	}
+}
+);
+
+//-------------------------------------------------------------------------
 Rulers(
  
 [

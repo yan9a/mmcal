@@ -1,0 +1,135 @@
+<html >
+<head>
+<meta charset="UTF-8">
+<meta name='description' content='Julian Date Converter'/>
+<meta name='keywords' content='Julian Date, Converter' />
+<meta name='author' content='Yan Naing Aye' />
+<title>Julian Date Converter</title>
+<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+<style type="text/css">
+ body {
+		font-size: 16px;
+		background-color: #111111;
+		font-family: 'VT323', monospace;
+		text-align: left;
+		line-height: 1.5;
+    color: #7ece7e;
+	}
+	a {
+    text-decoration: none;
+    color: #cca6f2;
+	}
+	a:hover
+	{
+		text-decoration: underline;
+		color: #cca6f2;
+	}
+	h1,h3 {
+		color: #cca6f2;
+	}
+	.DW
+	{
+		margin-left: auto;
+		margin-right: auto;
+		position: relative;
+		width: 400px;
+		background-color: #222222;
+		padding: 50px;
+		box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+	}
+  td,th {
+    padding: 5px;
+		font-size: 16px;
+    /*border: 1px solid #666666;*/
+  }
+  table {
+    /*border: 1px solid #666666; margin: 0px;*/
+    padding: 0px;
+  	border-spacing:0px;
+    border-collapse:collapse;
+  }
+  pre,textarea,input,select {
+    color: #7ece7e;
+    background-color: #111111;
+    border: 1px solid #333333;
+		padding: 5px;
+		font-family: 'VT323', monospace;
+		font-size: 16px;
+  }
+  hr {
+    border: 1px solid #333333;
+  }
+</style>
+<script type="text/javascript">
+//-------------------------------------------------------------------------
+//Julian date to Western date
+//Credit4 Gregorian date: http://pmyers.pcug.org.au/General/JulianDates.htm
+//Credit4 Julian Calendar: http://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
+//input: (jd:julian date,
+  // ct:calendar type [Optional argument: 0=english (default), 1=Gregorian, 2=Julian]
+  // SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
+//output: Western date (y=year, m=month, d=day, h=hour, n=minute, s=second)
+function j2w(jd,ct,SG) {
+	ct=ct||0; SG=SG||2361222;//Gregorian start in English calendar (1752/Sep/14)
+	var j,jf,y,m,d,h,n,s;
+	if (ct==2 || (ct==0 && (jd<SG))) {
+		var b,c,f,e;
+		j=Math.floor(jd+0.5); jf=jd+0.5-j;
+		b=j+1524; c=Math.floor((b-122.1)/365.25); f=Math.floor(365.25*c);
+		e=Math.floor((b-f)/30.6001); m=(e>13)?(e-13):(e-1);
+		d=b-f-Math.floor(30.6001*e); y=m<3?(c-4715):(c-4716);
+	}
+	else{
+		j=Math.floor(jd+0.5); jf=jd+0.5-j; j-=1721119;
+		y=Math.floor((4*j-1)/146097); j=4*j-1-146097*y; d=Math.floor(j/4);
+		j=Math.floor((4*d+3)/1461); d=4*d+3-1461*j;
+		d=Math.floor((d+4)/4); m=Math.floor((5*d-3)/153); d=5*d-3-153*m;
+		d=Math.floor((d+5)/5); y=100*y+j;
+		if(m<10) {m+=3;}
+		else {m-=9; y=y+1;}		
+	}
+	jf*=24; h=Math.floor(jf); jf=(jf-h)*60; n=Math.floor(jf); s=(jf-n)*60;
+	return {y:y,m:m,d:d,h:h,n:n,s:s};
+}
+//-------------------------------------------------------------------------
+var emName=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function jd2DateTime(jd,t) { var a=j2w(jd,t); return a.y.toString()+"-"+emName[a.m-1]+"-"+("0"+a.d).slice(-2)+" "+("0"+a.h).slice(-2)+":"+("0"+a.n).slice(-2)+":"+("0"+Math.round(a.s)).slice(-2);}
+//-------------------------------------------------------------------------
+function cal()
+{
+	var te = document.getElementById("calType"); var ct=te.value; 
+	var jde = document.getElementById("jd"); var j=Number(jde.value); jde.value=j;
+	var oce = document.getElementById("oc"); oce.innerHTML=jd2DateTime(j,ct);
+}
+</script>
+</head>
+<body>
+<div class='DW'>
+<h3>Julian Date Converter</h3>
+<br/>
+<table>
+<tr>
+<td>Enter a Julian Date </td>
+<td><input type="number" id="jd"  value="2456591" onchange='cal()'></td>
+</tr>
+<tr>
+<td>Calendar type </td>
+<td>
+<select  id='calType' onchange='cal()' >
+	<option value='0'  selected>British </option> 
+	<option value='1'>Gregorian </option> 
+	<option value='2'>Julian </option> 
+</select>
+</td>
+</tr>
+</table>
+<hr/>
+<div id="oc"></div>
+<hr/>
+<div>
+	<a href='http://coolemerald.blogspot.com'>Cool Emerald</a>
+</div>
+<script type="text/javascript">cal();</script>
+</div>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name='description' content='Thingyan Calculator'/>
+<meta name='keywords' content='Myanmar, New Year, Thingyan, Calculator' />
+<meta name='author' content='Yan Naing Aye' />
+<title>Thingyan Calculator</title>
+<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+<style type="text/css">
+ body {
+		font-size: 16px;
+		background-color: #111111;
+		font-family: 'VT323', monospace;
+		text-align: left;
+		line-height: 1.5;
+    color: #7ece7e;
+	}
+	a {
+    text-decoration: none;
+    color: #cca6f2;
+	}
+	a:hover
+	{
+		text-decoration: underline;
+		color: #cca6f2;
+	}
+	h1,h3 {
+		color: #cca6f2;
+	}
+	.DW
+	{
+		margin-left: auto;
+		margin-right: auto;
+		position: relative;
+		width: 500px;
+		background-color: #222222;
+		padding: 50px;
+		box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+	}
+  td,th {
+    padding: 5px;
+		font-size: 16px;
+    /*border: 1px solid #666666;*/
+  }
+  table {
+    /*border: 1px solid #666666; margin: 0px;*/
+    padding: 0px;
+  	border-spacing:0px;
+    border-collapse:collapse;
+  }
+  pre,textarea,input {
+    color: #7ece7e;
+    background-color: #111111;
+    border: 1px solid #333333;
+		padding: 5px;
+		font-family: 'VT323', monospace;
+		font-size: 16px;
+  }
+  hr {
+    border: 1px solid #333333;
+  }
+</style>
+<script type="text/javascript">
+//-------------------------------------------------------------------------
+	function cal()
+	{
+		var mye = document.getElementById("my"); var myFrome = document.getElementById("myfrom");  var oce = document.getElementById("oc");
+		var myv=Number(mye.value); mye.value=myv;  myFrome.innerHTML=(myv-1).toString(); var tg=ThingyanTime(myv);
+		var str="";
+		str+="<table>";
+		str+="<tr><td>Thingyan Akya time : </td><td>"+jd2DateTime(tg.jk,0)+"</td></tr>";
+		str+="<tr><td>Thingyan Atat time : </td><td> "+jd2DateTime(tg.ja,0)+"</td></tr>"; //+" = JD: "+tg.ja.toString()
+		str+="<tr><td>&nbsp;</td><td>&nbsp; </td></tr>";
+		str+="<tr><td>Thingyan Akyo day : </td><td> "+jd2date(tg.dk-1,0)+"</td></tr>";
+		str+="<tr><td>Thingyan Akya day : </td><td>"+jd2date(tg.dk,0)+"</td></tr>";
+		str+="<tr><td>Thingyan Akyat day : </td><td> "+jd2date(tg.dk+1,0)+"</td></tr>";
+		if ((tg.da-tg.dk)>2) str+="<tr><td>Thingyan Akyat day : </td><td>"+jd2date(tg.dk+2,0)+"</td></tr>";
+		str+="<tr><td>Thingyan Atat day : </td><td> "+jd2date(tg.da,0)+"</td></tr>";
+		str+="<tr><td>Myanmar new year's day : </td><td> "+jd2date(tg.da+1,0)+"</td></tr>";
+		str+="</table>";
+		oce.innerHTML=str;
+	}
+//-------------------------------------------------------------------------
+//Calculate the Thingyan (Myanmar new year)
+//input: (my -myanmar year)
+//output: (ja: atat time, jk: akya time, da: atat day, dk: akya day)
+function ThingyanTime(my) {
+	var SY=1577917828/4320000; //solar year (365.2587565)
+	var LM=1577917828/53433336; //lunar month (29.53058795)
+	var MO=1954168.050623; //beginning of 0 ME
+	var SE3=1312; //beginning of 3rd Era
+	ja=SY*my+MO; if (my >= SE3) jk=ja-2.169918982;	else jk=ja-2.1675;
+	return {ja:ja,jk:jk,da:Math.round(ja),dk:Math.round(jk)};
+}
+//-------------------------------------------------------------------------
+var emName=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+//Output date string from Julian Date ; input: (jd=julian date, t = calendar type); output: (date string)
+function jd2date(jd,t) { var a=j2w(jd,t); return a.y.toString()+"-"+emName[a.m-1]+"-"+("0"+a.d).slice(-2);}
+//-------------------------------------------------------------------------
+//Output date/time string from Julian Date according to calendar type; input: (jd=julian date,t=calendar type); output: (date/time string)
+function jd2DateTime(jd,t) { var a=j2w(jd,t); return a.y.toString()+"-"+emName[a.m-1]+"-"+("0"+a.d).slice(-2)+" "+("0"+a.h).slice(-2)+":"+("0"+a.n).slice(-2)+":"+("0"+Math.round(a.s)).slice(-2);}
+//-------------------------------------------------------------------------
+//Julian date to Western date
+//Credit for Gregorian date: http://pmyers.pcug.org.au/General/JulianDates.htm
+//Credit for Julian Calendar: http://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
+//input: (jd=julian date, ct: calendar type [0: english, 1: Gregorian, 2: Julian],
+//SG: Beginning of Gregorian calendar JDN)
+//output: Gregorian date (y=year, m=month, d=day, h=hour, n=minute, s=second)
+function j2w(jd,ct,SG) {
+	ct=ct||0; SG=SG||2361222;//Gregorian start in English calendar (1752/Sep/14)
+	var j,jf,y,m,d,h,n,s;
+	if (ct==2 || (ct==0 && (jd<SG))) {
+		var b,c,f,e;
+		j=Math.floor(jd+0.5); jf=jd+0.5-j;
+		b=j+1524; c=Math.floor((b-122.1)/365.25); f=Math.floor(365.25*c);
+		e=Math.floor((b-f)/30.6001); m=(e>13)?(e-13):(e-1);
+		d=b-f-Math.floor(30.6001*e); y=m<3?(c-4715):(c-4716);
+	}
+	else{
+		j=Math.floor(jd+0.5); jf=jd+0.5-j; j-=1721119;
+		y=Math.floor((4*j-1)/146097); j=4*j-1-146097*y; d=Math.floor(j/4);
+		j=Math.floor((4*d+3)/1461); d=4*d+3-1461*j;
+		d=Math.floor((d+4)/4); m=Math.floor((5*d-3)/153); d=5*d-3-153*m;
+		d=Math.floor((d+5)/5); y=100*y+j;
+		if(m<10) {m+=3;}
+		else {m-=9; y=y+1;}
+	}
+	jf*=24; h=Math.floor(jf); jf=(jf-h)*60; n=Math.floor(jf); s=(jf-n)*60;
+	return {y:y,m:m,d:d,h:h,n:n,s:s};
+}
+//-------------------------------------------------------------------------
+</script>
+
+</head>
+<body>
+	<div class='DW'>
+<h3>Thingyan Calculator</h3>
+<hr/>
+<table><tr>
+<td>
+Transition to Myanmar year :
+</td>
+<td>
+<input type="number" id="my"  value="1375" onchange="cal()">
+</td>
+<td>
+	from ME: <span id='myfrom'></span>
+</td>
+</tr></table>
+<br/>
+<hr/>
+<div id='oc'>
+
+</div>
+<hr/>
+<div>
+	<a href='http://coolemerald.blogspot.com'>Cool Emerald</a>
+</div>
+</div>
+<!-- Start of my code -->
+<script type="text/javascript">
+<!--
+var mye = document.getElementById("my");
+var dt=new Date();
+mye.value=dt.getFullYear()-638;
+cal();
+//--></script>
+<!-- End of my code -->
+</div>
+</body>
+</html>

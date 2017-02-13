@@ -1,0 +1,118 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name='description' content='Mahar bote, မဟာဘုတ်,မဟာဘုတ္'/>
+<meta name='keywords' content='Mahar bote, မဟာဘုတ်,မဟာဘုတ္' />
+<meta name='author' content='Yan Naing Aye' />
+<title>Mahar Bote   မဟာဘုတ်</title>
+<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+<style type="text/css">
+ body {
+		font-size: 16px;
+		background-color: #111111;
+		font-family: 'VT323', monospace;
+		text-align: left;
+		line-height: 1.5;
+    color: #7ece7e;
+	}
+	a {
+    text-decoration: none;
+    color: #cca6f2;
+	}
+	a:hover
+	{
+		text-decoration: underline;
+		color: #cca6f2;
+	}
+	h1,h3 {
+		color: #cca6f2;
+	}
+	.DW
+	{
+		margin-left: auto;
+		margin-right: auto;
+		position: relative;
+		width: 400px;
+		background-color: #222222;
+		padding: 50px;
+		box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+	}
+  td,th {
+    padding: 5px;
+		font-size: 16px;
+    /*border: 1px solid #666666;*/
+  }
+  table {
+    /*border: 1px solid #666666; margin: 0px;*/
+    padding: 0px;
+  	border-spacing:0px;
+    border-collapse:collapse;
+  }
+  pre,textarea,input,select {
+    color: #7ece7e;
+    background-color: #111111;
+    border: 1px solid #333333;
+		padding: 5px;
+		font-family: 'VT323', monospace;
+		font-size: 16px;
+  }
+  hr {
+    border: 1px solid #333333;
+  }
+</style>
+<script type="text/javascript">
+//Convert a number to Myanmar string
+//input: (n=number) output: (s: string)
+function n2ms(n) { var hNum=["၀","၁","၂","၃","၄","၅","၆","၇","၈","၉"]; var r=0,s="",g=""; if(n<0){g="-"; n=Math.abs(n);} n=Math.floor(n); do{	r=n%10; n=Math.floor(n/10);	s=hNum[r]+s;	}while(n>0); return (g+s);}
+//-------------------------------------------------------------------------
+function cal()
+{
+	var mye = document.getElementById("my"); var myv=Number(mye.value); mye.value=myv;
+	var wde = document.getElementById("wd"); var wdv=wde.value; 
+	var oce = document.getElementById("oc");
+	var mwda=["စနေ","တနင်္ဂနွေ","တနင်္လာ","အင်္ဂါ","ဗုဒ္ဓဟူး","ကြာသပတေး","သောကြာ"];
+	var pa=["ဘင်္ဂ","အထွန်း","ရာဇ","အဓိပတိ","မရဏ","သိုက်","ပုတိ"];
+	var r= (myv-wdv) % 7;
+	oce.innerHTML="မြန်မာ သက္ကရာဇ် "+n2ms(myv)+ " ခုနှစ်မွေး  "+mwda[wdv]+" သားသည် "+
+		"အကြွင်း "+n2ms(myv%7)+" ၊ <span style='color:red'>"+pa[r]+"</span> ဖွားဖြစ်သည်။";
+}
+</script>
+</head>
+<body>
+<div class='DW'>
+	<h1>မဟာဘုတ်</h1>
+	<hr/>
+	<br/><br/>
+မဟာဘုတ် ဇာတာ တွက်ရန် မွေးဖွားသည့် မြန်မာ သက္ကရာဇ် နှင့် နေ့ရက် များကို ရွေးပါ။
+<br/><br/>
+<span style='width: 150px; display: inline-block;'>မြန်မာ သက္ကရာဇ်  </span>
+<input type="number" id="my"  style="width: 100px;"  value="1371" onchange="cal()">
+<br/>
+<span style='width: 150px; display: inline-block;'>မွေးရက် </span>
+<select  id="wd"  style="width: 100px;"  onchange='cal()'>
+		<option value='0'  >Sat </option>
+		<option value='1'  >Sun </option>
+		<option value='2'  >Mon </option>
+		<option value='3'  >Tue </option>
+		<option value='4'  >Wed </option>
+		<option value='5'  >Thu </option>
+		<option value='6'  >Fri </option>
+</select> &nbsp;
+<br/><br/>
+<div id='oc'>
+	
+</div>
+<br/><br/>
+<hr/>
+<br/>
+<div>
+<a href='http://coolemerald.blogspot.com'>Cool Emerald</a>
+</div>
+<br/>
+	<script type="text/javascript">
+	cal();
+	</script>
+<br/>
+</div>
+</body>
+</html>
