@@ -17,9 +17,6 @@ var uis={
 	cy:dt.getFullYear(),cm:(1+dt.getMonth()),cd:dt.getDate(),//current y,m,d
 	BY:2,EY:1500, //beginning and end of the calendar,
 	LT:1062,UT:1379,//lower and upper threshold for accurate years
-	eFont:"Arial",
-	mFont:"Tharlon,\"Myanmar Text\",Padauk,\"Myanmar MN\",\"Droid Sans\",Myanmar3,Arial",
-	cFont:"Tharlon,\"Myanmar Text\",Padauk,\"Myanmar MN\",\"Droid Sans\",Myanmar3,Arial",
 };
 var g_jd=w2j(uis.cy,uis.cm,uis.cd,uis.Type); var g_M=j2m(g_jd);
 uis.y=uis.cy=g_M.my; uis.m=uis.cm=g_M.mm+12*g_M.mmt; uis.cd=g_M.md;
@@ -198,8 +195,6 @@ function UIContent() {
 	var ema=["January","February","March","April","May","June","July",
 	"August","September","October","November","December"];
 	var r,eml,i,js,je,MS,ME,ES,EE,A,E,M,tstr;
-	uis.cFont=uis.mFont;
-	if (uis.Lang=="Zawgyi") uis.cFont="Zawgyi-One"; //if Zawgyi font is selected
 	//------------------------------------------------------------------------
 	//Find julian day number of start of the month according to calendar type
 	var mmt=Math.floor(uis.m/13);
@@ -222,9 +217,8 @@ function UIContent() {
 		if ((i%7)==0) str+="<tr>";
 		//start of checking valid day to display
 		if ((i>=r)&&(js<=je)) {
-			str+="<td class='TdMC'";
-			str+=" onclick='ShowDay("+js+")'>";
-	   		str+="<p class='PTdMC' style='font-family: "+uis.cFont+";'>";
+			
+	   		
 			E=j2w(js,uis.Type);//English date according to calendar type
 			M=j2m(js); A=astro(M.mm,M.mml,M.md,M.wd);
 			tstr="PriDay";//Myanmar date and astrological days
@@ -237,18 +231,16 @@ function UIContent() {
 			else if ((hde.h) || (hdm.h) || (hdo.h) || (hdt.h)) tstr="PriDayHoliday";
 			else if ((M.wd==0) || (M.wd==1)) tstr="PriDayWeekend";
 			else if (uis.y<uis.LT || uis.y>uis.UT) tstr="PriDayInaccu";
-
-			//display English day
-			str+="<span class='"+tstr+"'>"+E.d+" </span>";
+			str+="<td class='TdMC' onclick='ShowDay("+js+")'>";
+			str+="<p class='PTdMC'>";
+			str+="<span class='"+tstr+"'>"+E.d+" </span>";//display English day
 			str+=T(ema[E.m-1]);
-			str+="<br/>"; //new line
-
+			str+="</p>";
 			//Displaying Myanmar date
-			if (M.my>=2) {
-				str+=mMDStr(M,A,E,hde,hdm,hdt,hdo,js);
-			}//end of if (M.my>=2)
-			js++;//Julian day number for next day
-			str+="</p></td>";
+			if (M.my>=2) { 	str+=mMDStr(M,A,E,hde,hdm,hdt,hdo,js);	}
+			str+="</td>";
+
+			js++;//Julian day number for next day			
 		}//end of checking valid day to display
 		else { 
 			str+="<td class='TdMC'><p class='PTdMC'>";
@@ -272,7 +264,7 @@ function tHead(MS,ME,ES,EE) {
 	var mma=["First Waso","Tagu","Kason","Nayon","Waso","Wagaung","Tawthalin",
 	"Thadingyut","Tazaungmon","Nadaw","Pyatho","Tabodwe","Tabaung"];
 	var str="<thead> <tr> <th colspan=7 class='ThMC'>\
-	<p class='PThMC' style='font-family: "+uis.cFont+";'>";//table header
+	<p class='PThMC'>";//table header
 		str+=n2s(ES.y);
 		if (ES.y!=EE.y) str+="-"+n2s(EE.y);
 		str+=" "+T(ema[ES.m-1]);
@@ -308,7 +300,7 @@ function tHead(MS,ME,ES,EE) {
 function tFoot() {
 	//table footer consists of various links
 	var str="<tfoot> <tr> <td colspan=7 class='TdFootMC'> \
-	<p class='PTdMC' style='font-family: "+uis.cFont+";'>";
+	<p class='PTdMC'>";
 		str+="<a class='AnchorFootMC' href='./'>\
 		E&gt;M Calendar</a> ";
 		str+="| <a class='AnchorFootMC' href=\
@@ -325,13 +317,13 @@ function tFoot() {
 //output: (str: html string)
 function tWeek() {
 	//first row of table body is weekdays starting from Sunday to Saturday
-	return "<tr><td class='TdMC'><p class='PTdWeekendMC' style='font-family: "+uis.cFont+";'>"+T("Sunday")+"</p></td> \
-	<td class='TdMC'><p class='PTdWeekdayMC ' style='font-family: "+uis.cFont+";'>"+T("Monday")+"</p></td> \
-	<td class='TdMC'><p class='PTdWeekdayMC ' style='font-family: "+uis.cFont+";'>"+T("Tuesday")+"</p></td> \
-	<td class='TdMC'><p class='PTdWeekdayMC ' style='font-family: "+uis.cFont+";'>"+T("Wednesday")+"</p></td>\
-	<td class='TdMC'><p class='PTdWeekdayMC ' style='font-family: "+uis.cFont+";'>"+T("Thursday")+"</p></td> \
-	<td class='TdMC'><p class='PTdWeekdayMC ' style='font-family: "+uis.cFont+";'>"+T("Friday")+"</p></td> \
-	<td class='TdMC'><p class='PTdWeekendMC' style='font-family: "+uis.cFont+";'>"+T("Saturday")+"</p></td></tr>";
+	return "<tr><td class='TdMC'><p class='PTdWeekendMC'>"+T("Sunday")+"</p></td> \
+	<td class='TdMC'><p class='PTdWeekdayMC'>"+T("Monday")+"</p></td> \
+	<td class='TdMC'><p class='PTdWeekdayMC'>"+T("Tuesday")+"</p></td> \
+	<td class='TdMC'><p class='PTdWeekdayMC'>"+T("Wednesday")+"</p></td>\
+	<td class='TdMC'><p class='PTdWeekdayMC'>"+T("Thursday")+"</p></td> \
+	<td class='TdMC'><p class='PTdWeekdayMC'>"+T("Friday")+"</p></td> \
+	<td class='TdMC'><p class='PTdWeekendMC'>"+T("Saturday")+"</p></td></tr>";
 }
 //-------------------------------------------------------------------------
 //Produce html string for Myanmar day display
@@ -344,47 +336,49 @@ function mMDStr(M,A,E,hde,hdm,hdt,hdo,jd) {
 	"Thadingyut","Tazaungmon","Nadaw","Pyatho","Tabodwe","Tabaung"];
 	var msa=["waxing","full moon","waning","new moon"];
 	var str="",tstr="";
+
 	//month name
+	str+="<p class='PTdMC'>";
 	if(M.mmt) str+=T('Late');
 	if(M.myt && M.mm==4) str+=T('Second');
 	str+=T(mma[M.mm]);
-	str+="<br/>";//new line
+	str+="</p>";
 
 	//moon phase and day
 	tstr="SecDay"; if (A.sabbath) tstr="SecDayH";
-	str+="<span class='"+tstr+"'>";
+	str+="<p class='"+tstr+"'>";
 		str+=T(msa[M.mp]);
 		if((M.mp%2)==0) {str+=" "+n2s(M.fd);}
-	str+="</span>"
+	str+="</p>";
 
-	if(M.mp==1) str+=" <canvas class='FM'></canvas> ";
-	else if(M.mp==3) str+=" <canvas class='NM'></canvas> ";
-
-	//sabbath and moon just beside English day
-	if (A.sabbath) {str+=" <span class='MCSabbath'> "+T("Sabbath")+"</span>";}
-	else if (A.sabbatheve) {str+=" <span class='MCSabbath'> "+T("Sabbath Eve")+"</span>";}
+	//sabbath and moon
+	if (A.sabbath) {
+		str+=" <p class='MCSabbath'> "+T("Sabbath");
+		if(M.mp==1) str+=" <canvas class='FM'></canvas> ";
+		else if(M.mp==3) str+=" <canvas class='NM'></canvas> ";
+		str+="</p>";
+	}
+	else if (A.sabbatheve) {str+=" <p class='MCSabbath'> "+T("Sabbath Eve")+"</p>";}
 
 	//holiday
-	str+="<span class='MCPubHol'>"
-		+Holiday2String(hde)
-		+Holiday2String(hdm)
-		+Holiday2String(hdt)
-		+Holiday2String(hdo)
-	+"</span>";
-	str+="<span class='MCHol'>"+Holiday2String(ecd(jd));
-	str+=Holiday2String(mcd(M.my,M.mm,M.md,M.mp))+"</span>";
+	str+=Holiday2String(hde,"MCPubHol")
+		+Holiday2String(hdm,"MCPubHol")
+		+Holiday2String(hdt,"MCPubHol")
+		+Holiday2String(hdo,"MCPubHol");
+	str+=Holiday2String(ecd(jd),"MCHol");
+	str+=Holiday2String(mcd(M.my,M.mm,M.md,M.mp),"MCHol");
+
 	//astroligical days
-	str+="<span class='MCYatyaza'>";
-	if(A.yatyaza) {	str+="<br/>"+T('Yatyaza');}
-	if(A.pyathada==1) {	str+="<br/>"+T('Pyathada');}
-	else if(A.pyathada==2) {str+="<br/>"+T('Afternoon Pyathada');	}
-	str+="</span><span class='MCAstro'>"+tAstro(A)+"</span>";
+	if(A.yatyaza) {	str+="<p class='MCYatyaza'>"+T('Yatyaza')+"</p>";}
+	if(A.pyathada==1) {	str+="<p class='MCYatyaza'>"+T('Pyathada')+"</p>";}
+	else if(A.pyathada==2) {str+="<p class='MCYatyaza'>"+T('Afternoon Pyathada')+"</p>";	}
+	str+=tAstro(A,"MCAstro");
 
 	//historical dates
 	try {
 		var hs=hSearch(jd); //search for historical date defined in mc_h.js
 		if (hs.f) {
-			str+="<br/><span class='HLabel'>History</span>";
+			str+="<br/><p class='HLabel'>History</p>";
 		}
 	}	
 	catch(err) {}
@@ -395,18 +389,18 @@ function mMDStr(M,A,E,hde,hdm,hdt,hdo,jd) {
 //Produce html string for calendar astrological days
 //input: (A)
 //output: (str: html string)
-function tAstro(A) {
+function tAstro(A,c) {
 	var str="";
-	if(A.amyeittasote) str+="<br/>"+T('Amyeittasote');
-	if(A.warameittugyi) str+="<br/>"+T('Warameittugyi');
-	if(A.warameittunge) str+="<br/>"+T('Warameittunge');
-	if(A.thamanyo) str+="<br/>"+T('Thamanyo');
-	if(A.thamaphyu) str+="<br/>"+T('Thamaphyu');
-	if(A.yatpote) str+="<br/>"+T('Yatpote');
-	if(A.nagapor) str+="<br/>"+T('Nagapor');
-	if(A.yatyotema) str+="<br/>"+T('Yatyotema');
-	if(A.mahayatkyan) str+="<br/>"+T('Mahayatkyan');
-	if(A.shanyat) str+="<br/>"+T('Shanyat');
+	if(A.amyeittasote) str+="<p class='"+c+"'>"+T('Amyeittasote')+"</p>";
+	if(A.warameittugyi) str+="<p class='"+c+"'>"+T('Warameittugyi')+"</p>";
+	if(A.warameittunge) str+="<p class='"+c+"'>"+T('Warameittunge')+"</p>";
+	if(A.thamanyo) str+="<p class='"+c+"'>"+T('Thamanyo')+"</p>";
+	if(A.thamaphyu) str+="<p class='"+c+"'>"+T('Thamaphyu')+"</p>";
+	if(A.yatpote) str+="<p class='"+c+"'>"+T('Yatpote')+"</p>";
+	if(A.nagapor) str+="<p class='"+c+"'>"+T('Nagapor')+"</p>";
+	if(A.yatyotema) str+="<p class='"+c+"'>"+T('Yatyotema')+"</p>";
+	if(A.mahayatkyan) str+="<p class='"+c+"'>"+T('Mahayatkyan')+"</p>";
+	if(A.shanyat) str+="<p class='"+c+"'>"+T('Shanyat')+"</p>";
 	return str;
 }
 //-------------------------------------------------------------------------
@@ -432,65 +426,59 @@ function ShowDay(js) {
 
 	//display English day
 	str+="<div class='DayHead'  onclick='ShowMonth();'>"+E.y+" "+ema[E.m]+" "+E.d+"</div>";
+
 	//displaying Myanmar date
 	if (M.my>=2) {
 		var mma=["First Waso","Tagu","Kason","Nayon","Waso","Wagaung","Tawthalin",
 			"Thadingyut","Tazaungmon","Nadaw","Pyatho","Tabodwe","Tabaung"];
 		var msa=["waxing","full moon","waning","new moon"];
-
-		str+="<br/><br/>"; //new line
-
-		str+="<span class='DayFontSize'>";
-		str+=T('Sasana Year')+" "+n2s(M.my+1182); //Sasana year
-		str+="<br/>"; //new line
-		str+=T('Myanmar Year')+" "+n2s(M.my); //Myanmar year
-		str+="</span>";
-		str+="<br/>"; //new line
+		str+="<p class='DayFontSize'>"+T('Sasana Year')+" "+n2s(M.my+1182)+"</p>"; //Sasana year
+		str+="<p class='DayFontSize'>"+T('Myanmar Year')+" "+n2s(M.my)+"</p>"; //Myanmar year
 
 		//month name, moon phase and day
 		tstr="SecDay"; if (A.sabbath) tstr="SecDayH";
-		str+="<span class='"+tstr+" DayFontSize'>";
+		str+="<p class='"+tstr+" DayFontSize'>";
 			if(M.mmt) str+=T('Late');
 			if(M.myt && M.mm==4) str+=T('Second');
 			str+=T(mma[M.mm]);
 			str+=" "+T(msa[M.mp]);
 			if((M.mp%2)==0) {str+=" "+n2s(M.fd);}
-		str+="</span>"
+		str+="</p>"
 
 		//weekday
 		var wda=['Saturday','Sunday','Monday','Tuesday','Wednesday',
 			 'Thursday','Friday'];
-		str+="<br/>"+T(wda[M.wd])+T('Nay'); //weekday
+		str+="<p>"+T(wda[M.wd])+T('Nay')+"</p>"; 
 
-		str+="<br/>"; //new line
 		//sabbath and moon
-		if (A.sabbath) {str+="<br/><span class='MCSabbath DayFontSize'> "+T("Sabbath")+"</span>";}
-		else if (A.sabbatheve) {str+="<br/><span class='MCSabbath DayFontSize'> "+T("Sabbath Eve")+"</span>";}
-		if(M.mp==1) str+=" <canvas class='FM'></canvas> ";
-		else if(M.mp==3) str+=" <canvas class='NM'></canvas> ";
-		
-
-		//holiday
-		str+="<span class='MCPubHol DayFontSize'>"
-			+Holiday2String(hde)
-			+Holiday2String(hdm)
-			+Holiday2String(hdt)
-			+Holiday2String(hdo)
-		+"</span>";
-		str+="<span class='MCHol DayFontSize'>"+Holiday2String(ecd(js));
-		str+=Holiday2String(mcd(M.my,M.mm,M.md,M.mp))+"</span>";
+		if (A.sabbath) {
+			str+="<p class='MCSabbath DayFontSize'>"+T("Sabbath");
+			if(M.mp==1) str+=" <canvas class='FM'></canvas> ";
+			else if(M.mp==3) str+=" <canvas class='NM'></canvas> ";
+			str+="</p>";
+		}
+		else if (A.sabbatheve) {
+			str+="<p class='MCSabbath DayFontSize'>"+T("Sabbath Eve")+"</p>";
+		}
+				
+		//holiday  DayFontSize
+		str+=Holiday2String(hde,"MCPubHol DayFontSize")
+			+Holiday2String(hdm,"MCPubHol DayFontSize")
+			+Holiday2String(hdt,"MCPubHol DayFontSize")
+			+Holiday2String(hdo,"MCPubHol DayFontSize");
+		str+=Holiday2String(ecd(js),"MCHol DayFontSize");
+		str+=Holiday2String(mcd(M.my,M.mm,M.md,M.mp),"MCHol DayFontSize");
 
 		//astroligical days
-		str+="<span class='MCYatyaza DayFontSize'>";
-		if(A.yatyaza) {	str+="<br/>"+T('Yatyaza');}
-		if(A.pyathada==1) {	str+="<br/>"+T('Pyathada');}
-		else if(A.pyathada==2) {str+="<br/>"+T('Afternoon Pyathada');	}
-		str+="</span><span class='MCAstro DayFontSize'>"+tAstro(A)+"</span><br/>";
+		if(A.yatyaza) {	str+="<p class='MCYatyaza DayFontSize'>"+T('Yatyaza')+"</p>";}
+		if(A.pyathada==1) {	str+="<p class='MCYatyaza DayFontSize'>"+T('Pyathada')+"</p>";}
+		else if(A.pyathada==2) {str+="<p class='MCYatyaza DayFontSize'>"+T('Afternoon Pyathada')+"</p>";	}
+		str+=tAstro(A,"MCAstro DayFontSize");
 
 		//Thingyan
 		if (hdt.h) {
-		str+="<br/><a class='AnchorFootMC' href='https://yan9a.github.io/mcal/Thingyan.htm'>\
-			နှစ်သစ်ကူးချိန် အတိအကျ အတွက် သင်္ကြန်တွက်စက် ကိုကြည့်ပါ &gt;&gt;</a><br/>";
+		str+="<p><a class='AnchorFootMC' href='https://yan9a.github.io/mcal/Thingyan.htm'>\
+			နှစ်သစ်ကူးချိန် အတိအကျ အတွက် သင်္ကြန်တွက်စက် ကိုကြည့်ပါ &gt;&gt;</a></p>";
 		}
 	}
 
@@ -498,15 +486,14 @@ function ShowDay(js) {
 	try {
 		var hs=hSearch(js); //search for historical date defined in mc_h.js
 		if (hs.f) {
-			str+="<br/> A historical day: <a class='AnchorFootMC' href='./Chronicle/"+hs.link+"'>"+hs.dt+"</a><br/>";
-			if(hs.my!=M.my || hs.mm!=M.mm || hs.mp!=M.mp || hs.fd!=M.fd || hs.wd!=M.wd)
-				{ str+= "It is inconsistent!<br/>";}
+			str+="<p> A historical day: <a class='AnchorFootMC' href='./Chronicle/"+hs.link+"'>"+hs.dt+"</a> ";
+			if(hs.my!=M.my || hs.mm!=M.mm || hs.mp!=M.mp || hs.fd!=M.fd || hs.wd!=M.wd)	{ str+= "It is inconsistent!";}
+			str+="</p>";
 		}
 	}	
 	catch(err) {}
 
-	str+="<br/>JDN: "+js+""; //julian day number
-
+	str+="<p class='DayFoot'>JDN: "+js+"</p>"; //julian day number
 	//rulers
 	try { 
 		mc_rClear();
@@ -516,16 +503,16 @@ function ShowDay(js) {
 			var dt=new Date(); 
 			var j=w2j(dt.getFullYear(),(1+dt.getMonth()),dt.getDate());
 			var i=0; var r; var dyn;
-			if(js<2432555) str+="<br/>Ruler(s): ";
-			else str+="<br/>President: ";
-			str+="<ul>";
+			if(js<2432555) str+="<p class='DayFoot'>Ruler(s):</p>";
+			else str+="<p class='DayFoot'>President:</p> ";
+			str+="<ul class='DayFoot'>";
 			for(i=0;i<u;i++) {
 				r=g_RulerList[i];
-				str+="<li><a class='AnchorFootMC' href='"+r.URL+"'>"+r.Name+"</a>";
+				str+="<li><a class='AnchorFootMC DayFoot' href='"+r.URL+"'>"+r.Name+"</a>";
 				str+="<br/>"+mc_j2d(r.Beginning_JDN)+" - ";
 				str+=(j>r.Ending_JDN)?mc_j2d(r.Ending_JDN):" present";
 				dyn=g_dyn[r.Dynasty];
-				str+="<br/>"+"<a class='AnchorFootMC' href='"+dyn.URL+"'>"+dyn.Description+"</a>";; 	
+				str+="<br/>"+"<a class='AnchorFootMC DayFoot' href='"+dyn.URL+"'>"+dyn.Description+"</a>";; 	
 				str+="</li>";
 			}
 			str+="</ul>";
@@ -534,10 +521,9 @@ function ShowDay(js) {
 	catch(err) {} 
 
 	//accuracy
-	if (uis.y<uis.LT || uis.y>uis.UT) str+="<br/> \
-			Important note: The accuracy of these dates is in question! \
+	if (uis.y<uis.LT || uis.y>uis.UT) str+="<p class='DayFoot'>Important note: The accuracy of these dates is in question! \
 			<a class='AnchorFootMC' href='./more.htm#Accuracy'>\
-			Read more details &gt;&gt;</a><br/><br/>";
+			Read more details &gt;&gt;</a></p>";
 
 	//Back button 
 	str+="<br/><input type='button' id='back2main' value='Back' onclick='ShowMonth();'  \

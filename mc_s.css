@@ -31,12 +31,13 @@ body {
     width: 840px;
     margin-left: auto;
     margin-right: auto;
+    font-family: Tharlon,"Myanmar Text","Myanmar MN","Droid Sans",Padauk,Myanmar3,Arial, Helvetica, sans-serif;
 }
 
 /* Div container for month*/
 .DivContainerDay {
-    width: 330px;
-    font-family: Tharlon,"Myanmar Text",Padauk,"Myanmar MN","Droid Sans",Myanmar3,Arial;
+    width: 350px;
+    font-family: Tharlon,"Myanmar Text","Myanmar MN","Droid Sans",Padauk,Myanmar3,Arial, Helvetica, sans-serif;
     color: #999999;
     background-color: #222222;
 		padding: 20px;
@@ -44,7 +45,6 @@ body {
     margin-right: auto;
 		box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
     font-size: 16px;
-    line-height: 200%;
     text-align: left;
 }
 
@@ -76,7 +76,7 @@ body {
     background-color: transparent;
     border: 1px solid #333333;
     font-size: 14px;
-    font-family: Arial;
+    font-family: Arial, Helvetica, sans-serif;
     width: 22px;
     height: 32px;
 }
@@ -100,7 +100,7 @@ body {
     background-color: transparent;
     border: 1px solid #333333;
     font-size: 14px;
-    font-family: Arial;
+    font-family: Arial, Helvetica, sans-serif;
     width: 68px;
     height: 24px;
 }
@@ -112,7 +112,7 @@ body {
     line-height: 150%;
     margin: 0px;
     padding: 0px;
-    width: 74px;
+    width: 104px;
 }
 
 /* Select month control*/
@@ -124,8 +124,8 @@ body {
     background-color: transparent;
     border: 1px solid #333333;
     font-size: 14px;
-    font-family: Arial;
-    width: 72px;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 102px;
     height: 32px;
     appearance:none;
     -moz-appearance:none; /* Firefox */
@@ -151,7 +151,7 @@ body {
     background-color: transparent;
     border: 1px solid #333333;
     font-size: 14px;
-    font-family: Arial;
+    font-family: Arial, Helvetica, sans-serif;
     width: 22px;
     height: 32px;
 }
@@ -163,7 +163,7 @@ body {
     line-height: 150%;
     margin: 0px;
     padding: 0px;
-    width: 436px;
+    width: 406px;
 }
 
 /* Table cell container for calendar type control*/
@@ -185,7 +185,7 @@ body {
     background-color: transparent;
     border: 1px solid #333333;
     font-size: 14px;
-    font-family: Arial;
+    font-family: Arial, Helvetica, sans-serif;
     width: 100px;
     height: 32px;
     appearance:none;
@@ -212,7 +212,7 @@ body {
     background-color: transparent;
     border: 1px solid #333333;
     font-size: 14px;
-    font-family: Arial;
+    font-family: Arial, Helvetica, sans-serif;
     width: 100px;
     height: 32px;
     appearance:none;
@@ -249,8 +249,11 @@ body {
 .TdFootMC {
   text-align: left;
   vertical-align: top;
-  padding: 0px;
-	line-height: 150%;
+  padding-top: 0px;
+  padding-bottom: 0 px;
+  padding-left:8px;
+  padding-right: 8px;
+	line-height: 100%;
   border: 1px solid #333333;
   font-size: 14px;
   background-color: #444444;
@@ -273,8 +276,7 @@ body {
 /* Paragraph for table cell for Myanmar Calendar*/
 .PTdMC {
   color: #999999;
-  padding: 8px;
-  margin: 0px;
+  font-size: 14px;
 }
 
 /* Anchor for table foot for Myanmar Calendar*/
@@ -293,8 +295,8 @@ body {
 .TdMC {
   text-align: left;
   vertical-align: top;
-  padding: 0px;
-	line-height: 170%;
+  padding: 8px;
+	line-height: 100%;
   border: 1px solid #333333;
 	font-size: 14px;
   width: 120px;
@@ -415,7 +417,7 @@ body {
     background-color: transparent;
     border: 1px solid #333333;
     font-size: 14px;
-    font-family: Arial;
+    font-family: Arial, Helvetica, sans-serif;
     width: 100px;
     height: 32px;
     display: block;
@@ -454,4 +456,8 @@ body {
   background-color: #444444;
   font-family: Arial, Helvetica, sans-serif;
    color: #7ece7e;
+}
+
+.DayFoot {
+  font-size: 12px;
 }

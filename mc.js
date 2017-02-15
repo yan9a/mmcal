@@ -465,6 +465,12 @@ function ohol(jd) {
 //Get holiday string
 //input: hd : holiday object
 //output: string
-function Holiday2String(hd){ var str=""; var k=0;  for(k=0;k<hd.h;k++) str+=" <br/>"+T(hd.hs[k]);  return str; }
+function Holiday2String(hd,c){ 
+	var str=""; var k=0; 
+	for(k=0;k<hd.h;k++) {
+		str+="<p class='"+c+"'>"+T(hd.hs[k])+"</p>";  
+	}
+	return str; 
+}
 //End of checking holidays ####################################################
 //-----------------------------------------------------------------------------
