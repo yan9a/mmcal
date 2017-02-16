@@ -493,7 +493,9 @@ function ShowDay(js) {
 	}	
 	catch(err) {}
 
-	str+="<p class='DayFoot'>JDN: "+js+"</p>"; //julian day number
+	var pa=["ဘင်္ဂ","အထွန်း","ရာဇ","အဓိပတိ","မရဏ","သိုက်","ပုတိ"];
+	var r= (M.my-M.wd) % 7;
+	str+="<p class='DayFoot'>"+pa[r]+"ဖွား၊  JDN: "+js+"</p>"; //julian day number
 	//rulers
 	try { 
 		mc_rClear();
