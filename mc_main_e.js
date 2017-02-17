@@ -362,7 +362,7 @@ function ShowDay(js) {
 	"August","September","October","November","December"];
 
 	//display English day
-	str+="<div class='DayHead'  onclick='ShowMonth();'>"+E.y+" "+ema[E.m]+" "+E.d+"</div>";
+	str+="<div class='DayHead'  onclick='ShowMonth();'>"+E.y+" "+ema[E.m-1]+" "+E.d+"</div>";
 
 	//displaying Myanmar date
 	if (M.my>=2) {
@@ -412,6 +412,13 @@ function ShowDay(js) {
 		else if(A.pyathada==2) {str+="<p class='MCYatyaza DayFontSize'>"+T('Afternoon Pyathada')+"</p>";	}
 		str+=tAstro(A,"MCAstro DayFontSize");
 
+		var pa=["ဘင်္ဂ","အထွန်း","ရာဇ","အဓိပတိ","မရဏ","သိုက်","ပုတိ"];
+		var r= (M.my-M.wd) % 7;
+		str+="<p class='MCAstro DayFontSize'>"+pa[r]+"ဖွား</p>"; //mahabote
+
+		var na=["အနောက်","မြောက်","အရှေ့","တောင်"];
+		str+="<p class='MCAstro DayFontSize'>နဂါးခေါင်း"+na[A.nagahle]+"သို့လှည့်သည်။</p>"; //nagahle
+
 		//Thingyan
 		if (hdt.h) {
 		str+="<p><a class='AnchorFootMC' href='https://yan9a.github.io/mcal/Thingyan.htm'>\
@@ -430,9 +437,8 @@ function ShowDay(js) {
 	}	
 	catch(err) {}
 
-	var pa=["ဘင်္ဂ","အထွန်း","ရာဇ","အဓိပတိ","မရဏ","သိုက်","ပုတိ"];
-	var r= (M.my-M.wd) % 7;
-	str+="<p class='DayFoot'>"+pa[r]+"ဖွား၊  JDN: "+js+"</p>"; //julian day number
+	str+="<p class='DayFoot'>JDN: "+js+"</p>"; //julian day number
+
 	//rulers
 	try { 
 		mc_rClear();
