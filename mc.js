@@ -232,15 +232,17 @@ function w2j(y,m,d,ct,SG) {
 function t2d(h,n,s) { return ((h-12)/24+n/1440+s/86400);}
 //-------------------------------------------------------------------------
 //Checking Astrological days
-//input: (mm=month, mml= length of the month,md= day of the month [0-30], wd= weekday)
+//input: (mm=month, mml= length of the month,md= day of the month [0-30], wd= weekday,my=year)
 //output: (sabbath, sabbatheve,yatyaza,pyathada,thamanyo,amyeittasote,
 //	warameittugyi,warameittunge,yatpote,thamaphyu,nagapor,yatyotema,
-//	mahayatkyan,shanyat,nagahle [0=west, 1=north, 2=east, 3=south])
+//	mahayatkyan,shanyat,nagahle [0=west, 1=north, 2=east, 3=south],
+//  mahabote [0=Binga, 1=Atun, 2=Yaza, 3=Adipati, 4= Marana, 5=Thike, 6=Puti]
+// nakhat [0=orc, 1=elf, 2=human])
 // More details @ http://cool-emerald.blogspot.sg/2013/12/myanmar-astrological-calendar-days.html
-function astro(mm,mml,md,wd) {
+function astro(mm,mml,md,wd,my) {
 	var d,sabbath,sabbatheve,yatyaza,pyathada,thamanyo,amyeittasote;
 	var warameittugyi,warameittunge,yatpote,thamaphyu,nagapor,yatyotema;
-	var mahayatkyan,shanyat,nagahle,m1,wd1,wd2,wda,sya;
+	var mahayatkyan,shanyat,nagahle,m1,wd1,wd2,wda,sya,mahabote;
 	if (mm<=0) mm=4;//first waso is considered waso
 	d=md-15*Math.floor(md/16);//waxing or waning day [0-15]
 	sabbath=0; if((md==8)||(md==15)||(md==23)||(md==mml)) sabbath=1;
@@ -266,13 +268,15 @@ function astro(mm,mml,md,wd) {
 	mahayatkyan=0; m1=(Math.floor((mm%12)/2)+4)%6+1; if(d==m1) mahayatkyan=1;
 	shanyat=0; sya=[8,8,2,2,9,3,3,5,1,4,7,4]; if(d==sya[mm-1]) shanyat=1;
 	nagahle=Math.floor((mm%12)/3);
+	mahabote=(my-wd)%7;
+	nakhat=my%3;
 
 	return {sabbath:sabbath,sabbatheve:sabbatheve,yatyaza:yatyaza,
 	pyathada:pyathada,thamanyo:thamanyo,amyeittasote:amyeittasote,
 	warameittugyi:warameittugyi,warameittunge:warameittunge,
 	yatpote:yatpote,thamaphyu:thamaphyu,nagapor:nagapor,
 	yatyotema:yatyotema,mahayatkyan:mahayatkyan,shanyat:shanyat,
-	nagahle:nagahle};
+	nagahle:nagahle,mahabote:mahabote,nakhat:nakhat};
 }
 //----------------------------------------------------------------------------
 //find the length of a month
@@ -339,7 +343,7 @@ function thingyan(jdn,my,mmt) {
 		else if((jdn>akn)&&(jdn<atn)) {hs[h++]="Thingyan Akyat";}
 		else if(jdn==akn) {hs[h++]="Thingyan Akya";}
 		else if(jdn==(akn-1)) {hs[h++]="Thingyan Akyo";}
-		else if(((my+mmt)>=1362)&&((jdn==(akn-2))||
+		else if(((my+mmt)>=1369)&&((my+mmt)<1379)&&((jdn==(akn-2))||
 			((jdn>=(atn+2))&&(jdn<=(akn+7))))) {hs[h++]="Holiday";}
 	}
 	return {h:h,hs:hs};
@@ -349,14 +353,14 @@ function thingyan(jdn,my,mmt) {
 //output: (h=flag [true=1, false=0], hs=string)
 function ehol(gy,gm,gd) {
 	var h=0; var hs=["","",""];
-	if((gm==1) && (gd==1)) {hs[h++]="New Year Day";}
-	else if((gy>=1948) && (gm==1) && (gd==4)) {hs[h++]="Independence Day";}
+	if((gy>=1948) && (gm==1) && (gd==4)) {hs[h++]="Independence Day";}
 	else if((gy>=1947) && (gm==2) && (gd==12)) {hs[h++]="Union Day";}
 	else if((gy>=1958) && (gm==3) && (gd==2)) {hs[h++]="Peasants Day";}
 	else if((gy>=1945) && (gm==3) && (gd==27)) {hs[h++]="Resistance Day";}
 	else if((gy>=1923) && (gm==5) && (gd==1)) {hs[h++]="Labour Day";}
 	else if((gy>=1947) && (gm==7) && (gd==19)) {hs[h++]="Martyrs Day";}
 	else if((gm==12) && (gd==25)) {hs[h++]="Christmas Day";}
+	else if((gy>=2017) && (gm==12) && (gd==30||gd==31)) {hs[h++]="Holiday";}
 	return {h:h,hs:hs};
 }
 //----------------------------------------------------------------------------
@@ -368,7 +372,9 @@ function mhol(my,mm,md,mp) {
 	if((mm==2) && (mp==1)) {hs[h++]="Buddha Day";}//Vesak day
 	else if((mm==4)&& (mp==1)) {hs[h++]="Start of Buddhist Lent";}//Warso day
 	else if((mm==7) && (mp==1)) {hs[h++]="End of Buddhist Lent";}
+	else if((my>=1379) && (mm==7) && (md==14||md==16)) {hs[h++]="Holiday";}
 	else if((mm==8) && (mp==1)) {hs[h++]="Tazaungdaing";}
+	else if((my>=1379) && (mm==8) && (md==14)) {hs[h++]="Holiday";}
 	else if((my>=1282) && (mm==8) && (md==25)) {hs[h++]="National Day";}
 	else if((mm==10) && (md==1)) {hs[h++]="Karen New Year Day";}
 	else if((mm==12) && (mp==1)) {hs[h++]="Tabaung Pwe";}
@@ -386,7 +392,8 @@ function ecd(j,ct) {
 	ct=ct||0; var h=0; var hs=["","",""];
 	var g=j2w(j,ct);
 	var doe=DoE(g.y);
-	if((g.y>=1915) && (g.m==2) && (g.d==13)) {hs[h++]="G. Aung San BD";}
+	if((g.m==1) && (g.d==1)) {hs[h++]="New Year Day";}
+	else if((g.y>=1915) && (g.m==2) && (g.d==13)) {hs[h++]="G. Aung San BD";}
 	else if((g.y>=1969) && (g.m==2) && (g.d==14)) {hs[h++]="Valentines Day";}
 	else if((g.y>=1970) && (g.m==4) && (g.d==22)) {hs[h++]="Earth Day";}
 	else if((g.y>=1392) && (g.m==4) && (g.d==1)) {hs[h++]="April Fools Day";}

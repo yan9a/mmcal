@@ -220,7 +220,7 @@ function UIContent() {
 			
 	   		
 			E=j2w(js,uis.Type);//English date according to calendar type
-			M=j2m(js); A=astro(M.mm,M.mml,M.md,M.wd);
+			M=j2m(js); A=astro(M.mm,M.mml,M.md,M.wd,M.my);
 			tstr="PriDay";//Myanmar date and astrological days
 			//Check holidays, weekend, inaccurate days and change style
 			var hde=ehol(E.y,E.m,E.d);
@@ -372,7 +372,7 @@ function mMDStr(M,A,E,hde,hdm,hdt,hdo,jd) {
 	if(A.yatyaza) {	str+="<p class='MCYatyaza'>"+T('Yatyaza')+"</p>";}
 	if(A.pyathada==1) {	str+="<p class='MCYatyaza'>"+T('Pyathada')+"</p>";}
 	else if(A.pyathada==2) {str+="<p class='MCYatyaza'>"+T('Afternoon Pyathada')+"</p>";	}
-	str+=tAstro(A,"MCAstro");
+	//str+=tAstro(A,"MCAstro");
 
 	//historical dates
 	try {
@@ -412,7 +412,7 @@ function ShowDay(js) {
 
 	E=j2w(js,uis.Type);//English date according to calendar type
 	M=j2m(js); //Myanmar date
-	A=astro(M.mm,M.mml,M.md,M.wd);//Astrological days
+	A=astro(M.mm,M.mml,M.md,M.wd,M.my);//Astrological days
 
 	tstr="PriDay";
 	//Check holidays, weekend, inaccurate days and change style
@@ -476,8 +476,10 @@ function ShowDay(js) {
 		str+=tAstro(A,"MCAstro DayFontSize");
 
 		var pa=["ဘင်္ဂ","အထွန်း","ရာဇ","အဓိပတိ","မရဏ","သိုက်","ပုတိ"];
-		var r= (M.my-M.wd) % 7;
-		str+="<p class='MCAstro DayFontSize'>"+pa[r]+"ဖွား</p>"; //mahabote
+		str+="<p class='MCAstro DayFontSize'>"+pa[A.mahabote]+"ဖွား</p>"; //mahabote
+
+		var na=["ဘီလူး","နတ်","လူ"];
+		str+="<p class='MCAstro DayFontSize'>"+na[A.nakhat]+"နက္ခတ်</p>"; 
 
 		var na=["အနောက်","မြောက်","အရှေ့","တောင်"];
 		str+="<p class='MCAstro DayFontSize'>နဂါးခေါင်း"+na[A.nagahle]+"သို့လှည့်သည်။</p>"; //nagahle
@@ -502,6 +504,7 @@ function ShowDay(js) {
 
 	str+="<p class='DayFoot'>JDN: "+js+"</p>"; //julian day number
 
+if(E.y<uis.cy){
 	//rulers
 	try { 
 		mc_rClear();
@@ -527,6 +530,7 @@ function ShowDay(js) {
 		}
 	}	
 	catch(err) {} 
+}
 
 	//accuracy
 	if (uis.y<uis.LT || uis.y>uis.UT) str+="<p class='DayFoot'>Important note: The accuracy of these dates is in question! \
