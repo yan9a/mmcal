@@ -1,4 +1,4 @@
-//Version: 201702121800
+//Version: 201704151315
 //File: mc.js
 //Description: Core functions for Myanmar Calendrical Calculations
 //-------------------------------------------------------------------------
@@ -13,7 +13,7 @@
 //                   for any purpose, even commercially.
 //  Under the following terms:
 //   Attribution — You may give appropriate credit, provide a link to the license,
-//                   but it is not compulsory.
+//                   but it is not a compulsory requirement.
 //-------------------------------------------------------------------------
 //Usage example to calculate Myanmar calendar date
 // j=w2j(year,month,day); //get julian day number
@@ -28,6 +28,67 @@
 
 //Start of kernel #############################################################
 
+//Thanks to U Aung Zeya for the  historical  data for earlier Myanmar calendar eras
+// many of the full moon days and watat years are referred to the list prepared by him
+//Era definition
+var g_eras=[
+//-------------------------------------------------------------------------
+//The first era (the era of Myanmar kings: ME1216 and before)
+	//Makaranta system 1 (ME 0 - 797)
+{
+	"eid":1.1,//era id
+	"begin":-999,//beginning Myanmar year
+	"end":797,//ending Myanmar year
+	"WO":-1.1,// watat offset to compensate
+	"NM":-1,//number of months to find excess days
+	"fme":[[205,1],[246,1],[572,-1],[651,1],[653,2],[656,1],[672,1],[729,1], [767,-1]],//exceptions for full moon days
+	//"fme":[[205,1],[246,1]],//if Tin Naing Toe & Dr. Than Tun as reference
+	"wte":[]//exceptions for watat years
+},
+	//Makaranta system 2 (ME 798 - 1099)
+{
+	"eid":1.2,//era id
+	"begin":798,//beginning Myanmar year
+	"end":1099,//ending Myanmar year
+	"WO":-1.1,// watat offset to compensate
+	"NM":-1,//number of months to find excess days
+	"fme":[[813,-1],[849,-1],[851,-1],[854,-1],[927,-1],[933,-1],[936,-1],[938,-1],[949,-1],[952,-1],[963,-1],[968,-1],[1039,-1]],//exceptions for full moon days
+	//"fme":[[813,-1],[854,-1],[1039,-1]],//if Tin Naing Toe & Dr. Than Tun as reference
+	"wte":[]//exceptions for watat years
+},
+//Thandeikta (ME 1100 - 1216)
+{
+	"eid":1.3,//era id
+	"begin":1100,//beginning Myanmar year
+	"end":1216,//ending Myanmar year
+	"WO":-0.85,// watat offset to compensate
+	"NM":-1,//number of months to find excess days
+	"fme":[[1120,1],[1126,-1],[1150,1],[1172,-1],[1207,1]],//exceptions for full moon days
+	"wte":[[1201,1],[1202,0]]//exceptions for watat years
+},
+//---------------------------------------------------------
+//The second era (the era under British colony: 1217 ME - 1311 ME)
+{
+	"eid":2,//era id
+	"begin":1217,//beginning Myanmar year
+	"end":1311,//ending Myanmar year
+	"WO":-1,// watat offset to compensate
+	"NM":4,//number of months to find excess days
+	"fme":[[1234,1],[1261,-1]],//exceptions for full moon days
+	"wte":[[1263,1],[1264,0]]//exceptions for watat years
+},
+//---------------------------------------------------------
+//The third era (the era after Independence	1312 ME and after)
+{
+	"eid":3,//era id
+	"begin":1312,//beginning Myanmar year
+	"end":9999,//ending Myanmar year
+	"WO":-0.5,// watat offset to compensate
+	"NM":8,//number of months to find excess days
+	"fme":[[1377,1]],//exceptions for full moon days
+	"wte":[[1344,1],[1345,0]]//exceptions for watat years
+}
+];
 //-------------------------------------------------------------------------
 //Check watat (intercalary month)
 //input: (my -myanmar year)
@@ -38,60 +99,31 @@ function chk_watat(my) {
 	var SY=1577917828/4320000; //solar year (365.2587565)
 	var LM=1577917828/53433336; //lunar month (29.53058795)
 	var MO=1954168.050623; //beginning of 0 ME
-	// [ < 1100 ME - 1st era early], [ < 1217 ME - 1st era late],
-	//[ < 1312 ME - 2nd era],[ >= 1312 ME - 3rd era]
-	var e1=(my >= 1100)?1:0; var e2=(my >= 1217)?1:0; var e3=(my >= 1312)?1:0;
-	var ei=e1+e2+e3;
-	var NM=e2*5+e3*4-1;//number of months to find excess days
-	//offset to adjust full moon day depending on era
-	var WO=e1*0.25-e2*0.15+e3*0.5-1.1;
+	var eid,NM,WO,fme,wte,i,era;
+	for(i=g_eras.length-1;i>=0;i--){//get data for respective era
+		era=g_eras[i];//start checking from highest probability
+		NM=era.NM;	WO=era.WO; fme=era.fme; wte=era.wte; eid=era.eid;
+		if(my>=era.begin) break;
+	}
+
 	var TA=(SY/12-LM)*(12-NM); //threshold to adjust
 	var ed=(SY*(my+3739))%LM; // excess day
 	if(ed < TA) ed+=LM;//adjust excess days
 	var fm=Math.round(SY*my+MO-ed+4.5*LM+WO);//full moon day of 2nd Waso
 	var TW=0,watat=0;//find watat
-	if (ei >= 2) {//if 2nd era or later find watat based on excess days
-		TW=LM-(SY/12-LM)*NM; watat=(ed >= TW); }
+	if (eid >= 2) {//if 2nd era or later find watat based on excess days
+		TW=LM-(SY/12-LM)*NM; 
+		if(ed >= TW) watat=1; 
+	}
 	else {//if 1st era,find watat by 19 years metonic cycle
-//Myanmar year is divided by 19 and there is intercalary month
-//if the remainder is 2,5,7,10,13,15,18
-//https://github.com/kanasimi/CeJS/blob/master/data/date/calendar.js#L2330
+	//Myanmar year is divided by 19 and there is intercalary month
+	//if the remainder is 2,5,7,10,13,15,18
+	//https://github.com/kanasimi/CeJS/blob/master/data/date/calendar.js#L2330
 		watat=(my*7+2)%19; if (watat < 0) watat+=19;
-		watat=Math.floor(watat/12);	}
-	return chk_exception(my,fm,watat,ei);
-}
-//-------------------------------------------------------------------------
-//Check exception for full moom day and watat (intercalary month)
-//input: (my -myanmar year,
-  //  watat - intercalary month [1=watat, 0=common]
-  //  fm - full moon day of 2nd Waso in jdn [valid for watat years only],
-  //  ei - era index [0=1st era early, 1=1st era late, 2=2nd era, 3=3rd era])
-//output:  ( watat - corrected intercalary month [1=watat, 0=common]
-  //  fm - corrected full moon day of 2nd Waso in jdn [valid for watat years only])
-//external variables:
-   //	Exceptions for well known years
-var fm1=[[1120,1],[1126,-1],[1150,1],[1172,-1],[1207,1],[1234,1],[1261,-1],[1377,1]];
-var wt1=[ [1201,1],[1202,0],[1263,1],[1264,0],[1344,1],[1345,0]];
-  //
-  //	Exceptions for the earlier years (older than 300 years)
-  //		Ref 0: Evidence based- Based on various evidence such as inscriptions, books, etc...
-var fmCE=[[205,1],[246,1],[572,-1],[651,1],[653,2],[656,1],[672,1],[729,1],
-	  [767,-1],[813,-1],[849,-1],[851,-1],[854,-1],[927,-1],[933,-1],[936,-1],[938,-1],
-	  [949,-1],[952,-1],[963,-1],[968,-1],[1039,-1]];
-  //		Ref 1: Tin Naing Toe & Dr. Than Tun
-//var fmTNT=[[205,1],[246,1],[813,-1],[854,-1],[1039,-1]];
-function chk_exception(my,fm,watat,ei){ var i=0;
-	if (ei){ //adjust for exceptions for well known years
-		i=bSearch(my,wt1); if (i >= 0) watat=wt1[i][1];
-		if(watat) {i=bSearch(my,fm1); if(i >= 0) fm+=fm1[i][1]; }}
-	else if(watat){ //for the first era earlier years, use referred sources
-	//to adjust for exceptions
-		//if (rf==1) {// Tin Naing Toe & Dr. Than Tun
-		//	i=bSearch(my,fmTNT); if(i >= 0) fm+=fmTNT[i][1]; 	}
-		//else {// Cool Emerald- Based on various evidence
-		//such as inscriptions, books, etc...
-			i=bSearch(my,fmCE); if(i >= 0) fm+=fmCE[i][1]; 	//}
-		}
+		watat=Math.floor(watat/12);
+	}
+	i=bSearch(my,wte); if (i >= 0) watat=wte[i][1];//correct watat exceptions
+	if(watat) {i=bSearch(my,fme); if(i >= 0) fm+=fme[i][1]; }//correct full moon day exceptions
 	return {fm:fm,watat:watat};
 }
 //-------------------------------------------------------------------------
@@ -232,7 +264,8 @@ function w2j(y,m,d,ct,SG) {
 function t2d(h,n,s) { return ((h-12)/24+n/1440+s/86400);}
 //-------------------------------------------------------------------------
 //Checking Astrological days
-//input: (mm=month, mml= length of the month,md= day of the month [0-30], wd= weekday,my=year)
+//input: (mm=month, mml= length of the month,md= day of the month [0-30], 
+// wd= weekday  [0=sat, 1=sun, ..., 6=fri], my=Myanmar year)
 //output: (sabbath, sabbatheve,yatyaza,pyathada,thamanyo,amyeittasote,
 //	warameittugyi,warameittunge,yatpote,thamaphyu,nagapor,yatyotema,
 //	mahayatkyan,shanyat,nagahle [0=west, 1=north, 2=east, 3=south],
@@ -460,8 +493,8 @@ function mcd(my,mm,md,mp) {
 //input: (jd: Julian day number)
 //output: (h=flag [true=1, false=0], hs=string)
 //external variables: ghDiWali,ghEid
-var ghDiwali=[2456599,2456953,2457337,2457691,2458045];
-var ghEid=[2456513,2456867,2457221,2457576,2457930];
+var ghDiwali=[2456599,2456953,2457337,2457691,2458045,2458429];
+var ghEid=[2456513,2456867,2457221,2457576,2457930,2458285];
 function ohol(jd) {
 	var h=0; var hs=["","",""];
 	if(bSearch1(jd,ghDiwali)>=0) {hs[h++]="Diwali";}
