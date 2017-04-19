@@ -41,7 +41,7 @@ var g_eras=[
 	"end":797,//ending Myanmar year
 	"WO":-1.1,// watat offset to compensate
 	"NM":-1,//number of months to find excess days
-	"fme":[[205,1],[246,1],[572,-1],[651,1],[653,2],[656,1],[672,1],[729,1], [767,-1]],//exceptions for full moon days
+	"fme":[[205,1],[246,1],[471,1],[572,-1],[651,1],[653,2],[656,1],[672,1],[729,1], [767,-1]],//exceptions for full moon days
 	//"fme":[[205,1],[246,1]],//if Tin Naing Toe & Dr. Than Tun as reference
 	"wte":[]//exceptions for watat years
 },
@@ -95,23 +95,19 @@ var g_eras=[
 //output:  ( watat - intercalary month [1=watat, 0=common]
   //  fm - full moon day of 2nd Waso in jdn [valid for watat years only])
 //dependency: chk_exception(my,fm,watat,ei)
-function chk_watat(my) {
+function chk_watat(my) {	
+	for(var i=g_eras.length-1;i>0;i--) if(my>=g_eras[i].begin) break;//get data for respective era
+	var era=g_eras[i]; var NM=era.NM,WO=era.WO;
 	var SY=1577917828/4320000; //solar year (365.2587565)
 	var LM=1577917828/53433336; //lunar month (29.53058795)
 	var MO=1954168.050623; //beginning of 0 ME
-	var eid,NM,WO,fme,wte,i,era;
-	for(i=g_eras.length-1;i>=0;i--){//get data for respective era
-		era=g_eras[i];//start checking from highest probability
-		NM=era.NM;	WO=era.WO; fme=era.fme; wte=era.wte; eid=era.eid;
-		if(my>=era.begin) break;
-	}
 
 	var TA=(SY/12-LM)*(12-NM); //threshold to adjust
 	var ed=(SY*(my+3739))%LM; // excess day
 	if(ed < TA) ed+=LM;//adjust excess days
 	var fm=Math.round(SY*my+MO-ed+4.5*LM+WO);//full moon day of 2nd Waso
 	var TW=0,watat=0;//find watat
-	if (eid >= 2) {//if 2nd era or later find watat based on excess days
+	if (era.eid >= 2) {//if 2nd era or later find watat based on excess days
 		TW=LM-(SY/12-LM)*NM; 
 		if(ed >= TW) watat=1; 
 	}
@@ -122,8 +118,8 @@ function chk_watat(my) {
 		watat=(my*7+2)%19; if (watat < 0) watat+=19;
 		watat=Math.floor(watat/12);
 	}
-	i=bSearch(my,wte); if (i >= 0) watat=wte[i][1];//correct watat exceptions
-	if(watat) {i=bSearch(my,fme); if(i >= 0) fm+=fme[i][1]; }//correct full moon day exceptions
+	i=bSearch(my,era.wte); if (i >= 0) watat=era.wte[i][1];//correct watat exceptions
+	if(watat) {i=bSearch(my,era.fme); if(i >= 0) fm+=era.fme[i][1]; }//correct full moon day exceptions
 	return {fm:fm,watat:watat};
 }
 //-------------------------------------------------------------------------
