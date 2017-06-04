@@ -138,7 +138,7 @@ function DisplayUI(cev) {
 			uis.Lang=le.value; SelectLang(uis.Lang); break;//Language
 			//SelectLang: set a global variable in mc.js for translation
 	}
-	var oce = document.getElementById("oc"); 
+	var oce = document.getElementById("oc");
 	oce.innerHTML=UIContent(uis);
 }
 //-------------------------------------------------------------------------
@@ -164,10 +164,10 @@ function UIContent() {
 	for(i=0;i<eml;i++){
 		if ((i%7)==0) str+="<tr>";
 		//start of checking valid day to display
-		if ((i>=r)&&(js<=je)) {	
+		if ((i>=r)&&(js<=je)) {
 			E=j2w(js,uis.Type);//English date according to calendar type
 			//Myanmar date and astrological days
-			M=j2m(js); A=astro(M.mm,M.mml,M.md,M.wd,M.my);						
+			M=j2m(js); A=astro(M.mm,M.mml,M.md,M.wd,M.my);
 			var hde=ehol(E.y,E.m,E.d);
 			var hdm=mhol(M.my,M.mm,M.md,M.mp);
 			var hdt=thingyan(js,M.my,M.mmt);
@@ -193,11 +193,11 @@ function UIContent() {
 			if (M.my>=2) { str+=mMDStr(M,A,E,hde,hdm,hdt,hdo,js); }
 			str+="</td>";
 
-			js++;//Julian day number for next day			
+			js++;//Julian day number for next day
 		}//end of checking valid day to display
-		else { 
+		else {
 			str+="<td class='TdMC'><p class='PTdMC'>";
-			str+="&nbsp;"; 
+			str+="&nbsp;";
 			str+="</p></td>";
 		} //if no day to display
 		if ((i%7)==6) str+="</tr>";//next row
@@ -317,7 +317,7 @@ function mMDStr(M,A,E,hde,hdm,hdt,hdo,jd) {
 		if (hs.f) {
 			str+="<br/><p class='HLabel'>History</p>";
 		}
-	}	
+	}
 	catch(err) {}
 
 	return str;
@@ -342,7 +342,7 @@ function tAstro(A,c) {
 }
 //-------------------------------------------------------------------------
 //Show day and hide month
-//input: js (Julian day) 
+//input: js (Julian day)
 //output: void
 function ShowDay(js) {
 	var E,M,str="",tstr="";
@@ -385,7 +385,7 @@ function ShowDay(js) {
 		//weekday
 		var wda=['Saturday','Sunday','Monday','Tuesday','Wednesday',
 			 'Thursday','Friday'];
-		str+="<p>"+T(wda[M.wd])+T('Nay')+"</p>"; 
+		str+="<p>"+T(wda[M.wd])+T('Nay')+"</p>";
 
 		//sabbath and moon
 		if (A.sabbath) {
@@ -397,7 +397,7 @@ function ShowDay(js) {
 		else if (A.sabbatheve) {
 			str+="<p class='MCSabbath DayFontSize'>"+T("Sabbath Eve")+"</p>";
 		}
-				
+
 		//holiday  DayFontSize
 		str+=Holiday2String(hde,"MCPubHol DayFontSize")
 			+Holiday2String(hdm,"MCPubHol DayFontSize")
@@ -416,7 +416,7 @@ function ShowDay(js) {
 		str+="<p class='MCAstro DayFontSize'>"+pa[A.mahabote]+"ဖွား</p>"; //mahabote
 
 		var na=["ဘီလူး","နတ်","လူ"];
-		str+="<p class='MCAstro DayFontSize'>"+na[A.nakhat]+"နက္ခတ်</p>"; 
+		str+="<p class='MCAstro DayFontSize'>"+na[A.nakhat]+"နက္ခတ်</p>";
 
 		var na=["အနောက်","မြောက်","အရှေ့","တောင်"];
 		str+="<p class='MCAstro DayFontSize'>နဂါးခေါင်း"+na[A.nagahle]+"သို့လှည့်သည်။</p>"; //nagahle
@@ -433,22 +433,22 @@ function ShowDay(js) {
 		var hs=hSearch(js); //search for historical date defined in mc_h.js
 		if (hs.f) {
 			str+="<p> A historical day: <a class='AnchorFootMC' href='./Chronicle/"+hs.link+"'>"+hs.dt+"</a> ";
-			if(hs.my!=M.my || hs.mm!=M.mm || hs.mp!=M.mp || hs.fd!=M.fd || hs.wd!=M.wd)	{ str+= "It is inconsistent!";}
+			if(hs.my!=M.my || hs.mm!=M.mm || hs.mp!=M.mp || hs.fd!=M.fd || hs.wd!=M.wd)	{ str+= "<br/>It is inconsistent!";}
 			str+="</p>";
 		}
-	}	
+	}
 	catch(err) {}
 
 	str+="<p class='DayFoot'>JDN: "+js+"</p>"; //julian day number
 
 if(E.y<uis.cy){
 	//rulers
-	try { 
+	try {
 		mc_rClear();
-		mc_rSearch(js); 
+		mc_rSearch(js);
 		var u=mc_rLength();
-		if(u){							
-			var dt=new Date(); 
+		if(u){
+			var dt=new Date();
 			var j=w2j(dt.getFullYear(),(1+dt.getMonth()),dt.getDate());
 			var i=0; var r; var dyn;
 			if(js<2432555) str+="<p class='DayFoot'>Ruler(s):</p>";
@@ -460,20 +460,20 @@ if(E.y<uis.cy){
 				str+="<br/>"+mc_j2d(r.Beginning_JDN)+" - ";
 				str+=(j>r.Ending_JDN)?mc_j2d(r.Ending_JDN):" present";
 				dyn=g_dyn[r.Dynasty];
-				str+="<br/>"+"<a class='AnchorFootMC DayFoot' href='"+dyn.URL+"'>"+dyn.Description+"</a>";; 	
+				str+="<br/>"+"<a class='AnchorFootMC DayFoot' href='"+dyn.URL+"'>"+dyn.Description+"</a>";;
 				str+="</li>";
 			}
 			str+="</ul>";
 		}
-	}	
-	catch(err) {} 
+	}
+	catch(err) {}
 }
 	//accuracy
 	if (uis.y<uis.LT || uis.y>uis.UT) str+="<p class='DayFoot'>Important note: The accuracy of these dates is in question! \
 			<a class='AnchorFootMC' href='./more.htm#Accuracy'>\
 			Read more details &gt;&gt;</a></p>";
 
-	//Back button 
+	//Back button
 	str+="<br/><input type='button' id='back2main' value='Back' onclick='ShowMonth();'  \
 			class='BtnBack' title='Back to main'>";
 
@@ -498,7 +498,7 @@ function mc_j2d(jd) {
 	var hmma=["First Waso","Tagu","Kason","Nayon","Waso","Wagaung","Tawthalin",
 		 "Thadingyut","Tazaungmon","Nadaw","Pyatho","Tabodwe","Tabaung"];
 	var hmpa=["Waxing","Full moon","Waning","New moon"];
-	var hwda=['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday']; 
+	var hwda=['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'];
 	var str="ME "+M.my.toString()+" "; if(M.mmt) str+="Late ";
 	if(M.myt && M.mm==4) str+="Second "; str+=hmma[M.mm]+" "+hmpa[M.mp];
 	if((M.mp%2)==0) str+=" "+M.fd.toString(); str+=" "+hwda[M.wd];

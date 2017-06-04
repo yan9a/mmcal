@@ -42,7 +42,6 @@ var g_eras=[
 	"WO":-1.1,// watat offset to compensate
 	"NM":-1,//number of months to find excess days
 	"fme":[[205,1],[246,1],[471,1],[572,-1],[651,1],[653,2],[656,1],[672,1],[729,1], [767,-1]],//exceptions for full moon days
-	//"fme":[[205,1],[246,1]],//if Tin Naing Toe & Dr. Than Tun as reference
 	"wte":[]//exceptions for watat years
 },
 	//Makaranta system 2 (ME 798 - 1099)
@@ -53,7 +52,6 @@ var g_eras=[
 	"WO":-1.1,// watat offset to compensate
 	"NM":-1,//number of months to find excess days
 	"fme":[[813,-1],[849,-1],[851,-1],[854,-1],[927,-1],[933,-1],[936,-1],[938,-1],[949,-1],[952,-1],[963,-1],[968,-1],[1039,-1]],//exceptions for full moon days
-	//"fme":[[813,-1],[854,-1],[1039,-1]],//if Tin Naing Toe & Dr. Than Tun as reference
 	"wte":[]//exceptions for watat years
 },
 //Thandeikta (ME 1100 - 1216)

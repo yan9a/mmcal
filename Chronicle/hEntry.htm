@@ -1,0 +1,246 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name='description' content='Day Entry Creator for Myanmar Chronicle'/>
+<meta name='keywords' content='Myanmar,Chronicle' />
+<meta name='author' content='Yan Naing Aye' />
+<meta name="viewport" content="width=device-width">
+<title>Chranical Date Entry</title>
+<link href="https://fonts.googleapis.com/css?family=Play" rel="stylesheet">
+<style type="text/css">
+@font-face {
+	font-family: 'Tharlon';
+	font-style: normal;
+	font-weight: 400;
+	src: url(//themes.googleusercontent.com/static/fonts/earlyaccess/tharlon/v1/Tharlon-Regular.eot);
+	src: url(//themes.googleusercontent.com/static/fonts/earlyaccess/tharlon/v1/Tharlon-Regular.eot?#iefix) format('embedded-opentype'),
+		 url(//themes.googleusercontent.com/static/fonts/earlyaccess/tharlon/v1/Tharlon-Regular.woff2) format('woff2'),
+		 url(//themes.googleusercontent.com/static/fonts/earlyaccess/tharlon/v1/Tharlon-Regular.woff) format('woff'),
+		 url(//themes.googleusercontent.com/static/fonts/earlyaccess/tharlon/v1/Tharlon-Regular.ttf) format('truetype');
+	}
+ body {
+		font-size: 12px;
+		background-color: #111111;
+		font-family: 'Play', sans-serif;
+		text-align: left;
+		line-height: 1.5;
+    color: #7ece7e;
+	}
+	a {
+    text-decoration: none;
+    color: #cca6f2;
+	}
+	a:hover
+	{
+		text-decoration: underline;
+		color: #cca6f2;
+	}
+	h1,h3 {
+		color: #cca6f2;
+	}
+	.DW
+	{
+		margin-left: auto;
+		margin-right: auto;
+		position: relative;
+		width: 700px;
+		background-color: #222222;
+		padding: 20px;
+		box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+	}
+  td,th {
+    padding: 5px;
+		font-size: 12px;
+    /*border: 1px solid #666666;*/
+  }
+  table {
+    /*border: 1px solid #666666; margin: 0px;*/
+    padding: 0px;
+  	border-spacing:0px;
+    border-collapse:collapse;
+  }
+  pre,input,select {
+    color: #7ece7e;
+    background-color: #111111;
+    border: 1px solid #333333;
+		padding: 5px;
+		font-family: 'Play', sans-serif;
+		font-size: 12px;
+  }
+  textarea {
+    color: #7ece7e;
+    background-color: #111111;
+    border: 1px solid #333333;
+		padding: 5px;
+		font-family: 'Myanmar Text','Tharlon';
+		font-size: 12px;
+  }
+  hr {
+    border: 1px solid #333333;
+  }
+	.mytxtD {
+		font-family:"Myanmar Text",'Tharlon';
+		width:500px; height:120px;
+	}
+	.mytxtO {
+		font-family:"Myanmar Text",'Tharlon';
+		width:500px; height:240px;
+	}
+	.DGreen {
+		color: #4b9b4b;
+		font-family: 'Play', sans-serif;
+		font-size: 12px;
+	}
+</style>
+<script src='../mc.js'></script>
+<script type="text/javascript">
+function cal()
+{
+	je = document.getElementById("jd"); var jd=Math.floor(Number(je.value)); je.value=jd;
+	ye = document.getElementById("y"); var yn=Number(ye.value); ye.value=yn;
+	me = document.getElementById("m"); var mn=Number(me.value);
+	mse = document.getElementById("mp"); var mpn=Number(mse.value);
+	de = document.getElementById("fd"); var fdn=Number(de.value); de.value=fdn;
+  wde = document.getElementById("wd"); var wdn=Number(wde.value); wde.value=wdn;
+	txte = document.getElementById("txtD"); var txt=txte.value;
+
+	//Month number enumeration
+	var mme={0:"First Waso",1:"Tagu",2:"Kason",3:"Nayon",4:"Waso",5:"Wagung",6:"Tawthalin",
+		7:"Thadingyut",8:"Tazaungmon",9:"Nadaw",10:"Pyatho",11:"Tabodwe",12:"Tabaung",
+		13:"Late Tagu",14:"Late Kason",15:"Second Waso"};
+
+	//Moon phase enumeration
+	var mpe={0:"Waxing",1:"Full moon",2:"Waning",3:"New moon"};
+
+	//Week day enumeration
+	var wde={0:"Saturday",1:"Sunday",2:"Monday",3:"Tuesday",4:"Wednesday",5:"Thursday",6:"Friday"};
+
+	var str="";
+	str=" \
+	\n{ \n \
+ \"Julian Day Number\":"+jd+", \n \
+ \"Myanmar Year\":"+yn+", \n \
+ \"Myanmar Month\":\""+mme[mn]+"\", \n \
+ \"Moon Phase\":\""+mpe[mpn]+"\", \n \
+ \"Fortnight Day\":"+fdn+", \n \
+ \"Day of the Week\":\""+wde[wdn]+"\", \n \
+ \"Description\":\""+txt+"\" \n \
+},";
+	oce = document.getElementById("txtO"); oce.innerHTML=str;
+}
+
+function GetJDN()
+{
+	je = document.getElementById("jd"); //var jd=Number(je.value);
+	ye = document.getElementById("y"); var yn=Number(ye.value); ye.value=yn;
+	me = document.getElementById("m"); var mn=Number(me.value);
+	mse = document.getElementById("mp"); var mpn=Number(mse.value);
+	de = document.getElementById("fd"); var fdn=Number(de.value); de.value=fdn;
+
+	var mm,mmt,jd;
+	if(mn==15){mm=4;}
+  else {mmt=Math.floor(mn/13); mm=mn%13+mmt;}
+	jd=m2j(yn,mm,mmt,mpn,fdn)
+	je.value=jd;
+	ChkWD();
+}
+
+function ChkWD()
+{
+	je = document.getElementById("jd"); var jd=Math.floor(Number(je.value)); je.value=jd;
+	w2e = document.getElementById("wd2");
+	var str="would be ";
+	//Week day enumeration
+	var wde={0:"Saturday",1:"Sunday",2:"Monday",3:"Tuesday",4:"Wednesday",5:"Thursday",6:"Friday"};
+	wd=(jd+2)%7;//week day
+	str+=wde[wd];
+	w2e.innerHTML=str;
+}
+</script>
+</head>
+<body>
+<div class='DW'>
+	<h3>Preparing an Entry for Chronicle</h3><hr/>
+	<table>
+
+		<tr>
+			<td>Myanmar Year </td><td><input type="number" id="y" min="0" max="1500" value="970"></td>
+
+			<td>Myanmar Month </td>
+			<td>
+			<select id="m">
+				<option value=1>Tagu</option>
+				<option value=13>Late Tagu</option>
+				<option value=2>Kason</option>
+				<option value=14>Late Kason</option>
+				<option value=3>Nayon</option>
+				<option value=0>First Waso</option>
+				<option value=4>Waso</option>
+        <option value=15>Second Waso</option>
+				<option value=5>Wagaung</option>
+				<option value=6>Tawthalin</option>
+				<option value=7>Thadingyut</option>
+				<option value=8>Tazaungmon</option>
+				<option value=9>Nadaw</option>
+				<option value=10>Pyatho</option>
+				<option value=11>Tabodwe</option>
+				<option value=12>Tabaung</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>Moon Phase </td><td>
+			<select id="mp">
+				<option value=0>Waxing</option>
+				<option value=1>Full moon</option>
+				<option value=2>Waning</option>
+				<option value=3>New moon</option>
+			</select>
+		</td>
+
+		<td>Fortnight Day </td>
+		<td><input type="number" id="fd" min="1" max="15"  value="1"></td>
+		</tr>
+		<tr>
+			<td>Julian Day Number </td>
+			<td><input type="number" id="jd" min="0" max="3000000" value="2308783"  onchange="ChkWD()"></td>
+			<td><p id="wd2" class="DGreen"></p> </td>
+			<td><input type="button" id="getjd" value="Get JDN" onclick="GetJDN()"></td>
+		</tr>
+    <tr>
+			<td>Day of the Week </td><td>
+			<select id="wd">
+				<option value=0>Saturday</option>
+				<option value=1>Sunday</option>
+				<option value=2>Monday</option>
+				<option value=3>Tuesday</option>
+        <option value=4>Wednesday</option>
+				<option value=5>Thursday</option>
+				<option value=6>Friday</option>
+			</select>
+		</td>
+
+		<td> </td>
+		<td><input type="button" id="prepareOutput" value="Prepare" onclick="cal()"></td>
+	</tr>
+  <tr>
+		<td>Description </td>
+		<td colspan=3>
+      <textarea id="txtD" class=mytxtD>သူကြွယ် ငက္လုံသင် ကျောက်စာ။ လှူဒါန်း။ သကရစ် ၆၅၆ ခု ။ သရဝန်နှစ် ။ တန်ဆောင်မှုန်လပ္လည် ။ ပုတ္တ (ဟူနိ)ယ် ။ ... ။ မန္တလေးနန်းတွင်းကျောက်စာများ အတွဲ ၂။ မန္တလေးမြို့၊ နန်းတွင်းကျောက်စာရုံ (၁) အတွင်း။ ကျောက်တိုင်အမှတ် နံပါတ် ၆၈။</textarea>
+    </td>
+	</tr>
+	<tr>
+		<td>JSON Output </td>
+		<td colspan=3>
+      <textarea id="txtO"  class=mytxtO></textarea>
+    </td>
+	</tr>
+	</table>
+	<br/><hr/>
+	<div><a href='http://cool-emerald.blogspot.com'>Cool Emerald</a></div>
+</div>
+<script type="text/javascript">
+//cal();
+</script>
+</body>
+</html>

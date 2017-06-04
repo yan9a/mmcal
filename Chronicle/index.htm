@@ -20,7 +20,7 @@
  body {
 		font-size: 16px;
 		background-color: #111111;
-		font-family: Arial, Helvetica, sans-serif;
+		font-family: 'Myanmar Text','Tharlon';
 		text-align: left;
 		line-height: 1.5;
     color: #7ece7e;
@@ -63,15 +63,40 @@
     background-color: #111111;
     border: 1px solid #333333;
 		padding: 5px;
-		font-family: Arial, Helvetica, sans-serif;
+		font-family: 'Myanmar Text','Tharlon';
 		font-size: 16px;
   }
   hr {
     border: 1px solid #333333;
   }
 </style>
+<script src='../mc.js'></script>
 <script src='../mc_h.js'></script>
+
 <script type="text/javascript">
+var wda=['Saturday','Sunday','Monday','Tuesday','Wednesday',
+   'Thursday','Friday'];
+var msa=["waxing","full moon","waning","new moon"];
+function chkConsistency(ho)
+{
+  var r=1;
+  var myt=0,mmt=0,mm=1;
+	var ho_mm,ho_mp,ho_fd,ho_my,ho_wd,ho_dt,ho_lk;
+  M=j2m(ho["Julian Day Number"]);
+  ho_mm=mme[ho["Myanmar Month"]];
+  ho_mp=mpe[ho["Moon Phase"]];
+  ho_fd=ho["Fortnight Day"];
+  ho_my=ho["Myanmar Year"];
+  ho_wd= wde[ho["Day of the Week"]];
+  ho_dt=ho["Description"];
+  ho_lk=ho["Link"];//link
+  if(ho_lk==undefined) ho_lk="index.htm";
+  if(ho_mm==15){myt=1; mm=4;}
+  else {mmt=Math.floor(ho_mm/13); mm=ho_mm%13+mmt;}
+
+  if(ho_my!=M.my || mm!=M.mm || ho_mp!=M.mp || ho_fd!=M.fd || ho_wd!=M.wd) r=0;
+  return r;
+}
 //-------------------------------------------------------------------------
 	function GetChro()
 	{
@@ -85,6 +110,9 @@
 			hs=g_History[i];
 			str+="<tr>";
 			str+="<td>"+(i+1)+"</td>";
+      M=j2m(hs["Julian Day Number"]);
+      if(chkConsistency(hs))	{ str+= "<td>Consistent</td>";}
+      else { str+= "<td style='color:red;'>Inconsistent <br/>"+msa[M.mp]+" "+M.fd+" "+wda[M.wd]+"</td>";}
 			if(hs["Link"]==undefined) str+="<td>"+hs["Description"]+"</td>";
 			else str+="<td><a class='AnchorFootMC' href='./"+hs["Link"]+"'>"+hs["Description"]+"</a></td>";
 			str+="<td>ME:"+hs["Myanmar Year"]+"</td>";
@@ -103,17 +131,17 @@
 </head>
 <body>
 <div class='DW'>
-<h3>Myanmar Chronicle</h3>
-<hr/>
-<div id='oc'>
+  <h3>Myanmar Chronicle</h3>
+  <p><a href='http://mc1500.com/'>mc1500.com</a></p>
+  <hr/>
+  <div id='oc'>
 
-</div>
-<hr/>
-<div>
-	<a href='http://coolemerald.blogspot.com'>Cool Emerald</a>
-</div>
-</div>
-<script type="text/javascript">GetChro();</script>
+  </div>
+  <hr/>
+  <div>
+  	<a href='http://coolemerald.blogspot.com'>Cool Emerald</a>
+  </div>
+  <script type="text/javascript">GetChro();</script>
 </div>
 </body>
 </html>
