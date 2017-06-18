@@ -20,7 +20,7 @@
  body {
 		font-size: 16px;
 		background-color: #111111;
-		font-family: Arial, Helvetica, sans-serif;
+		font-family: "Myanmar Text",'Tharlon';
 		text-align: left;
 		line-height: 1.5;
     color: #7ece7e;
@@ -69,53 +69,100 @@
   hr {
     border: 1px solid #333333;
   }
+  .DGreen {
+		color: #4b9b4b;
+		font-family: 'Play', sans-serif;
+		font-size: 12px;
+	}
 </style>
+<script>
+//generate a list of years
+//inputs
+// r: remainder 0-11
+// b: beginning year
+// e: ending year
+function GenYr(r,b,e)
+{
+  var str="";
+  var i=0;
+  for(i=Math.round(b);i<=Math.round(e);i++){
+    if((i%12)==r) {
+      if(str.length!=0) str+=", ";
+      str+=i.toString();
+    }
+  }
+  return str;
+}
+function FillYr()
+{
+  var idStr="";
+  var j=0;
+  for(j=0;j<12;j++){
+    idStr="pyr"+j.toString();
+    pe=document.getElementById(idStr);
+    pe.innerHTML=GenYr(j,400,1000);
+  }
+}
+
+function ChkRD()
+{
+	ye = document.getElementById("y"); var yr=Math.floor(Number(ye.value)); ye.value=yr;
+	re = document.getElementById("rd");
+	var str="Its remainder is ";
+	var r=(yr)%12;
+	str+=r.toString();
+	re.innerHTML=str;
+}
+
+</script>
 </head>
 <body>
 <div class='DW'>
   <h3>Myanmar Year Name</h3>
   <p><a href='http://mc1500.com/'>mc1500.com</a></p>
   <hr/>
+  <input type="number" id="y" min="0" max="1500" value="408" onchange="ChkRD()">
+  <p id="rd" class="DGreen"></p>
   <div id='oc'>
     <table>
       <tr>
         <td>Remainder</td><td>Year Name</td><td>Year</td>
       </tr>
       <tr>
-        <td>0</td><td>ဘဿနှစ် ၊ ပုဿနှစ်၊ ပုတ်သနှစ် </td><td> 408, 420, 432, 444, 456, 468, 480, 492, 504, 516, 528, 540, 552, 564, 576, 588, 600, 612, 624, 636, 648, 660, 672, 684, 696</td>
+        <td>0</td><td>ဘဿနှစ် ၊ ပုဿနှစ်၊ ပုတ်သနှစ် </td><td> <p id=pyr0></p></td>
       </tr>
       <tr>
-        <td>1</td><td>မာခနှစ်</td><td> 409, 421, 433, 445, 457, 469, 481, 493, 505, 517, 529, 541, 553, 565, 577, 589, 601, 613, 625, 637, 649, 661, 673, 685, 697</td>
+        <td>1</td><td>မာခနှစ်</td><td><p id=pyr1></p></td>
       </tr>
       <tr>
-        <td>2</td><td>ဖ္လကိုန်သံဝစ္ဆိုဝ်ရနှစ်</td><td> 410, 422, 434, 446, 458, 470, 482, 494, 506, 518, 530, 542, 554, 566, 578, 590, 602, 614, 626, 638, 650, 662, 674, 686, 698</td>
+        <td>2</td><td>ဖ္လကိုန်သံဝစ္ဆိုဝ်ရနှစ်၊ ဖ္လကိုန်နှစ်၊ ဓိမှတိနှစ်</td><td><p id=pyr2></p></td>
       </tr>
       <tr>
-        <td>3</td><td>စေယ်နှစ် ၊ စယ်နှစ် </td><td> 411, 423, 435, 447, 459, 471, 483, 495, 507, 519, 531, 543, 555, 567, 579, 591, 603, 615, 627, 639, 651, 663, 675, 687, 699</td>
+        <td>3</td><td>စေယ်နှစ် ၊ စယ်နှစ် </td><td><p id=pyr3></p></td>
       </tr>
       <tr>
-        <td>4</td><td>ဗိသျက်နှစ်၊ ပိသျက်နှစ်၊ ဖုဿနှစ်</td><td> 412, 424, 436, 448, 460, 472, 484, 496, 508, 520, 532, 544, 556, 568, 580, 592, 604, 616, 628, 640, 652, 664, 676, 688, 700</td>
+        <td>4</td><td>ဗိသျက်နှစ်၊ ပိသျက်နှစ်၊ ပိဿျက်နှစ်၊ ဖုဿနှစ်</td><td><p id=pyr4></p></td>
       </tr>
       <tr>
-        <td>5</td><td>စိတ်ဿနှစ် ၊ စိဿ်နှစ်၊ စိသနှစ်၊ စိဿနှစ်</td><td> 401, 413, 425, 437, 449, 461, 473, 485, 497, 509, 521, 533, 545, 557, 569, 581, 593, 605, 617, 629, 641, 653, 665, 677, 689</td>
+        <td>5</td><td>စိတ်ဿနှစ် ၊ စိဿ်နှစ်၊ စိသနှစ်၊ စိဿနှစ်</td><td><p id=pyr5></p></td>
       </tr>
       <tr>
-        <td>6</td><td>အာသတ်နှစ်</td><td> 402, 414, 426, 438, 450, 462, 474, 486, 498, 510, 522, 534, 546, 558, 570, 582, 594, 606, 618, 630, 642, 654, 666, 678, 690 </td>
+        <td>6</td><td>အာသတ်နှစ်</td><td><p id=pyr6></p></td>
       </tr>
       <tr>
-        <td>7</td><td> ဖတ္တ်နှစ် ၊ သရဝန်နှစ် </td><td> 403, 415, 427, 439, 451, 463, 475, 487, 499, 511, 523, 535, 547, 559, 571, 583, 595, 607, 619, 631, 643, 655, 667, 679, 691 </td>
+        <td>7</td><td> ဖတ္တ်နှစ် ၊ သရဝန်နှစ် </td><td><p id=pyr7></p></td>
       </tr>
       <tr>
-        <td>8</td><td>ဖဿနှစ် ၊ ဘဒ္ဒြသံဝစ္ဆုံရ်နှစ် ၊ ဖတ္သ်သံဝစ္ဆိုရ်နှစ်၊ ဘတ်နှစ်</td><td> 404, 416, 428, 440, 452, 464, 476, 488, 500, 512, 524, 536, 548, 560, 572, 584, 596, 608, 620, 632, 644, 656, 668, 680, 692 </td>
+        <td>8</td><td>ဖဿနှစ် ၊ ဘဒ္ဒြသံဝစ္ဆုံရ်နှစ် ၊ ဖတ္သ်သံဝစ္ဆိုရ်နှစ်၊ ဘတ်နှစ်</td><td><p id=pyr8></p></td>
       </tr
       <tr>
-        <td>9</td><td>အာသတ်နှစ်၊ အာသိန်နှစ် </td><td> 405, 417, 429, 441, 453, 465, 477, 489, 501, 513, 525, 537, 549, 561, 573, 585, 597, 609, 621, 633, 645, 657, 669, 681, 693 </td>
+        <td>9</td><td> အာသိန်နှစ် </td><td><p id=pyr9></p></td>
       </tr>
       <tr>
-        <td>10</td><td>ကြတိုက်နှစ်</td><td> 406, 418, 430, 442, 454, 466, 478, 490, 502, 514, 526, 538, 550, 562, 574, 586, 598, 610, 622, 634, 646, 658, 670, 682, 694 </td>
+        <td>10</td><td>ကြတိုက်နှစ်၊ ကြာတိုက်နှစ်</td><td><p id=pyr10></p></td>
       </tr>
       <tr>
-        <td>11</td><td>မြိက္ကသိုဝ်နှစ် ၊ မြိက္ကသိရ်နှစ် ၊ မြိက်ကသိုလ်နှစ် </td><td> 407, 419, 431, 443, 455, 467, 479, 491, 503, 515, 527, 539, 551, 563, 575, 587, 599, 611, 623, 635, 647, 659, 671, 683, 695 </td>
+        <td>11</td><td>မြိက္ကသိုဝ်နှစ် ၊ မြိက္ကသိရ်နှစ် ၊ မြိက်ကသိုလ်နှစ် </td><td><p id=pyr11></p></td>
       </tr>
     </table>
   </div>
@@ -124,5 +171,9 @@
   	<a href='http://coolemerald.blogspot.com'>Cool Emerald</a>
   </div>
 </div>
+<script>
+FillYr();
+ChkRD();
+</script>
 </body>
 </html>
