@@ -1,6 +1,6 @@
 ﻿//Author: Yan Naing Aye
-//http://mc1500.com
-//Version: 201508311115 (only for ME 1312 and later)
+//https://yan9a.github.io/mcal/
+//Version: 20170621 (only for ME 1312 and later)
 //#############################################################################
 var mc_no=0,grX;
 rmDisp();
@@ -22,7 +22,7 @@ function rmDisp() {
 				 rmcalLang=="my-z1") rLang=3; // Zawgyi font
 		grX=rSetLang(rLang);  //Initialize the selected language catalog
 		//--------------------------------------------------------------------
-		ormcal.style.textDecoration="none"; ormcal.href="http://mc1500.com";
+		ormcal.style.textDecoration="none"; ormcal.href="https://yan9a.github.io/mcal/";
 		ormcal.target="_blank"; // decorate the display element
 		if(rLang==3) ormcal.style.fontFamily="Zawgyi-One";
 		ormcal.innerHTML=rmStr(rLang); //get Myanmar date string to display

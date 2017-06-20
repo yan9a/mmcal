@@ -412,6 +412,11 @@ function ShowDay(js) {
 		else if(A.pyathada==2) {str+="<p class='MCYatyaza DayFontSize'>"+T('Afternoon Pyathada')+"</p>";	}
 		str+=tAstro(A,"MCAstro DayFontSize");
 
+		var yna=["ပုဿနှစ်","မာခနှစ်","ဖ္လကိုန်သံဝစ္ဆိုဝ်ရနှစ်","စယ်နှစ်",
+		"ပိသျက်နှစ်","စိဿနှစ်","အာသတ်နှစ်","သရဝန်နှစ်",
+		"ဘဒ္ဒြသံဝစ္ဆုံရ်နှစ်","အာသိန်နှစ်","ကြတိုက်နှစ်","မြိက္ကသိုဝ်နှစ်"];
+		str+="<p class='MCAstro DayFontSize'>"+yna[M.my%12]+"ဖွား</p>"; //year name
+
 		var pa=["ဘင်္ဂ","အထွန်း","ရာဇ","အဓိပတိ","မရဏ","သိုက်","ပုတိ"];
 		str+="<p class='MCAstro DayFontSize'>"+pa[A.mahabote]+"ဖွား</p>"; //mahabote
 

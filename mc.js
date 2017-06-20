@@ -2,8 +2,8 @@
 //File: mc.js
 //Description: Core functions for Myanmar Calendrical Calculations
 //-------------------------------------------------------------------------
-//WebSite: mc1500.com
-//Myanmar Calendrical Calculations by mc1500 is licensed under the
+//WebSite: https://yan9a.github.io/mcal/
+//Myanmar Calendrical Calculations by Cool Emerald is licensed under the
 //     Creative Commons Attribution 4.0 International License.
 //To view a copy of this license, visit
 //    http://creativecommons.org/licenses/by/4.0/.
@@ -24,7 +24,7 @@
 //      Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11, Tabaung=12 ]
 //     M.mp = [0=waxing, 1=full moon, 2=waning, or 3=new moon]
 //     M.d = fortnight day
-
+//Explanation: http://cool-emerald.blogspot.com/2013/06/algorithm-program-and-calculation-of.html
 
 //Start of kernel #############################################################
 
@@ -93,8 +93,8 @@ var g_eras=[
 //output:  ( watat - intercalary month [1=watat, 0=common]
   //  fm - full moon day of 2nd Waso in jdn [valid for watat years only])
 //dependency: chk_exception(my,fm,watat,ei)
-function chk_watat(my) {	
-	for(var i=g_eras.length-1;i>0;i--) if(my>=g_eras[i].begin) break;//get data for respective era
+function chk_watat(my) {
+	for(var i=g_eras.length-1;i > 0;i--) if(my >= g_eras[i].begin) break;//get data for respective era
 	var era=g_eras[i]; var NM=era.NM,WO=era.WO;
 	var SY=1577917828/4320000; //solar year (365.2587565)
 	var LM=1577917828/53433336; //lunar month (29.53058795)
@@ -106,8 +106,8 @@ function chk_watat(my) {
 	var fm=Math.round(SY*my+MO-ed+4.5*LM+WO);//full moon day of 2nd Waso
 	var TW=0,watat=0;//find watat
 	if (era.eid >= 2) {//if 2nd era or later find watat based on excess days
-		TW=LM-(SY/12-LM)*NM; 
-		if(ed >= TW) watat=1; 
+		TW=LM-(SY/12-LM)*NM;
+		if(ed >= TW) watat=1;
 	}
 	else {//if 1st era,find watat by 19 years metonic cycle
 	//Myanmar year is divided by 19 and there is intercalary month
@@ -258,7 +258,7 @@ function w2j(y,m,d,ct,SG) {
 function t2d(h,n,s) { return ((h-12)/24+n/1440+s/86400);}
 //-------------------------------------------------------------------------
 //Checking Astrological days
-//input: (mm=month, mml= length of the month,md= day of the month [0-30], 
+//input: (mm=month, mml= length of the month,md= day of the month [0-30],
 // wd= weekday  [0=sat, 1=sun, ..., 6=fri], my=Myanmar year)
 //output: (sabbath, sabbatheve,yatyaza,pyathada,thamanyo,amyeittasote,
 //	warameittugyi,warameittunge,yatpote,thamaphyu,nagapor,yatyotema,
@@ -499,12 +499,12 @@ function ohol(jd) {
 //Get holiday string
 //input: hd : holiday object
 //output: string
-function Holiday2String(hd,c){ 
-	var str=""; var k=0; 
+function Holiday2String(hd,c){
+	var str=""; var k=0;
 	for(k=0;k<hd.h;k++) {
-		str+="<p class='"+c+"'>"+T(hd.hs[k])+"</p>";  
+		str+="<p class='"+c+"'>"+T(hd.hs[k])+"</p>";
 	}
-	return str; 
+	return str;
 }
 //End of checking holidays ####################################################
 //-----------------------------------------------------------------------------
