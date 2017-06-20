@@ -1,7 +1,7 @@
 # mcal
 Myanmar Calendar
 
-WebSite: mc1500.com
+WebSite: https://yan9a.github.io/mcal/
 
 Myanmar Calendrical Calculations by mc1500 is licensed under the
 
