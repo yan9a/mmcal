@@ -1,4 +1,4 @@
-//Version: 201704151315
+//Version: 20170826
 //File: mc.js
 //Description: Core functions for Myanmar Calendrical Calculations
 //-------------------------------------------------------------------------
@@ -41,7 +41,9 @@ var g_eras=[
 	"end":797,//ending Myanmar year
 	"WO":-1.1,// watat offset to compensate
 	"NM":-1,//number of months to find excess days
-	"fme":[[205,1],[246,1],[471,1],[572,-1],[651,1],[653,2],[656,1],[672,1],[729,1], [767,-1]],//exceptions for full moon days
+	"fme":[[205,1],[246,1],[471,1],[572,-1],[651,1],[653,2],[656,1],[672,1],
+		[729,1], [767,-1]],
+		//exceptions for full moon days
 	"wte":[]//exceptions for watat years
 },
 	//Makaranta system 2 (ME 798 - 1099)
@@ -51,7 +53,9 @@ var g_eras=[
 	"end":1099,//ending Myanmar year
 	"WO":-1.1,// watat offset to compensate
 	"NM":-1,//number of months to find excess days
-	"fme":[[813,-1],[849,-1],[851,-1],[854,-1],[927,-1],[933,-1],[936,-1],[938,-1],[949,-1],[952,-1],[963,-1],[968,-1],[1039,-1]],//exceptions for full moon days
+	"fme":[[813,-1],[849,-1],[851,-1],[854,-1],[927,-1],[933,-1],[936,-1],
+		[938,-1],[949,-1],[952,-1],[963,-1],[968,-1],[1039,-1]],
+		//exceptions for full moon days
 	"wte":[]//exceptions for watat years
 },
 //Thandeikta (ME 1100 - 1216)
@@ -61,7 +65,8 @@ var g_eras=[
 	"end":1216,//ending Myanmar year
 	"WO":-0.85,// watat offset to compensate
 	"NM":-1,//number of months to find excess days
-	"fme":[[1120,1],[1126,-1],[1150,1],[1172,-1],[1207,1]],//exceptions for full moon days
+	"fme":[[1120,1],[1126,-1],[1150,1],[1172,-1],[1207,1]],
+	//exceptions for full moon days
 	"wte":[[1201,1],[1202,0]]//exceptions for watat years
 },
 //---------------------------------------------------------
@@ -93,8 +98,8 @@ var g_eras=[
 //output:  ( watat - intercalary month [1=watat, 0=common]
   //  fm - full moon day of 2nd Waso in jdn [valid for watat years only])
 //dependency: chk_exception(my,fm,watat,ei)
-function chk_watat(my) {
-	for(var i=g_eras.length-1;i > 0;i--) if(my >= g_eras[i].begin) break;//get data for respective era
+function chk_watat(my) {//get data for respective era
+	for(var i=g_eras.length-1;i > 0;i--) if(my >= g_eras[i].begin) break;
 	var era=g_eras[i]; var NM=era.NM,WO=era.WO;
 	var SY=1577917828/4320000; //solar year (365.2587565)
 	var LM=1577917828/53433336; //lunar month (29.53058795)
@@ -117,7 +122,8 @@ function chk_watat(my) {
 		watat=Math.floor(watat/12);
 	}
 	i=bSearch(my,era.wte); if (i >= 0) watat=era.wte[i][1];//correct watat exceptions
-	if(watat) {i=bSearch(my,era.fme); if(i >= 0) fm+=era.fme[i][1]; }//correct full moon day exceptions
+	if(watat) {i=bSearch(my,era.fme); if(i >= 0) fm+=era.fme[i][1]; }
+	//correct full moon day exceptions
 	return {fm:fm,watat:watat};
 }
 //-------------------------------------------------------------------------
@@ -232,7 +238,7 @@ function j2w(jd,ct,SG) {
 }
 //-------------------------------------------------------------------------
 //Western date to Julian day number
-//Credit4 Gregorian 2 JD: http://www.cs.utsa.edu/~cs1063/projects/Spring2011/Project1/jdn-explanation.html
+//Credit4 Gregorian2JD: http://www.cs.utsa.edu/~cs1063/projects/Spring2011/Project1/jdn-explanation.html
 //input: (y: year, m: month, d: day,
   // ct:calendar type [Optional argument: 0=english (default), 1=Gregorian, 2=Julian]
   // SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
@@ -380,14 +386,16 @@ function thingyan(jdn,my,mmt) {
 //output: (h=flag [true=1, false=0], hs=string)
 function ehol(gy,gm,gd) {
 	var h=0; var hs=["","",""];
-	if((gy>=1948) && (gm==1) && (gd==4)) {hs[h++]="Independence Day";}
+	if((gy>=2018) && (gm==1) && (gd==1)) {hs[h++]="New Year Day";}
+	else if((gy>=1948) && (gm==1) && (gd==4)) {hs[h++]="Independence Day";}
 	else if((gy>=1947) && (gm==2) && (gd==12)) {hs[h++]="Union Day";}
 	else if((gy>=1958) && (gm==3) && (gd==2)) {hs[h++]="Peasants Day";}
 	else if((gy>=1945) && (gm==3) && (gd==27)) {hs[h++]="Resistance Day";}
 	else if((gy>=1923) && (gm==5) && (gd==1)) {hs[h++]="Labour Day";}
 	else if((gy>=1947) && (gm==7) && (gd==19)) {hs[h++]="Martyrs Day";}
 	else if((gm==12) && (gd==25)) {hs[h++]="Christmas Day";}
-	else if((gy>=2017) && (gm==12) && (gd==30||gd==31)) {hs[h++]="Holiday";}
+	else if((gy==2017) && (gm==12) && (gd==30)) {hs[h++]="Holiday";}
+	else if((gy>=2017) && (gm==12) && (gd==31)) {hs[h++]="Holiday";}
 	return {h:h,hs:hs};
 }
 //----------------------------------------------------------------------------
@@ -413,13 +421,13 @@ function mhol(my,mm,md,mp) {
 //output: (h=flag [true=1, false=0], hs=string)
 //dependency: DoE(), j2w()
 //external variables: ghEid2,ghCNY
-var ghEid2=[2456936,2457290,2457644];
-var ghCNY=[2456689,2456690,2457073,2457074,2457427,2457428,2457782,2457783];
+var ghEid2=[2456936,2457290,2457644,2457998,2458353];
+var ghCNY=[2456689,2456690,2457073,2457074,2457427,2457428,2457782,2457783,2458166,2458167];
 function ecd(j,ct) {
 	ct=ct||0; var h=0; var hs=["","",""];
 	var g=j2w(j,ct);
 	var doe=DoE(g.y);
-	if((g.m==1) && (g.d==1)) {hs[h++]="New Year Day";}
+	if((g.y<=2017) && (g.m==1) && (g.d==1)) {hs[h++]="New Year Day";}
 	else if((g.y>=1915) && (g.m==2) && (g.d==13)) {hs[h++]="G. Aung San BD";}
 	else if((g.y>=1969) && (g.m==2) && (g.d==14)) {hs[h++]="Valentines Day";}
 	else if((g.y>=1970) && (g.m==4) && (g.d==22)) {hs[h++]="Earth Day";}

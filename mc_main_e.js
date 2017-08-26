@@ -1,4 +1,4 @@
-//Version: 201702121800
+//Version: 20170826
 // File name: mc_main_e.js (display English-Myanmar Calendar)
 // Required: mc.js (core Myanmar calendar calculation functions to be
 //	included before this file is used)
@@ -248,13 +248,13 @@ function tFoot() {
 	var str="<tfoot> <tr> <td colspan=7 class='TdFootMC'> \
 	<p class='PTdMC'>";
 		str+="<a class='AnchorFootMC' href=\
-			'./m.htm'>M&gt;E Calendar</a> ";
-		str+="| <a class='AnchorFootMC' href=\
+			'./m.htm'>M&gt;E Calendar </a> ";
+		str+=" | <a class='AnchorFootMC' href=\
 		'http://cool-emerald.blogspot.sg"+
 		"/2013/06/algorithm-program-and-calculation-of.html'>\
-		Learn</a> ";
+		 Learn </a> ";
 		str+="<a  class='AnchorFootMC'  style='float: right;' href=\
-	 		'./more.htm'>About</a>";
+	 		'./more.htm'> About</a>";
 	str+="</p></td></tr></tfoot>";
 	return str;
 }
@@ -412,9 +412,9 @@ function ShowDay(js) {
 		else if(A.pyathada==2) {str+="<p class='MCYatyaza DayFontSize'>"+T('Afternoon Pyathada')+"</p>";	}
 		str+=tAstro(A,"MCAstro DayFontSize");
 
-		var yna=["ပုဿနှစ်","မာခနှစ်","ဖ္လကိုန်သံဝစ္ဆိုဝ်ရနှစ်","စယ်နှစ်",
+		var yna=["ပုဿနှစ်","မာခနှစ်","ဖ္လကိုန်နှစ်","စယ်နှစ်",
 		"ပိသျက်နှစ်","စိဿနှစ်","အာသတ်နှစ်","သရဝန်နှစ်",
-		"ဘဒ္ဒြသံဝစ္ဆုံရ်နှစ်","အာသိန်နှစ်","ကြတိုက်နှစ်","မြိက္ကသိုဝ်နှစ်"];
+		"ဘဒြနှစ်","အာသိန်နှစ်","ကြတိုက်နှစ်","မြိက္ကသိုဝ်နှစ်"];
 		str+="<p class='MCAstro DayFontSize'>"+yna[M.my%12]+"</p>"; //year name
 
 		var pa=["ဘင်္ဂ","အထွန်း","ရာဇ","အဓိပတိ","မရဏ","သိုက်","ပုတိ"];

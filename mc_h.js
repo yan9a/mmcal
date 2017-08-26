@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 //Start of chronical dates ####################################################
 
-//Credit: Thanks to U Aung Zeya for listing and sending most of the chronical dates listed in this calendar.
+//Credit: Thanks to U Aung Zeya for listing and sending many of the chronical dates listed in this calendar.
 var g_History;
 function ChronicalDates(a) {g_History=a;}
 
@@ -144,6 +144,15 @@ ChronicalDates(
 	"Description":"ပရိမ္မထီးလိုင်သျှင်ဘုရားကျောက်စာ၊ ထီးလှိုင်ရှင်ဘုရား၊ ပရိမ္မရွာ၊ မြောင်မြို့နယ်၊ အလောင်းစည်သူမင်းကြီး။ ဂူ ဘုရားပြု၍ လယ်မြေလှူဒါန်း။ သက္ကစ် ၅၄၅ ခု စိတ်သနှစ် တပေါင်လ္ဆုတ် ၅ ရျက် ၅ နိယ်လျှင် နတ်ရွာသဖွယ် ဖ္လစ်သော ပရိမ်မည်သပြည်နှိုက် ... ။ မန္တလေးနန်းတွင်းကျောက်စာများ အတွဲ ၁။ ကျောက်တိုင်အမှတ် နံပါတ် ၅ (ခ)။"
 },
 {
+  "Julian Day Number":2157668,
+  "Myanmar Year":557,
+  "Myanmar Month":"Nayon",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":7,
+  "Day of the Week":"Wednesday",
+  "Description":"သူကြွယ်ကျောင်း ကျောက်စာ။ သက္ကရစ် ၅၅၇ ခု နံယုံလ္ဆန် ၇ ရျက် ၄ နေ့လျှင်  ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ (၂) ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၄၉၀။"
+ },
+{
 	"Julian Day Number":2158888,
 	"Myanmar Year":560,
 	"Myanmar Month":"Thadingyut",
@@ -178,7 +187,16 @@ ChronicalDates(
 	"Fortnight Day":15,
 	"Day of the Week":"Wednesday",
 	"Description":"မောင်းမ စောခင်မိငယ် ကျောက်စာ။ ဓမ္မရာဇိကဘုရား၊ ပုဂံမြို့။ လှူဒါန်း။ သကရစ် ၅၆၈ ခု ပိသျက်နှစ် ကဆုန်လပ္လည် ပုတ္တဟူနိယ် မောင်မ စဝ်ခင်မိငယ် ဖုရှာကိုဝ် ... ။ မန္တလေးနန်းတွင်းကျောက်စာများ အတွဲ ၁။ ကျောက်တိုင်အမှတ် နံပါတ် ၃၇။"
-},
+}, 	
+{ 
+  "Julian Day Number":2162746, 
+  "Myanmar Year":571, 
+  "Myanmar Month":"Kason", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":7, 
+  "Day of the Week":"Thursday", 
+  "Description":"မင်းမတ်နဂါပိုရ်မိဖွါးကျောက်စာ။ သကရစ် ၅၇၁ ခု အာသိန်နှစ်၊ ကုဆုန်လ္ဆန် ၇ ရျက် ၅ နိယ်အာ၊ မင်မတ် နဂါပိုရ် မိဖွါ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၃။  " 
+ },
 {
 	"Julian Day Number":2163605,
 	"Myanmar Year":573,
@@ -196,7 +214,34 @@ ChronicalDates(
 	"Fortnight Day":5,
 	"Day of the Week":"Friday",
 	"Description":"ဖျက္ကသု ကျောက်စာ။ ဖျက္ကသုမင်း။ လယ်၊ မြေ လှူဒါန်း။ သာကရစ် ၅၈၈ ခု ပုဿနှစ် နတ္တဝ်လဆု . ၅ သုကြာနိယ် ... ။ မန္တလေးနန်းတွင်းကျောက်စာများ အတွဲ ၁။ ကျောက်တိုင်အမှတ် နံပါတ် ၂၉။"
-},
+}, 	 	 	
+{ 
+  "Julian Day Number":2170481, 
+  "Myanmar Year":592, 
+  "Myanmar Month":"Waso", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":5, 
+  "Day of the Week":"Saturday", 
+  "Description":"မကွေးသူ မုဆိုးမ ကျောက်စာ။ သကရစ် ၅၉၂ ခု ဖ္လကိုန်  မ္လွယ်တာလဆန် ၅ ရျက် စနိယ်နိယ်အာ ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၁၈။" 
+ },
+{ 
+  "Julian Day Number":2171439, 
+  "Myanmar Year":594, 
+  "Myanmar Month":"Tabodwe", 
+  "Moon Phase":"Waning", 
+  "Fortnight Day":2, 
+  "Day of the Week":"Friday", 
+  "Description":"အမတ်အစလပိဇည်တို့ကျောက်စာ။ သကရစ် ၅၉၄ ခု တပိုဝ်ထွယ် လဆု ၂ င်္ရျ သုကြနိ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၉။  " 
+ },
+{ 
+  "Julian Day Number":2172263, 
+  "Myanmar Year":597, 
+  "Myanmar Month":"Kason", 
+  "Moon Phase":"Full moon", 
+  "Fortnight Day":15, 
+  "Day of the Week":"Wednesday", 
+  "Description":"သူကြွယ်ငါစပါသင် ကျောက်စာ။ သကရစ် ၅၉၇ ခုကုဆုန် လပ္လည္အ် ပုတ္တဟောနိယ္အ် သုကြွယ် ငါစပါသင် ...။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၈၉(က)။" 
+ },
 {
 	"Julian Day Number":2172725,
 	"Myanmar Year":598,
@@ -205,16 +250,124 @@ ChronicalDates(
 	"Fortnight Day":7,
 	"Day of the Week":"Wednesday",
 	"Description":"သိရိတရိဘဝနာတိတျပဝရ မဟာ ဓမ္မရာဇာ စေည်ု။ ဘုရားတည်၊ ကျောင်းဆောက်၍၊ လယ်၊ မြေ လှူဒါန်း။ သက္ကရာဇ် ၅၉၈ ကြတိုက်နှစ် တော်သလင်လဆန် ၇ ရက် ဗုဒ္ဓဟုနိယ်၊ သိရိ တရိ ဘဝနာ တိတျ ပဝရ မဟာဓမ္မရာဇာ စေည်ု အမည်တော်ဟိသော ဖုရာဆုတောင်သော ၊ မင်မြတ်သှ် ... ။ မန္တလေးနန်းတွင်းကျောက်စာများ အတွဲ ၁။ ကျောက်တိုင်အမှတ် နံပါတ် ၂၈။"
-},
+}, 	
+{ 
+  "Julian Day Number":2173332, 
+  "Myanmar Year":600, 
+  "Myanmar Month":"Tagu", 
+  "Moon Phase":"Waning", 
+  "Fortnight Day":5, 
+  "Day of the Week":"Monday", 
+  "Description":"မဟာဂေါတမဘုရားကျောက်စာ။ သကရစ် ၆၀၀ ပုဿနှစ် တန်ခူလ္ဆုတ် ၅ ရျက် တနှင်လာနိယ်... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၁။  " 
+ }, 	
+{ 
+  "Julian Day Number":2173680, 
+  "Myanmar Year":601, 
+  "Myanmar Month":"Tagu", 
+  "Moon Phase":"Full moon", 
+  "Fortnight Day":2, 
+  "Day of the Week":"Saturday", 
+  "Description":"အမတ်အစလပိဇည်တို့ကျောက်စာ။ သကရစ် ၆၀၁ ခု။ တန်ထူလပ္လည် စနိယ်နိယ်... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၉။  " 
+ }, 	
+{ 
+  "Julian Day Number":2173699, 
+  "Myanmar Year":601, 
+  "Myanmar Month":"Kason", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":5, 
+  "Day of the Week":"Thursday", 
+  "Description":"ငကောင်ရင်သင်ဂူကျောင်းကျောက်စာ။ သက္ကရစ် ၆၀၁ ခု၊ မာခနှစ် ကဆုန်လဆန် ၅ ရျက် ကြာသပတေနိယ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၁၄။  " 
+ },
 {
-	"Julian Day Number":2174123,
+  "Julian Day Number":2173825,
+  "Myanmar Year":601,
+  "Myanmar Month":"Tawthalin",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":13,
+  "Day of the Week":"Thursday",
+  "Description":"လေးမျက်နှာဘုရား ကျောက်စာ။ သကရစ် ၆၀၁ မာခနှစ် တ်သလင်လဆန် ၁၃ ရျက် ကြသပတေ ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၀၂။"
+ }, 	  	
+{ 
+  "Julian Day Number":2173827, 
+  "Myanmar Year":601, 
+  "Myanmar Month":"Tawthalin", 
+  "Moon Phase":"Full moon", 
+  "Fortnight Day":15, 
+  "Day of the Week":"Saturday", 
+  "Description":"သင်လျင်သိရတ်မောင်နှံကျောက်စာ။ သကရစ် ၆၀၁ ။ မာခနှစ် တဝ်သလင်လဆန် ၁၅ ရျက် စနိယ်နိယ္အ်လျှင် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၁၀။  " 
+ },	
+{ 
+  "Julian Day Number":2173980, 
+  "Myanmar Year":601, 
+  "Myanmar Month":"Tabodwe", 
+  "Moon Phase":"Waning", 
+  "Fortnight Day":5, 
+  "Day of the Week":"Friday", 
+  "Description":"ရတနာသုံးပါးအားကျွန်လယ်လှူသောကျောက်စာ။ သကရစ် ၆၀၁ ခု မာခါနှစ် တပိုဝ်ထွယ် လဆုတ် ၅ ရျက် သုကြာနိယ်... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၆။  " 
+ },
+{ 
+  "Julian Day Number":2173991, 
+  "Myanmar Year":601, 
+  "Myanmar Month":"Tabaung", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":1, 
+  "Day of the Week":"Monday", 
+  "Description":"မင်းမတ်နဂါပိုရ်မိဖွါးကျောက်စာ။ သကရစ် ၆၀၁ ခု မာဃနှစ်၊ တပေါင်လ္ဆန် ၁ ရျက် ၂ နိယ်အာ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၃။  " 
+ }, 	
+{ 
+  "Julian Day Number":2174151, 
+  "Myanmar Year":602, 
+  "Myanmar Month":"Kason", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":12, 
+  "Day of the Week":"Monday", 
+  "Description":"ဖုန်းသည် သင်ကြီး ငါပံသင် ကျောက်စာ။ သကရစ် ၆၀၂ ခု ကုဆုန်လဆန် ၁၂ ရျက် တနှင်္လာနိယ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၁၅။" 
+ }, 	
+{ 
+  "Julian Day Number":2174152, 
+  "Myanmar Year":602, 
+  "Myanmar Month":"Waso", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":13, 
+  "Day of the Week":"Wednesday", 
+  "Description":"သူကြွယ် ငစုယ်သင် ဘုရားကြီး ကျောက်စာ။ သကရစ် ၆၀၂ ခု ဖုတ်သနှစ် မ္လွယ်တာလ္ဆန် ၁၃ ရျက် ၄ နိယ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၂၁။" 
+ },
+{
+	"Julian Day Number":2174154,
 	"Myanmar Year":602,
 	"Myanmar Month":"Waso",
 	"Moon Phase":"Full moon",
 	"Fortnight Day":15,
 	"Day of the Week":"Monday",
 	"Description":"ဖုန်မ္လတ်ပုရှာ မယ်တော် ကျောက်စာ။ လှူဒါန်း။ သကရစ် ၆၀၂ ခု ဖ္လကိုန် သံဝစ္ဆိုဝ်ရနှစ် မ္လယ်တာလပ္လည် တန်နှင်လာနိယ် ဖုန်မ္လတ်ပုရှာ မယ်တော်ကာ ... ။ မန္တလေးနန်းတွင်းကျောက်စာများ အတွဲ ၁။ ကျောက်တိုင်အမှတ် နံပါတ် ၂၈။"
-},
+}, 	 	
+{ 
+  "Julian Day Number":2174163, 
+  "Myanmar Year":602, 
+  "Myanmar Month":"Waso", 
+  "Moon Phase":"Waning", 
+  "Fortnight Day":9, 
+  "Day of the Week":"Thursday", 
+  "Description":"မကွေးသူ မုဆိုးမ ကျောက်စာ။ သကရစ် ၆၀၂ ခု  မ္လွယ်တာလဆုတ် ၉ ရျက်ကြသပတိယ်နိယ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၁၉။" 
+ }, 	
+{ 
+  "Julian Day Number":2174272, 
+  "Myanmar Year":602, 
+  "Myanmar Month":"Tazaungmon", 
+  "Moon Phase":"Full moon", 
+  "Fortnight Day":15, 
+  "Day of the Week":"Monday", 
+  "Description":"ငဇဝ်သင် ကျောက်စာ။ သကရစ် ၆၀၂ ခု  ဖလကိုန်နှစ် တန်ဆောင်မှုန် လပ္လည် သတင် တနှင်လာနိယ္အ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၂၀။" 
+ },
+{ 
+  "Julian Day Number":2175600, 
+  "Myanmar Year":606, 
+  "Myanmar Month":"Waso", 
+  "Moon Phase":"Full moon", 
+  "Fortnight Day":15, 
+  "Day of the Week":"Monday", 
+  "Description":"ဖုမ်မသင်ကြံကျောင်းကျောက်စာ။ သကရာဇ် ၆၀၅ ခု အာသိတ်နှစ် (နှစ်အမည်အရ ၆၀၆ ဖြစ်မှ ကိုက်ညီမည်) မ္လယ်တာလ္ဆန် ၁၅ ရျက် ဝါဆိုသတ .... င် တနှင်လာနိယ်လျှင်။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၅၇။" 
+ },
  {
  	"Julian Day Number":2181040,
  	"Myanmar Year":621,
@@ -315,6 +468,15 @@ ChronicalDates(
   "Description":"သတင်းသည် အပယ်ငယ် ကျောက်စာ။  သကရစ် ၆၄၅ ခု အာသိန်နှစ် အဓိမတ် နံယုန်လဆန် ၁၂ ရျက် တနှင်ဂုနိုယ်နိယ်လျှင် ... ။ မန္တလေးနန်းတွင်းကျောက်စာများ အတွဲ ၂။ မန္တလေးမြို့၊ နန်းတွင်းကျောက်စာရုံ (၁) အတွင်း။ ကျောက်တိုင်အမှတ် နံပါတ် ၇၄ (က)။"
  },
 {
+  "Julian Day Number":2191567,
+  "Myanmar Year":650,
+  "Myanmar Month":"Tagu",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":5,
+  "Day of the Week":"Monday",
+  "Description":"ငါဖွယ်သင်လင်မယား ကျောက်စာ။ သကရစ် ၆၅၀ ခု တန်ခူလဆန် ၅ ရျက် တနှင်လာနိယ် ... ။  မန္တလေးနန်းတွင်းကျောက်စာရုံ (၂) ရှိကျောက်စာများ။ မန္တလေးမြို့၊ နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၄၆၈ (က)။"
+ },
+{
 	"Julian Day Number":2192147,
 	"Myanmar Year":651,
 	"Myanmar Month":"Thadingyut",
@@ -332,6 +494,15 @@ ChronicalDates(
 	"Day of the Week":"Thursday",
 	"Description":"Athinkhaya, Yazathingyan, Thihathu appointed viceroys."
 },
+{
+  "Julian Day Number":2193607,
+  "Myanmar Year":655,
+  "Myanmar Month":"Tazaungmon",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":7,
+  "Day of the Week":"Thursday",
+  "Description":"ပုထိုးနီမင်းနှင့်မင်းကျစွာကျောက်စာ။ သကရစ် ၆၅၅ ခု သရဝန်နှစ် တန်ဆောင်မှုန် (လ္ဆန်။ သာသနာ ၇ ရက်ကြာသပတိ...)၊ နေိယ်လျှင် ပုထိုင်နီမင်နှင်မင်က္လဟွာ မောင်နှံ ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၁၀(က)။"
+ },
 {
   "Julian Day Number":2193915,
   "Myanmar Year":656,
@@ -558,6 +729,15 @@ ChronicalDates(
   "Description":"မထောစေတီ ကျောက်စာ။  သကရစ် ၆၉၇ ခု မာခနှစ် တပိုဝ်ထလ္ဆန် ၇ ရျက် ၂ နိယ်အာ ...  ။ မန္တလေးနန်းတွင်းကျောက်စာများ အတွဲ ၂။ မန္တလေးမြို့၊ နန်းတွင်းကျောက်စာရုံ (၁) အတွင်း။ ကျောက်တိုင်အမှတ် နံပါတ် ၁၀၁။"
  },
 {
+  "Julian Day Number":2209175,
+  "Myanmar Year":698,
+  "Myanmar Month":"Nayon",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":11,
+  "Day of the Week":"Thursday",
+  "Description":"တန်လိုင်သူကြီးဖုံမသင်ကြံကျောက်စာ။ သကရစ် ၆၉၈ စဲနှစ် နမျုန်လ္ဆန်၁၁ ၅နိယ် ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၀၈။"
+ },
+{
   "Julian Day Number":2209585,
   "Myanmar Year":699,
   "Myanmar Month":"Waso",
@@ -574,6 +754,69 @@ ChronicalDates(
   "Fortnight Day":1,
   "Day of the Week":"Thursday",
   "Description":"သကရာဇ် ၇၁(၂) ပိဿျက်နှစ် နံယုန် လ လ္ဆုတ် တရျက် ကြသပတေနေ နေတက် ၇ ဖ္လွါလျှင် တေည်သတေ ... ။ အလှူရှင် -ငကြိသင်။ မန္တလေးနန်းတွင်းကျောက်စာများ အတွဲ ၂။ မန္တလေးမြို့၊ နန်းတွင်းကျောက်စာရုံ (၁) အတွင်း။ ကျောက်တိုင်အမှတ် နံပါတ် (၇၈-ခ)။"
+ },
+ {
+   "Julian Day Number":2215073,
+   "Myanmar Year":714,
+   "Myanmar Month":"Wagung",
+   "Moon Phase":"Waxing",
+   "Fortnight Day":4,
+   "Day of the Week":"Monday",
+   "Description":"သကရစ် ၇၁၄ ခု၊ အသတ်နှစ် နံကာလဆန် ၄ ရျက် တန်နှင်လာနိယ် ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ (၂) ရှိကျောက်စာများ။ မန္တလေးမြို့၊ နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၄၇၉။"
+  },
+ {
+   "Julian Day Number":2215292,
+   "Myanmar Year":714,
+   "Myanmar Month":"Tabaung",
+   "Moon Phase":"Waning",
+   "Fortnight Day":3,
+   "Day of the Week":"Wednesday",
+   "Description":"မိတ္ထိလာလင်စင်းကန်ရိုးယှိ ကျောက်စာ။ သကရစ် ၇၁၄ ခု အာသတ်နှစ် တပေါင်လ္ဆုတ် ၃ ရျက် ပုတ္တဟူနိယ်လျှင် ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ (၂) ရှိကျောက်စာများ။ မန္တလေးမြို့၊ နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၄၆၉။"
+  },
+{
+  "Julian Day Number":2216434,
+  "Myanmar Year":718,
+  "Myanmar Month":"Kason",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":8,
+  "Day of the Week":"Thursday",
+  "Description":"မင်းနန်သူကျောင်းကျောက်စာ။ ...ရစ် ၇၁၈ ခု ကြတိုက်နှစ် ကဆုန်လ္ဆန် ၈ ရျက် (၅နေအား) ရတနာသုံမ်ပါ ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၂၆ (က)။"
+ }, 	
+{ 
+  "Julian Day Number":2216756, 
+  "Myanmar Year":718, 
+  "Myanmar Month":"Tabaung", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":5, 
+  "Day of the Week":"Monday", 
+  "Description":"မာရဖင်ရတနာ စည်းခုံဘုရားကျောံစာ။ သကရစ် ၇၁၈ ခု တပေါင်လ္ဆန် ၅ ရျက် ၂လာနေလျှင် ...။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၉၃။" 
+ },
+{
+  "Julian Day Number":2216924,
+  "Myanmar Year":719,
+  "Myanmar Month":"Wagung",
+  "Moon Phase":"Waning",
+  "Fortnight Day":8,
+  "Day of the Week":"Thursday",
+  "Description":"တလုပ်မြို့သက်တော်ရဘုရားကျောက်စာ။သကြစ် ၇၁၉ ခုမြိုင်က္ကသိုဝ်နှစ်ဝါခေါင်လဆုတ်၈ရက် ၅ နေိယ် ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၃၀။"
+ },
+{
+  "Julian Day Number":2218441,
+  "Myanmar Year":723,
+  "Myanmar Month":"Tazaungmon",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":7,
+  "Day of the Week":"Tuesday",
+  "Description":"ရွှေစည်းခုံဘုရားကျောက်စာ။ သကရစ် ၇၂၃ ခု စယ်နှစ် တံဆောင်မုန်လ္ဆန် ၇ ရျက် ၃ နိယ် နက္ခ်တ် ၂၆ ခုပြိစ္ဆာလက်လျှင် ရွာ . တည်၏ ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၁၈။"
+ },
+{
+  "Julian Day Number":2218961,
+  "Myanmar Year":724,
+  "Myanmar Month":"Tabaung",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":10,
+  "Day of the Week":"Sunday",
+  "Description":"အမတ်ကြီးသရေအသင်္ခယာ ကျောက်စာ။ သကရစ် ၇၂၄ ခု ပိဿျက်နှစ်တပေါင်းလ္ဆန် ၁၀ရျက်၁နွေနိယ် ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ (၂) ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၄၃၈(က)။"
  },
 {
 	"Julian Day Number":2219652,
@@ -630,6 +873,42 @@ ChronicalDates(
 	"Description":"Razadarit comes to power."
 },
 {
+  "Julian Day Number":2228075,
+  "Myanmar Year":749,
+  "Myanmar Month":"Tabaung",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":14,
+  "Day of the Week":"Thursday",
+  "Description":"သူကြီး ကျောက်စာ။ နမောတဿတိ၊ သက္ကရာဇ် ၇၄၉ ခု၊ ပြိဿနှစ် တပေါင် လ္ဆန် တဆယ် ၄ ရျက်၊ ကြာသပတေနိယ်အာ၊ မြမ္မာပြည် အကြေအညာ  ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ (၂) ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၇၄၉။"
+ },
+{
+  "Julian Day Number":2230727,
+  "Myanmar Year":757,
+  "Myanmar Month":"Nayon",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":8,
+  "Day of the Week":"Wednesday",
+  "Description":"ပုခြည်သူကြီး ကျောက်စာ။ ... ရစ် ၇၅၇၊ နယုန်လ္ဆန် ၈ ရျက် ၄ နေ ပုခြည်သူကြီ... ။  မန္တလေးနန်းတွင်းကျောက်စာရုံ (၂) ရှိကျောက်စာများ။ မန္တလေးမြို့၊ နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၄၇၀။"
+ }, 	 	
+{ 
+  "Julian Day Number":2231097, 
+  "Myanmar Year":758, 
+  "Myanmar Month":"Nayon", 
+  "Moon Phase":"Waning", 
+  "Fortnight Day":9, 
+  "Day of the Week":"Wednesday", 
+  "Description":"မာရဖင်ရတနာ စည်းခုံဘုရားကျောံစာ။ သက္ကရစ် ၇၅၈ ခု နံမျုန် လ္ဆုတ် ၉ ရျက် ပုတ်တဟူနေလျှင် ...။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၉၃။" 
+ },
+{ 
+  "Julian Day Number":2233185, 
+  "Myanmar Year":763, 
+  "Myanmar Month":"Tabaung", 
+  "Moon Phase":"Full moon", 
+  "Fortnight Day":15, 
+  "Day of the Week":"Thursday", 
+  "Description":"ပျူကန်မင်းမတ်သရေလင်မယားကျောင်းကျောံစာ။ ... ၇၆၃ ခု၊ အာသိုတ်နှစ် (နှစ်အမည်သရဝန်နှစ်ဖြစ်မှကိုက်ညီမည်) တပေါင်လပ္လည် ကြာ ...။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၇၈။" 
+ },
+{
 	"Julian Day Number":2234932,
 	"Myanmar Year":768,
 	"Myanmar Month":"Nadaw",
@@ -648,6 +927,24 @@ ChronicalDates(
 	"Description":"Minye Kyawswa dies."
 },
 {
+  "Julian Day Number":2239232,
+  "Myanmar Year":780,
+  "Myanmar Month":"Thadingyut",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":10,
+  "Day of the Week":"Wednesday",
+  "Description":"တန်ဆောင်းကျောင်း ကျောက်စာ။ သက္ကရစ် ၇၈၀ ဝါကျွတ်လဆန် ၁၀ ရက် ပိတဟူနေနှိုက် ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၀၅(မျက်နှာ)။"
+ },
+{
+  "Julian Day Number":2239373,
+  "Myanmar Year":780,
+  "Myanmar Month":"Tabaung",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":1,
+  "Day of the Week":"Thursday",
+  "Description":"ယောက်ခမတော်ကျောင်းကျောက်စာ။ သက္ကရဇ် ၇၈၀ မာခနှစ် တပေါင်လဆန်တရက် ကြာသပဒေနေနှိုက်၊ မ္လိယ်သျှင်နှစ်ပါ စကာမျာကြသည် ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၀၅(ကျော)။"
+ },
+{
 	"Julian Day Number":2243108,
 	"Myanmar Year":791,
 	"Myanmar Month":"Kason",
@@ -657,6 +954,15 @@ ChronicalDates(
 	"Description":"Min Saw Mon becomes king."
 },
 {
+  "Julian Day Number":2243847,
+  "Myanmar Year":793,
+  "Myanmar Month":"Kason",
+  "Moon Phase":"Full moon",
+  "Fortnight Day":15,
+  "Day of the Week":"Friday",
+  "Description":"စည်းခုံဘုရား ကျောက်စာ။ သက္ကရာဇ် ၇၉၃ ကဆုန်လပ္လည်သတင်သောက်ကြာနေိ ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ (၂) ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၄၃၅(က)။"
+ },
+{
 	"Julian Day Number":2244590,
 	"Myanmar Year":795,
 	"Myanmar Month":"Kason",
@@ -665,6 +971,42 @@ ChronicalDates(
 	"Day of the Week":"Saturday",
 	"Description":"Min Saw Mon dies."
 },
+{
+  "Julian Day Number":2245253,
+  "Myanmar Year":797,
+  "Myanmar Month":"Tagu",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":7,
+  "Day of the Week":"Thursday",
+  "Description":"ဘုရားထုရွာသူကြီး ကျောက်စာ။ လှူဒါန်း။ သကရစ် ၇၉၇ ခု ၊ တန်ခုလဆန် ခုနှစ်ရက် ကြာသပတေနေ၊ ဖုရာထုရွာသူကြိ ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ (၂) ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၄၃၄(က)။"
+ },
+{
+  "Julian Day Number":2253758,
+  "Myanmar Year":820,
+  "Myanmar Month":"Waso",
+  "Moon Phase":"Waxing",
+  "Fortnight Day":5,
+  "Day of the Week":"Thursday",
+  "Description":"နရပတိမင်းကျောင်းကျောက်စာ။ သက္ကြစ် ၈၂၀။ ဝါဆိုလ္ဆန် ငါရက် ကြာသပတေနေညနေလွဲခုနစ်ခါနှိုက်လျှင် ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ (၂) ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၄၅၈(က)။"
+ },
+{
+  "Julian Day Number":2254065,
+  "Myanmar Year":821,
+  "Myanmar Month":"Kason",
+  "Moon Phase":"Waning",
+  "Fortnight Day":2,
+  "Day of the Week":"Wednesday",
+  "Description":"နရပတိမင်းကျောင်းကျောက်စာ။ သက္ကြစ် ၈၂၁။ ကဆုန် လ္ဆုတ် ၂ ရျက် ပုတ္တဟူနေ (နေတက်တပဟိုဝ်တွင်လျှင်) ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ (၂) ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၄၅၈(က)။"
+ },
+{
+  "Julian Day Number":2257784,
+  "Myanmar Year":831,
+  "Myanmar Month":"Waso",
+  "Moon Phase":"Full moon",
+  "Fortnight Day":15,
+  "Day of the Week":"Monday",
+  "Description":"စူဠာမုဏိဘုရား ကျောက်စာ။ ၈၃၁ ။ နွဲတာလပြည်၊ တနှင်လာ ရက်နှိုက်၊ နှစ်သိန်လေသောင်၊ အထုဟိသ ... ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ (၂) ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၄၅၇။"
+ },
 {
 	"Julian Day Number":2265960,
 	"Myanmar Year":853,
@@ -682,7 +1024,16 @@ ChronicalDates(
 	"Fortnight Day":9,
 	"Day of the Week":"Thursday",
 	"Description":"Coronation of Narapati II of Ava."
-},
+}, 	
+{ 
+  "Julian Day Number":2270840, 
+  "Myanmar Year":867, 
+  "Myanmar Month":"Tagu", 
+  "Moon Phase":"Waning", 
+  "Fortnight Day":3, 
+  "Day of the Week":"Tuesday", 
+  "Description":"သက္ကရာဇ် ၈၆၇ တန်ခုလဆုတ် သုံရက် အင်ကာနေ၊ နက်သတ်သုံလုံ။ မန္တလေးနန်းတွင်းကျောက်စာရုံ(၂)ရှိကျောက်စာများ။ မန္တလေးမြို့နန်းတွင်းကျောက်စာရုံငယ်။ ကျောက်တိုင်အမှတ် နံပါတ် ၅၇၃။" 
+ },
 {
 	"Julian Day Number":2272876,
 	"Myanmar Year":872,
