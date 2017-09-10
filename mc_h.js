@@ -115,7 +115,16 @@ ChronicalDates(
 	"Fortnight Day":10,
 	"Day of the Week":"Friday",
 	"Description":"သင်ကြီးငါယန်သင် ကျောက်စာ။ သိမ်နှင့်ပုထိုးပြု၍ ကျွန်၊ လယ်၊ ယာ၊ နွား၊ စသည့် လှူဒါန်း။ ... သကရစ် (၅၃) ၇ ခု ကြတီုက်နှစ် ကူဆူန်လ္ဆန် ၁၀ ရျာက် သုက္ကြာနိယ္အ်အာ ... ။ မန္တလေးနန်းတွင်းကျောက်စာများ အတွဲ ၁။ ကျောက်တိုင်အမှတ် နံပါတ် ၃။ (ကြတိုက်နှစ်ဆိုပါက ၅၃၈ ဖြစ်သင့်သည်။)"
-},
+}, 	
+{ 
+  "Julian Day Number":2152069, 
+  "Myanmar Year":541, 
+  "Myanmar Month":"Tabodwe", 
+  "Moon Phase":"Waning", 
+  "Fortnight Day":5, 
+  "Day of the Week":"Friday", 
+  "Description":"ကျစွာမင် မိထွေးတော်ကျောင်း ကျောက်စာ။ သကရစ် ၅၄၁ ခု။ မာဃနှစ်။ တပိုဝ်ထွယ်လ္ဆုတ် (၅ ရျ)က်။ ၆ နိယ် သင်ကြီ ငထာသင်... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၅၈။" 
+ },
 {
 	"Julian Day Number":2152959,
 	"Myanmar Year":544,
@@ -358,6 +367,105 @@ ChronicalDates(
   "Fortnight Day":15, 
   "Day of the Week":"Monday", 
   "Description":"ငဇဝ်သင် ကျောက်စာ။ သကရစ် ၆၀၂ ခု  ဖလကိုန်နှစ် တန်ဆောင်မှုန် လပ္လည် သတင် တနှင်လာနိယ္အ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၂၀။" 
+ }, 	
+{ 
+  "Julian Day Number":2174410, 
+  "Myanmar Year":603, 
+  "Myanmar Month":"Tagu", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":7, 
+  "Day of the Week":"Monday", 
+  "Description":"ဖွားစောခေါ် အမိပုရှာစော ကျောက်စာ။ သကရစ် ၆၀၃ ခု။ တန်ခူလဆန် ၇ ရျက်။ တနှင်လာနိယ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၂၉။" 
+ },
+ { 
+  "Julian Day Number":2174447, 
+  "Myanmar Year":603, 
+  "Myanmar Month":"Kason", 
+  "Moon Phase":"Full moon", 
+  "Fortnight Day":15, 
+  "Day of the Week":"Wednesday", 
+  "Description":"ဖွားစောခေါ် အမိပုရဟားစော ကျောက်စာ။ သကရစ် ၆၀၃ ခု။ စယ်နှစ်။ ကုဆုန်လပ္လည် ဗုဒ္ဓဟူနိယ္အ်နှိုက် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၂၄။" 
+ },
+ { 
+  "Julian Day Number":2174617, 
+  "Myanmar Year":603, 
+  "Myanmar Month":"Tazaungmon", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":8, 
+  "Day of the Week":"Friday", 
+  "Description":"သ္ခိင်ဖွားကြီးမြေး စိုးမင်း ကျောက်စာ။ သကရစ် ၆၀၃ ခု စယ်နှစ် တန်ဆောင်မှုန်လ္ဆန် ၈ ရ္ယာက် သုကြာနိယ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၂၇။" 
+ }, 	 	
+{ 
+  "Julian Day Number":2174772, 
+  "Myanmar Year":604, 
+  "Myanmar Month":"Tagu", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":13, 
+  "Day of the Week":"Thursday", 
+  "Description":"ရွှေဂူဘုရား ကျောက်စာ။ သကရစ် ၆၀၄ ခု ဗိသျက် သံဝစ္ဆိုဝ်နှစ် တန်ခူလဆန် ၁၃ ရျက် ကြဿပတိယ်နိယ္အ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၅၆။" 
+ }, 	
+{ 
+  "Julian Day Number":2174798, 
+  "Myanmar Year":604, 
+  "Myanmar Month":"Kason", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":10, 
+  "Day of the Week":"Friday", 
+  "Description":"ကျစွာမင် မိထွေးတော်ကျောင်း ကျောက်စာ။ သကရစ် ၆၀၄ ခု။ ကဆုန်လ္ဆန် ၁၀ ရျက် သုကြာနိယ်... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၅၉။" 
+ },
+{ 
+  "Julian Day Number":2174804, 
+  "Myanmar Year":604, 
+  "Myanmar Month":"Kason", 
+  "Moon Phase":"Full moon", 
+  "Fortnight Day":15, 
+  "Day of the Week":"Wednesday", 
+  "Description":"သံဗျင် အစလဘိရစ် ဒါနပတိ မောင်နှံ ကျောက်စာ။ သကရစ် ၆၀၄ ခု ဖ္လကုန်နှစ် ကုဆုန်လ ပ္လည် ပုတ္တ ဟူနိယ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၃၀။" 
+ }, 	 	
+{ 
+  "Julian Day Number":2174913, 
+  "Myanmar Year":604, 
+  "Myanmar Month":"Wagung", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":6, 
+  "Day of the Week":"Wednesday", 
+  "Description":"မြေအတွက် အချင်းများသော ကျောက်စာ။ သကရစ် ၆၀၄ ခု ဗိသျက်နှစ် နံကာလဆန် ၆ ရျက် ပုတ္တဟူနိယ် ... ။ ကျစွာမင် မိထွေးတော်ကျောင်း ကျောက်စာ။ သကရစ် ၆၀၄ ခု နံကာလ္ဆန် ၆ ရျက် ပုတ္တဟူနိယ်အာ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၅၂၊ ၅၉။" 
+ }, 	
+{ 
+  "Julian Day Number":2174951, 
+  "Myanmar Year":604, 
+  "Myanmar Month":"Tawthalin", 
+  "Moon Phase":"Full moon", 
+  "Fortnight Day":15, 
+  "Day of the Week":"Thursday", 
+  "Description":"သူကြွယ် ငါမြှောက်သင် ကျောက်စာ။ သကရစ် ၆၀၄ ခု ပိသျက် သံမဆ္စိုရာနှာစ် တဝ်သ္လင်လပ္လည် ကြတ္သပတိယ်နိယ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၅၃။" 
+ }, 	
+{ 
+  "Julian Day Number":2175005, 
+  "Myanmar Year":604, 
+  "Myanmar Month":"Tazaungmon", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":10, 
+  "Day of the Week":"Thursday", 
+  "Description":"သ္ခိင် ငမည်သင် ဂုဏာတိရိတ် ကျောက်စာ။ သကရစ် ၆၀၄ ခု ဗိသျက်နှစ် တန်ဆောင်မှုန်လဆန် ၁(၀) ရျက် ကြသပတိယ်နိယ္အ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၅၄။" 
+ },
+{ 
+  "Julian Day Number":2175054, 
+  "Myanmar Year":604, 
+  "Myanmar Month":"Nadaw", 
+  "Moon Phase":"Waning", 
+  "Fortnight Day":14, 
+  "Day of the Week":"Thursday", 
+  "Description":"ညောင်ရံကြီး သမီး ကျောက်စာ။ သကရစ် ၆၀၄ ခု။ ပိသျက်နှစ်။ နတ်တော် လဆုတ် ၁၄ ရျက် သတင် ကြဿတိယ်နိယ္အ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၃၃။" 
+ }, 	 	
+{ 
+  "Julian Day Number":2175057, 
+  "Myanmar Year":604, 
+  "Myanmar Month":"Pyatho", 
+  "Moon Phase":"Waxing", 
+  "Fortnight Day":3, 
+  "Day of the Week":"Sunday", 
+  "Description":"ညောင်ရံကြီး သမီး ကျောက်စာ။ သကရစ် ၆၀၄ ခု။ ပိသျက်နှစ်။ ပ္လသိုဝ်လဆန် ၃ ရျက် တန်နှင်ကုနုယ်နိယ္အ် ... ။ ရှေးဟောင်းမြန်မာကျောက်စာများ-ဒုတိယတွဲ။ စာမျက်နှာ ၃၃။" 
  },
 { 
   "Julian Day Number":2175600, 
