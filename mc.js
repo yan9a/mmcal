@@ -1,19 +1,11 @@
-//Version: 20170826
-//File: mc.js
-//Description: Core functions for Myanmar Calendrical Calculations
-//-------------------------------------------------------------------------
-//WebSite: https://yan9a.github.io/mcal/
-//Myanmar Calendrical Calculations by Cool Emerald is licensed under the
-//     Creative Commons Attribution 4.0 International License.
-//To view a copy of this license, visit
-//    http://creativecommons.org/licenses/by/4.0/.
-//  You are free to:
-//   Share — copy and redistribute the material in any medium or format
-//   Adapt — remix, transform, and build upon the material
-//                   for any purpose, even commercially.
-//  Under the following terms:
-//   Attribution — You may give appropriate credit, provide a link to the license,
-//                   but it is not a compulsory requirement.
+// Version 1.0
+// File: mc.js
+// Description: Modern Myanmar Calendrical Calculations
+// WebSite: https://yan9a.github.io/mcal/
+// MIT License (https://opensource.org/licenses/MIT)
+// Copyright (c) 2018 Yan Naing Aye
+// Doc: http://cool-emerald.blogspot.com/2013/06/algorithm-program-and-calculation-of.html
+
 //-------------------------------------------------------------------------
 //Usage example to calculate Myanmar calendar date
 // j=w2j(year,month,day); //get julian day number
@@ -24,7 +16,6 @@
 //      Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11, Tabaung=12 ]
 //     M.mp = [0=waxing, 1=full moon, 2=waning, or 3=new moon]
 //     M.d = fortnight day
-//Explanation: http://cool-emerald.blogspot.com/2013/06/algorithm-program-and-calculation-of.html
 
 //Start of kernel #############################################################
 
@@ -421,8 +412,9 @@ function mhol(my,mm,md,mp) {
 //output: (h=flag [true=1, false=0], hs=string)
 //dependency: DoE(), j2w()
 //external variables: ghEid2,ghCNY
-var ghEid2=[2456936,2457290,2457644,2457998,2458353];
-var ghCNY=[2456689,2456690,2457073,2457074,2457427,2457428,2457782,2457783,2458166,2458167];
+var ghEid2=[2456936,2457290,2457644,2457998,2458353,2458707];
+var ghCNY=[2456689,2456690,2457073,2457074,2457427,2457428,2457782,
+	2457783,2458166,2458167,2458520,2458521];
 function ecd(j,ct) {
 	ct=ct||0; var h=0; var hs=["","",""];
 	var g=j2w(j,ct);
@@ -495,8 +487,8 @@ function mcd(my,mm,md,mp) {
 //input: (jd: Julian day number)
 //output: (h=flag [true=1, false=0], hs=string)
 //external variables: ghDiWali,ghEid
-var ghDiwali=[2456599,2456953,2457337,2457691,2458045,2458429];
-var ghEid=[2456513,2456867,2457221,2457576,2457930,2458285];
+var ghDiwali=[2456599,2456953,2457337,2457691,2458045,2458430,2458784];
+var ghEid=[2456513,2456867,2457221,2457576,2457930,2458285,2458640];
 function ohol(jd) {
 	var h=0; var hs=["","",""];
 	if(bSearch1(jd,ghDiwali)>=0) {hs[h++]="Diwali";}
