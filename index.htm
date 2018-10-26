@@ -9,7 +9,7 @@
 <link href="./html/play.css" rel="stylesheet">
 <style type="text/css">
  body {
-		font-size: 16px;
+		font-size: 20px;
 		background-color: #111111;
 		font-family: 'Play', sans-serif;
 		text-align: left;
@@ -40,7 +40,7 @@
 		margin-left: auto;
 		margin-right: auto;
 		position: relative;
-		width: 400px;
+		width: 300px;
 		background-color: #222222;
 		padding: 50px;
 		box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
@@ -105,18 +105,16 @@ function cal()
 <br/>
 <table>
 <tr>
-<td>Calendar type </td>
 <td>
-<select  id='calType' onchange='cal()' >
+<select  id='calType' onchange='cal()' style="width:85px;" >
 	<option value='0'  selected>British </option> 
 	<option value='1'>Gregorian </option> 
 	<option value='2'>Julian </option> 
 </select>
 </td>
-</tr>
-<tr><td>Year </td><td><input type="number" id="y"  min="-3000" max="3000" value="2013" onchange='cal()'></td></tr>
-<tr><td>Month </td><td><input type="number" id="m"  min="1" max="12"  value="10" onchange='cal()'></td></tr>
-<tr><td>Day </td><td><input type="number" id="d"  min="1" max="31"  value="25" onchange='cal()'></td></tr>
+<td><input type="number" id="y"  min="-3000" max="3000" value="2013" onchange='cal()' style="width:75px;"></td>
+<td><input type="number" id="m"  min="1" max="12"  value="10" onchange='cal()' style="width:55px;"></td>
+<td><input type="number" id="d"  min="1" max="31"  value="25" onchange='cal()' style="width:55px;"></td></tr>
 </table>
 <hr/>
 <div id="jd"></div>
