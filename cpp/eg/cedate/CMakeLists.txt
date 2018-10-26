@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.0)
+project (cedate)
+set (CMAKE_CXX_STANDARD 11)
+include_directories(../../include)
+set(SOURCES cedate.cpp ../../source/ceDateTime.cpp ../../source/ceMmDateTime.cpp)
+add_executable(cedate ${SOURCES})

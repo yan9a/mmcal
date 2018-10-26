@@ -1,0 +1,98 @@
+<html >
+<head>
+<meta charset="UTF-8">
+<meta name='description' content='Julian Date to Unix Time Converter'/>
+<meta name='keywords' content='Julian Date, Unix Time, Converter' />
+<meta name='author' content='Yan Naing Aye' />
+<meta name="viewport" content="width=device-width">
+<title>Julian Date to Unix Time Converter</title>
+<link href="play.css" rel="stylesheet">
+<style type="text/css">
+ body {
+		font-size: 16px;
+		background-color: #111111;
+		font-family: 'Play', sans-serif;
+		text-align: left;
+		line-height: 1.5;
+    color: #7ece7e;
+	}
+	a {
+    text-decoration: none;
+    color: #cca6f2;
+	}
+	a:hover
+	{
+		text-decoration: underline;
+		color: #cca6f2;
+	}
+	h1,h3 {
+		color: #cca6f2;
+	}
+	.DW
+	{
+		margin-left: auto;
+		margin-right: auto;
+		position: relative;
+		width: 400px;
+		background-color: #222222;
+		padding: 50px;
+		box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+	}
+  td,th {
+    padding: 5px;
+		font-size: 16px;
+    /*border: 1px solid #666666;*/
+  }
+  table {
+    /*border: 1px solid #666666; margin: 0px;*/
+    padding: 0px;
+  	border-spacing:0px;
+    border-collapse:collapse;
+  }
+  pre,textarea,input,select {
+    color: #7ece7e;
+    background-color: #111111;
+    border: 1px solid #333333;
+		padding: 5px;
+		font-family: 'Play', sans-serif;
+		font-size: 16px;
+  }
+  hr {
+    border: 1px solid #333333;
+  }
+</style>
+<script src='../javascript/ceMmDateTime.js'></script>
+<script type="text/javascript">
+function cal()
+{
+	var jde = document.getElementById("jd"); var j=Number(jde.value); jde.value=j;
+	var oce = document.getElementById("oc"); 
+	oce.innerHTML="Unix time: "+ceMmDateTime.j2u(j).toString();
+}
+</script>
+</head>
+<body>
+<div class='DW'>
+<h3>Julian Date to Unix Time Converter</h3>
+<br/>
+<table>
+<tr>
+<td>Enter a Julian Date </td>
+<td><input type="number" id="jd"  value="2456591" onchange='cal()'></td>
+</tr>
+</table>
+<hr/>
+<div id="oc"></div>
+<hr/>
+<div>
+	<a href='http://cool-emerald.blogspot.com'>Cool Emerald</a>
+</div>
+<script type="text/javascript">
+	var jde = document.getElementById("jd"); 
+	var j=ceMmDateTime.jdnow(); 
+	jde.value=j;
+	cal();
+</script>
+</div>
+</body>
+</html>

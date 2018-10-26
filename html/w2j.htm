@@ -1,12 +1,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name='description' content='Myanmar Calendar'/>
+<meta name='description' content='Julian Date Converter'/>
 <meta name='keywords' content='Julian Date, Converter' />
 <meta name='author' content='Yan Naing Aye' />
 <meta name="viewport" content="width=device-width">
-<title>Myanmar Calendar</title>
-<link href="./html/play.css" rel="stylesheet">
+<title>Julian Date Converter</title>
+<link href="play.css" rel="stylesheet">
 <style type="text/css">
  body {
 		font-size: 16px;
@@ -15,7 +15,7 @@
 		text-align: left;
 		line-height: 1.5;
     color: #7ece7e;
-	}	
+	}
 	a {
     text-decoration: none;
     color: #cca6f2;
@@ -27,13 +27,6 @@
 	}
 	h1,h3 {
 		color: #cca6f2;
-	}
-	.CE {
-		font-size: 14px;
-		font-family: 'Tharlon';
-		text-align: left;
-		line-height: 1.5;
-    color: #999999;
 	}
 	.DW
 	{
@@ -68,7 +61,7 @@
     border: 1px solid #333333;
   }
 </style>
-<script src='./javascript/ceMmDateTime.js'></script>
+<script src='../javascript/ceMmDateTime.js'></script>
 <script type="text/javascript">
 function cal()
 {
@@ -76,32 +69,17 @@ function cal()
 	var ye = document.getElementById("y"); var yn=Number(ye.value); ye.value=yn;
 	var me = document.getElementById("m"); var mn=Number(me.value); me.value=mn;
 	var de = document.getElementById("d"); var dn=Number(de.value); de.value=dn;
-	var jde = document.getElementById("jd");	
-	var mdt=new ceMmDateTime();
-	mdt.SetDateTime(yn,mn,dn,12,0,0,mdt.tz,ct);
-	var str=mdt.ToMString()+"<br/>";
-	str+=mdt.ToString("%W")+"<br/>";
-	str+="Sasana year: "+mdt.sy+"<br/>";
-	str+="Year name: "+mdt.my_name+"<br/>";
-	var sa=mdt.holidays;
-	if(sa.length>0) str+=sa.join("<br/>")+"<br/>";
-	sa=mdt.holidays2;
-	if(sa.length>0) str+=sa.join("<br/>")+"<br/>";
-	var t=mdt.sabbath; if(t.length>0) str+=t+"<br/>";
-	t=mdt.yatyaza; if(t.length>0) str+=t+"<br/>";
-	t=mdt.pyathada; if(t.length>0) str+=t+"<br/>";
-	str+="Naga facing: "+mdt.nagahle+"<br/>";
-	str+="Mahabote: "+mdt.mahabote+"<br/>";
-	sa=mdt.astro;
-	if(sa.length>0) str+=sa.join("<br/>")+"<br/>";
-	t=mdt.chronical; if(t.length>0) str+="<p class='CE'>Chronical evidence: "+t+"</p>";
-	jde.innerHTML=str;
+	var he = document.getElementById("h"); var hn=Number(he.value); he.value=hn;
+	var ne = document.getElementById("n"); var nn=Number(ne.value); ne.value=nn;
+	var se = document.getElementById("s"); var sn=Number(se.value); se.value=sn;
+	var jde = document.getElementById("jd");
+	jde.innerHTML="Julian Date (JD): "+(ceMmDateTime.w2j(yn,mn,dn,hn,nn,sn,ct)).toString();
 }
 </script>
 </head>
 <body>
 <div class='DW'>
-<h3>Myanmar Calendar</h3>
+<h3>Julian Date Converter</h3>
 <br/>
 <table>
 <tr>
@@ -117,18 +95,24 @@ function cal()
 <tr><td>Year </td><td><input type="number" id="y"  min="-3000" max="3000" value="2013" onchange='cal()'></td></tr>
 <tr><td>Month </td><td><input type="number" id="m"  min="1" max="12"  value="10" onchange='cal()'></td></tr>
 <tr><td>Day </td><td><input type="number" id="d"  min="1" max="31"  value="25" onchange='cal()'></td></tr>
+<tr><td>Hour (0-23) </td><td><input type="number" id="h"  min="0" max="23" value="12" onchange='cal()'></td></tr>
+<tr><td>Minute </td><td><input type="number" id="n"  min="0" max="59"  value="0" onchange='cal()'></td></tr>
+<tr><td>Second </td><td><input type="number" id="s"  min="0" max="59"  value="0" onchange='cal()'></td></tr>
 </table>
 <hr/>
 <div id="jd"></div>
 <hr/>
 <div>
-	<a href='./html/more.htm'>More..</a>
+	<a href='http://cool-emerald.blogspot.com'>Cool Emerald</a>
 </div>
 <script type="text/javascript">
 	var dt = new Date();
 	var ye = document.getElementById("y"); var yn=dt.getUTCFullYear(); ye.value=yn;
 	var me = document.getElementById("m"); var mn=(1+dt.getUTCMonth()); me.value=mn;
 	var de = document.getElementById("d"); var dn=dt.getUTCDate(); de.value=dn;
+	var he = document.getElementById("h"); var hn=dt.getUTCHours(); he.value=hn;
+	var ne = document.getElementById("n"); var nn=dt.getUTCMinutes(); ne.value=nn;
+	var se = document.getElementById("s"); var sn=dt.getUTCSeconds(); se.value=sn;
 	cal();
 </script>
 </div>
