@@ -206,13 +206,14 @@ ceDateTime::ceDateTime()
 //-------------------------------------------------------------------------
 // jd to date time string
 // input: (jd:julian date,
-//  fm: format [Optional argument: "%Www %yyyy-%mm-%d %HH:%nn:%ss %zz"]
+//  fm: format [Optional argument: "%Www %y-%mm-%dd %HH:%nn:%ss %zz"]
 //  tz : time zone offset in hours (e.g. 8 for GMT +8)
 //  ct:calendar type [Optional argument: 0=British (default), 1=Gregorian, 2=Julian]
 //  SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
 // output: date time string according to fm where formatting strings are as follows
 // %yyyy : year [0000-9999, e.g. 2018]
 // %yy : year [00-99 e.g. 18]
+// %y : year [0-9999, e.g. 201]
 // %MMM : month [e.g. JAN]
 // %Mmm : month [e.g. Jan]
 // %mm : month with zero padding [01-12]
@@ -264,6 +265,10 @@ string ceDateTime::j2s(double jd, string fm, double tz, long ct, long SG)
 	long y = year % 100;
 	rstr = string(2, '0') + to_string(y);
 	rstr = rstr.substr(rstr.length() - 2);
+	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
+	//--------------------------------------------------------
+	fstr = "%y";
+	rstr = to_string(year);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%MMM";
@@ -485,10 +490,11 @@ void ceDateTime::SetDateTimeString(std::string tstr, double tz, long ct, long SG
 }
 //-------------------------------------------------------------------------
 // Get Date Time string
-// input: (fm: format [Optional argument: "%Www %yyyy-%mm-%d %HH:%nn:%ss %zz"])
+// input: (fm: format [Optional argument: "%Www %y-%mm-%dd %HH:%nn:%ss %zz"])
 // output: date time string according to fm where formatting strings are as follows
 // %yyyy : year [0000-9999, e.g. 2018]
 // %yy : year [00-99 e.g. 18]
+// %y : year [0-9999, e.g. 201]
 // %MMM : month [e.g. JAN]
 // %Mmm : month [e.g. Jan]
 // %mm : month with zero padding [01-12]

@@ -648,12 +648,13 @@ std::vector<std::string> ceMmDateTime::cal_holiday2(long jdn) {
 //-------------------------------------------------------------------------
 // jd to date string in Myanmar calendar 
 // input: (jd:julian date,
-//  fs: format string [Optional argument: "&yyyy &M &P &ff"]
+//  fs: format string [Optional argument: "&y &M &P &ff"]
 //  tz : time zone offset in hours (Optional, e.g. 8 for GMT +8))
 // output: date string in Myanmar calendar according to fm 
 // where formatting strings are as follows
 // &yyyy : Myanmar year [0000-9999, e.g. 1380]
 // &YYYY : Sasana year [0000-9999, e.g. 2562]
+// &y : Myanmar year [0-9999, e.g. 138]
 // &mm : month with zero padding [01-14]
 // &M : month [e.g. January]
 // &m : month [1-14]
@@ -684,6 +685,10 @@ std::string ceMmDateTime::j2ms(double jd, std::string fs, double tz) {
 	fstr = "&YYYY";
 	rstr = string(4, '0') + to_string(my); 
 	rstr = rstr.substr(rstr.length() - 4);
+	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
+	//--------------------------------------------------------
+	fstr = "&y";
+	rstr = to_string(my);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "&mm";
@@ -842,12 +847,13 @@ vector<string> ceMmDateTime::holidays2() {
 //-------------------------------------------------------------------------
 // get Myanmar Date String
 // input: (
-//  fs: format string [Optional argument: "&yyyy &M &P &ff"]
+//  fs: format string [Optional argument: "&y &M &P &ff"]
 //  tz : time zone offset in hours (Optional, e.g. 8 for GMT +8))
 // output: date string in Myanmar calendar according to fm 
 // where formatting strings are as follows
 // &yyyy : Myanmar year [0000-9999, e.g. 1380]
 // &YYYY : Sasana year [0000-9999, e.g. 2562]
+// &y : Myanmar year [0-9999, e.g. 138]
 // &mm : month with zero padding [01-14]
 // &M : month [e.g. January]
 // &m : month [1-14]

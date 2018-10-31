@@ -29,11 +29,46 @@
 		color: #cca6f2;
 	}
 	.CE {
-		font-size: 14px;
+		font-size: 18px;
 		font-family: 'Tharlon';
 		text-align: left;
 		line-height: 1.5;
     color: #999999;
+	}
+	.GC {
+		font-size: 18px;
+		font-family: 'Tharlon';
+		text-align: left;
+		line-height: 1.5;
+    color: #7ece7e;
+	}
+	.HC {
+		font-size: 18px;
+		font-family: 'Tharlon';
+		text-align: left;
+		line-height: 1.5;
+    color: #cca6f2;
+	}
+	.SC {
+		font-size: 18px;
+		font-family: 'Tharlon';
+		text-align: left;
+		line-height: 1.5;
+    color: #f2f1a6;
+	}
+	.YC {
+		font-size: 18px;
+		font-family: 'Tharlon';
+		text-align: left;
+		line-height: 1.5;
+    color: #70a7f0;
+	}
+	.PC {
+		font-size: 18px;
+		font-family: 'Tharlon';
+		text-align: left;
+		line-height: 1.5;
+    color: #f2a6a6;
 	}
 	.DW
 	{
@@ -77,56 +112,125 @@ function cal()
 	var me = document.getElementById("m"); var mn=Number(me.value); me.value=mn;
 	var de = document.getElementById("d"); var dn=Number(de.value); de.value=dn;
 	var jde = document.getElementById("jd");	
-	var mdt=new ceMmDateTime();
+	var le = document.getElementById("langN"); var lang=le.value;
+
+	var mdt=new ceMmDateTime();	
 	mdt.SetDateTime(yn,mn,dn,12,0,0,mdt.tz,ct);
-	var str=mdt.ToMString()+"<br/>";
-	str+=mdt.ToString("%W")+"<br/>";
-	str+="Sasana year: "+mdt.sy+"<br/>";
-	str+="Year name: "+mdt.my_name+"<br/>";
+	var str="<p class='GC'>"+mdt.ToMString()+"<p/>";
+	str+="<p class='GC'>"+mdt.ToString("%W")+"<p/>";
+	str+="<p class='GC'>Sasana Year "+mdt.sy+"<p/>";	
 	var sa=mdt.holidays;
-	if(sa.length>0) str+=sa.join("<br/>")+"<br/>";
+	str+="<p class='HC'>"+sa.join("<br/>")+"<p/>";
+	var t=mdt.sabbath; str+="<p class='SC'>"+t+"<p/>";
+	t=mdt.yatyaza; str+="<p class='YC'>"+t+"<p/>";
+	t=mdt.pyathada; str+="<p class='PC'>"+t+"<p/>";
 	sa=mdt.holidays2;
-	if(sa.length>0) str+=sa.join("<br/>")+"<br/>";
-	var t=mdt.sabbath; if(t.length>0) str+=t+"<br/>";
-	t=mdt.yatyaza; if(t.length>0) str+=t+"<br/>";
-	t=mdt.pyathada; if(t.length>0) str+=t+"<br/>";
-	str+="Naga facing: "+mdt.nagahle+"<br/>";
-	str+="Mahabote: "+mdt.mahabote+"<br/>";
+	str+="<p class='CE'>"+sa.join("<br/>")+"<p/>";
+	str+="<p class='CE'>Naga Head "+mdt.nagahle+" Facing<p/>";
+	str+="<p class='CE'>Mahabote - "+mdt.mahabote+" Born<p/>";
 	sa=mdt.astro;
-	if(sa.length>0) str+=sa.join("<br/>")+"<br/>";
-	t=mdt.chronical; if(t.length>0) str+="<p class='CE'>Chronical evidence: "+t+"</p>";
+	str+="<p class='CE'>"+sa.join("<br/>")+"<p/>";
+	str+="<p class='CE'>"+mdt.my_name+" Year<p/>";
+	var mmchro = new ceMmChronicle();
+	t=mmchro.chronicle(mdt.jdnl); str+="<p class='CE'>"+t+"</p>";
+	var x=new ceMmTranslate();
+	str=x.T(str,lang);
+	str="<p>"+mdt.ToString("%y-%M-%dd")+"</p>"+str;
 	jde.innerHTML=str;
 }
 </script>
 </head>
 <body>
 <div class='DW'>
-<h3>Myanmar Calendar</h3>
-<br/>
-<table>
-<tr>
+<div>
+<table><tr>
+<td><input type="number" id="y"  min="-3000" max="3000" value="2013" onchange="cal()" style="width:90px;"></td>
 <td>
-<select  id='calType' onchange='cal()' style="width:85px;" >
-	<option value='0'  selected>British </option> 
-	<option value='1'>Gregorian </option> 
-	<option value='2'>Julian </option> 
-</select>
+	<!--input type="number" id="m"  min="1" max="12"  value="10" onchange="cal()" style="width:80px;"-->
+	<select  id="m" onchange="cal()" style="width:90px;" >
+			<option value='1'>Jan </option> 
+			<option value='2'>Feb </option> 
+			<option value='3'>Mar </option> 
+			<option value='4'>Apr </option>
+			<option value='5'>May </option> 
+			<option value='6'>Jun </option>
+			<option value='7'>Jul </option> 
+			<option value='8'>Aug </option>
+			<option value='9'>Sep </option> 
+			<option value='10'>Oct </option>
+			<option value='11'>Nov </option>
+			<option value='12'>Dec </option>
+		</select>
 </td>
-<td><input type="number" id="y"  min="-3000" max="3000" value="2013" onchange='cal()' style="width:75px;"></td>
-<td><input type="number" id="m"  min="1" max="12"  value="10" onchange='cal()' style="width:55px;"></td>
-<td><input type="number" id="d"  min="1" max="31"  value="25" onchange='cal()' style="width:55px;"></td></tr>
-</table>
+<td>
+	<!--input type="number" id="d"  min="1" max="31"  value="25" onchange="cal()" style="width:80px;"-->
+	<select  id="d" onchange="cal()" style="width:80px;" >
+			<option value='1'>1 </option> 
+			<option value='2'>2 </option> 
+			<option value='3'>3 </option> 
+			<option value='4'>4 </option>
+			<option value='5'>5 </option> 
+			<option value='6'>6 </option>
+			<option value='7'>7 </option> 
+			<option value='8'>8 </option>
+			<option value='9'>9 </option> 
+			<option value='10'>10 </option>
+			<option value='11'>11 </option>
+			<option value='12'>12 </option>
+			<option value='13'>13 </option>
+			<option value='14'>14 </option>
+			<option value='15'>15 </option>
+			<option value='16'>16 </option>
+			<option value='17'>17 </option>
+			<option value='18'>18 </option>
+			<option value='19'>19 </option>
+			<option value='20'>20 </option>
+			<option value='21'>21 </option>
+			<option value='22'>22 </option>
+			<option value='23'>23 </option>
+			<option value='24'>24 </option>
+			<option value='25'>25 </option>
+			<option value='26'>26 </option>
+			<option value='27'>27 </option>
+			<option value='28'>28 </option>
+			<option value='29'>29 </option>
+			<option value='30'>30 </option>
+			<option value='31'>31 </option>
+		</select>
+</td>
+</tr></table>
+</div>
 <hr/>
 <div id="jd"></div>
+
+<div>
+<table><tr>
+	<td>
+	<select  id='calType' onchange='cal()' style="width:100px;" >
+		<option value='0'  selected>British </option> 
+		<option value='1'>Gregorian </option> 
+		<option value='2'>Julian </option> 
+	</select>
+	</td>
+	<td>
+			<select  id='langN' onchange='cal()' style="width:100px;" >
+				<option value='0'>English </option> 
+				<option value='1'  selected>Myanmar </option> 
+				<option value='2'>Zawgyi </option> 
+				<option value='3'>Mon </option> 
+			</select>
+			</td>
+</tr></table>
+</div>
 <hr/>
 <div>
 	<a href='./html/more.htm'>More..</a>
 </div>
 <script type="text/javascript">
 	var dt = new Date();
-	var ye = document.getElementById("y"); var yn=dt.getUTCFullYear(); ye.value=yn;
-	var me = document.getElementById("m"); var mn=(1+dt.getUTCMonth()); me.value=mn;
-	var de = document.getElementById("d"); var dn=dt.getUTCDate(); de.value=dn;
+	var ye = document.getElementById("y"); var yn=dt.getFullYear(); ye.value=yn;
+	var me = document.getElementById("m"); var mn=(1+dt.getMonth()); me.value=mn;
+	var de = document.getElementById("d"); var dn=dt.getDate(); de.value=dn;
 	cal();
 </script>
 </div>

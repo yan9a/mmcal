@@ -108,13 +108,14 @@ static ltzoh()
 //-------------------------------------------------------------------------
 // jd to date time string
 // input: (jd:julian date,
-//  fs: format string [Optional argument: "%Www %yyyy-%mm-%d %HH:%nn:%ss %zz"]
+//  fs: format string [Optional argument: "%Www %y-%mm-%dd %HH:%nn:%ss %zz"]
 //  tz : time zone offset in hours (e.g. 8 for GMT +8)
 //  ct:calendar type [Optional argument: 0=British (default), 1=Gregorian, 2=Julian]
 //  SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
 // output: date time string according to fm where formatting strings are as follows
 // %yyyy : year [0000-9999, e.g. 2018]
 // %yy : year [00-99 e.g. 18]
+// %y : year [0-9999, e.g. 201]
 // %MMM : month [e.g. JAN]
 // %Mmm : month [e.g. Jan]
 // %mm : month with zero padding [01-12]
@@ -139,7 +140,7 @@ static ltzoh()
 // %W : Weekday [e.g. Saturday]
 // %w : Weekday number [0=sat, 1=sun, ..., 6=fri]
 // %zz : time zone (e.g. +08, +06:30)
-static j2s(jd,fs="%Www %yyyy-%mm-%dd %HH:%nn:%ss %zz",tz=0,ct=0,SG=2361222)
+static j2s(jd,fs="%Www %y-%mm-%dd %HH:%nn:%ss %zz",tz=0,ct=0,SG=2361222)
 {	
 	jd+=tz/24.0;
 	var dt=ceDateTime.j2w(jd,ct,SG);	
@@ -160,6 +161,9 @@ static j2s(jd,fs="%Www %yyyy-%mm-%dd %HH:%nn:%ss %zz",tz=0,ct=0,SG=2361222)
 	//--------------------------------------------------------
 	fstr = "%yy"; var y = dt.y % 100;  re = new RegExp(fstr, 'g');
 	rstr = "00" + y.toString(); rstr = rstr.substr(rstr.length - 2); fm = fm.replace(re,rstr);
+	//--------------------------------------------------------
+	fstr = "%y"; re = new RegExp(fstr, 'g');
+	rstr = dt.y.toString(); fm = fm.replace(re,rstr);
 	//--------------------------------------------------------
 	fstr = "%MMM";  re = new RegExp(fstr, 'g');
 	rstr = M[dt.m-1]; rstr = rstr.substr(0,3); rstr=rstr.toUpperCase(); fm = fm.replace(re,rstr);
@@ -353,10 +357,11 @@ SetSG(sg)
 }
 //-------------------------------------------------------------------------
 // Get Date Time string
-// input: (fs: format string [Optional argument: "%Www %yyyy-%mm-%d %HH:%nn:%ss %zz"])
+// input: (fs: format string [Optional argument: "%Www %y-%mm-%dd %HH:%nn:%ss %zz"])
 // output: date time string according to fm where formatting strings are as follows
 // %yyyy : year [0000-9999, e.g. 2018]
 // %yy : year [00-99 e.g. 18]
+// %y : year [0-9999, e.g. 201]
 // %MMM : month [e.g. JAN]
 // %Mmm : month [e.g. Jan]
 // %mm : month with zero padding [01-12]
@@ -381,7 +386,7 @@ SetSG(sg)
 // %W : Weekday [e.g. Saturday]
 // %w : Weekday number [0=sat, 1=sun, ..., 6=fri]
 // %zz : time zone (e.g. +08, +06:30)
-ToString(fs="%Www %yyyy-%mm-%d %HH:%nn:%ss %zz")
+ToString(fs="%Www %y-%mm-%dd %HH:%nn:%ss %zz")
 {
 	return ceDateTime.j2s(this.m_jd, fs, this.m_tz, this.m_ct, this.m_SG);
 }
@@ -467,7 +472,6 @@ class ceMmDateTime extends ceDateTime {
 //-------------------------------------------------------------------------
 constructor(m_jd,m_tz,m_ct = 0,m_SG = 2361222) {
 	super(m_jd,m_tz,m_ct,m_SG);
-	this.m_ev=ceMmDateTime.ChronicalDates();
 }
 //-------------------------------------------------------------------------
 // Get Myanmar year constants depending on era
@@ -767,7 +771,7 @@ static cal_mahabote(my,wd) {return (my-wd)%7;}
 //-------------------------------------------------------------------------
 // nakhat 
 // input: ( my = year )
-// output: ( [0=orc, 1=elf, 2=human] )
+// output: ( [0=Ogre, 1=Spirit, 2=Human] )
 static cal_nakhat(my) {return my%3;}
 //-------------------------------------------------------------------------
 // thamanyo 
@@ -960,7 +964,7 @@ static cal_holiday(jdn) {
 	if (my >= SE3) jk=ja-2.169918982; // akya time
 	else jk=ja-2.1675;
 	akn=Math.round(jk); atn=Math.round(ja);
-	if(jdn==(atn+1)) {hs.push("Myanmar New Year Day");}
+	if(jdn==(atn+1)) {hs.push("Myanmar New Year's Day");}
 	if ((my+mmt)>=BGNTG) {
 		if(jdn==atn) {hs.push("Thingyan Atat");}
 		else if((jdn>akn)&&(jdn<atn)) {hs.push("Thingyan Akyat");}
@@ -971,13 +975,13 @@ static cal_holiday(jdn) {
 	}
 	//---------------------------------
 	// holidays on gregorian calendar	
-	if((gy>=2018) && (gm==1) && (gd==1)) {hs.push("New Year Day");}
+	if((gy>=2018) && (gm==1) && (gd==1)) {hs.push("New Year's Day");}
 	else if((gy>=1948) && (gm==1) && (gd==4)) {hs.push("Independence Day");}
 	else if((gy>=1947) && (gm==2) && (gd==12)) {hs.push("Union Day");}
-	else if((gy>=1958) && (gm==3) && (gd==2)) {hs.push("Peasants Day");}
+	else if((gy>=1958) && (gm==3) && (gd==2)) {hs.push("Peasants' Day");}
 	else if((gy>=1945) && (gm==3) && (gd==27)) {hs.push("Resistance Day");}
 	else if((gy>=1923) && (gm==5) && (gd==1)) {hs.push("Labour Day");}
-	else if((gy>=1947) && (gm==7) && (gd==19)) {hs.push("Martyrs Day");}
+	else if((gy>=1947) && (gm==7) && (gd==19)) {hs.push("Martyrs' Day");}
 	else if((gy>=1752) && (gm==12) && (gd==25)) {hs.push("Christmas Day");}
 	else if((gy==2017) && (gm==12) && (gd==30)) {hs.push("Holiday");}
 	else if((gy>=2017) && (gm==12) && (gd==31)) {hs.push("Holiday");}
@@ -990,7 +994,7 @@ static cal_holiday(jdn) {
 	else if((mm==8) && (mp==1)) {hs.push("Tazaungdaing");}
 	else if((my>=1379) && (mm==8) && (md==14)) {hs.push("Holiday");}
 	else if((my>=1282) && (mm==8) && (md==25)) {hs.push("National Day");}
-	else if((mm==10) && (md==1)) {hs.push("Karen New Year Day");}
+	else if((mm==10) && (md==1)) {hs.push("Karen New Year's Day");}
 	else if((mm==12) && (mp==1)) {hs.push("Tabaung Pwe");}
 	//---------------------------------
 	// //other holidays	
@@ -1042,13 +1046,13 @@ static cal_holiday2(jdn) {
 	//---------------------------------
 	// holidays on gregorian calendar	
 	var doe=ceMmDateTime.DoE(gy);
-	if((gy<=2017) && (gm==1) && (gd==1)) {hs.push("New Year Day");}
+	if((gy<=2017) && (gm==1) && (gd==1)) {hs.push("New Year's Day");}
 	else if((gy>=1915) && (gm==2) && (gd==13)) {hs.push("G. Aung San BD");}
 	else if((gy>=1969) && (gm==2) && (gd==14)) {hs.push("Valentines Day");}
 	else if((gy>=1970) && (gm==4) && (gd==22)) {hs.push("Earth Day");}
-	else if((gy>=1392) && (gm==4) && (gd==1)) {hs.push("April Fools Day");}
+	else if((gy>=1392) && (gm==4) && (gd==1)) {hs.push("April Fools' Day");}
 	else if((gy>=1948) && (gm==5) && (gd==8)) {hs.push("Red Cross Day");}
-	else if((gy>=1994) && (gm==10) && (gd==5)) {hs.push("World Teachers Day");}
+	else if((gy>=1994) && (gm==10) && (gd==5)) {hs.push("World Teachers' Day");}
 	else if((gy>=1947) && (gm==10) && (gd==24)) {hs.push("United Nations Day");}
 	else if((gy>=1753) && (gm==10) && (gd==31)) {hs.push("Halloween");}
 	if((gy>=1876) && (jdn==doe)) {hs.push("Easter");}
@@ -1058,15 +1062,15 @@ static cal_holiday2(jdn) {
 	if((my>=1309) && (mm==11) && (md==16))
 		{hs.push("Mon National Day");}//the ancient founding of Hanthawady
 	else if((mm==9) && (md==1)) {
-		hs.push("Shan New Year Day");
-		if(my>=1306) {hs.push("Authors Day");}
+		hs.push("Shan New Year's Day");
+		if(my>=1306) {hs.push("Authors' Day");}
 	}//Nadaw waxing moon 1
 	else if((mm==3) && (mp==1)) {hs.push("Mahathamaya Day");}//Nayon full moon
 	else if((mm==6)&&(mp==1)){hs.push("Garudhamma Day");}//Tawthalin full moon
 	else if((my>=1356) && (mm==10) && (mp==1))
-		{hs.push("Mothers Day");}//Pyatho full moon
+		{hs.push("Mothers' Day");}//Pyatho full moon
 	else if((my>=1370) && (mm==12) && (mp==1))
-		{hs.push("Fathers Day");}//Tabaung full moon
+		{hs.push("Fathers' Day");}//Tabaung full moon
 	else if((mm==5) && (mp==1)) {hs.push("Metta Day");}//Waguang full moon
 	else if((mm==5) && (md==10)) {hs.push("Taungpyone Pwe");}//Taung Pyone Pwe
 	else if((mm==5) && (md==23)) {hs.push("Yadanagu Pwe");}//Yadanagu Pwe
@@ -1076,7 +1080,7 @@ static cal_holiday2(jdn) {
 	// var ghCNY=[2456689,2456690,2457073,2457074,2457427,2457428,2457782,
 	// 	2457783,2458166,2458167,2458520,2458521];
 	// if(ceMmDateTime.bSearch1(jdn,ghEid2)>=0) {hs.push("Eid");}
-	// if(ceMmDateTime.bSearch1(jdn,ghCNY)>=0) {hs.push("Chinese New Year");}
+	// if(ceMmDateTime.bSearch1(jdn,ghCNY)>=0) {hs.push("Chinese New Year's Day");}
 	//----------------------------------------------------------------------------
 	return hs;
 }
@@ -1087,12 +1091,13 @@ static cal_holiday2(jdn) {
 //-------------------------------------------------------------------------
 // jd to date string in Myanmar calendar 
 // input: (jd:julian date,
-//  fs: format string [Optional argument: "&yyyy &M &P &ff"]
+//  fs: format string [Optional argument: "&y &M &P &ff"]
 //  tz : time zone offset in hours (Optional, e.g. 8 for GMT +8))
 // output: date string in Myanmar calendar according to fm 
 // where formatting strings are as follows
 // &yyyy : Myanmar year [0000-9999, e.g. 1380]
 // &YYYY : Sasana year [0000-9999, e.g. 2562]
+// &y : Myanmar year [0-9999, e.g. 138]
 // &mm : month with zero padding [01-14]
 // &M : month [e.g. January]
 // &m : month [1-14]
@@ -1101,7 +1106,7 @@ static cal_holiday2(jdn) {
 // &d : day of the month [1-31]
 // &ff : fortnight day with zero padding [01-15]
 // &f : fortnight day [1-15]
-static j2ms(jd,fs="&yyyy &M &P &ff",tz=0)
+static j2ms(jd,fs="&y &M &P &ff",tz=0)
 {	
 	jd+=tz/24.0;
 	var jdn=Math.round(jd);
@@ -1122,6 +1127,9 @@ static j2ms(jd,fs="&yyyy &M &P &ff",tz=0)
 	var sy=my+1182; //Sasana year
 	fstr = "&YYYY"; re = new RegExp(fstr, 'g');
 	rstr = "0000" + sy.toString(); rstr = rstr.substr(rstr.length - 4); fm = fm.replace(re,rstr);
+	//--------------------------------------------------------
+	fstr = "&y";  re = new RegExp(fstr, 'g');
+	rstr = my.toString(); fm = fm.replace(re,rstr);
 	//--------------------------------------------------------
 	fstr = "&mm";  re = new RegExp(fstr, 'g');
 	rstr = "00" + mm.toString(); rstr = rstr.substr(rstr.length - 2); fm = fm.replace(re,rstr);
@@ -1278,16 +1286,214 @@ get holidays2() {
 ToMString(fs="&yyyy &M &P &ff") {
 	return ceMmDateTime.j2ms(this.jd,fs,this.tz);
 }
+
+} //ceMmDateTime
+
+//-----------------------------------------------------------------------
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//-----------------------------------------------------------------------
+//Start of chronicle ####################################################
+//-----------------------------------------------------------------------
+
+class ceMmTranslate {
+	//-------------------------------------------------------------------------
+	constructor() {
+		this.m_lang=ceMmTranslate.Init();
+	}
 //-----------------------------------------------------------------------------
-//Start of chronical dates ####################################################
-// get chronical evidence
-get chronical() {
-	var str=""; var i=this.hSearch(this.jdnl);
+// Translate
+// inputs ( str = string to translate,
+//    toLn = to language number [optional: 1]
+//    fromLn = from language number [optional: 0],)
+// Language number: 0: English, 1: Myanmar (Unicode), 2: Zawgyi, 
+//		3: Mon, 4: Shan, 5: Karen
+T(str,toLn=1,fromLn=0) {
+	var i; var l=this.m_lang.length;
+	var fstr,rstr,re;
+	for(i=0;i<l;i++){
+		fstr = this.m_lang[i][fromLn];  re = new RegExp(fstr, 'g');
+		rstr = this.m_lang[i][toLn]; str = str.replace(re,rstr);
+	}
+	return str;
+}
+//-----------------------------------------------------------------------------
+// Initialize the language catalog with 2 dimensional array
+// Index 0: English, 1: Myanmar (Unicode), 2: Zawgyi, 
+//		3: Mon, 4: Shan, 5: Karen
+//Credit: Mon Language Translation by 'ITVilla' : http://it-villa.blogspot.com/
+//and Proof reading by Mikau Nyan
+static Init() {
+	return [
+		["0","၀","၀","၀","၀","၀"],
+		["1","၁","၁","၁","၁","၁"],
+		["2","၂","၂","၂","၂","၂"],
+		["3","၃","၃","၃","၃","၃"],
+		["4","၄","၄","၄","၄","၄"],
+		["5","၅","၅","၅","၅","၅"],
+		["6","၆","၆","၆","၆","၆"],
+		["7","၇","၇","၇","၇","၇"],
+		["8","၈","၈","၈","၈","၈"],
+		["9","၉","၉","၉","၉","၉"],
+		["January","ဇန်နဝါရီ","ဇန္နဝါရီ","ဂျာန်နျူအာရဳ","ဇန်နဝါရီ","ဇန်နဝါရီ"],
+		["February","ဖေဖော်ဝါရီ","ေဖေဖာ္ဝါရီ","ဝှေဝ်ဗျူအာရဳ","ဖေဖော်ဝါရီ","ဖေဖော်ဝါရီ"],
+		["March","မတ်","မတ္","မာတ်ချ်","မတ်","မတ်"],
+		["April","ဧပြီ","ဧၿပီ","ဨပြေယ်လ်","ဧပြီ","ဧပြီ"],
+		["May","မေ","ေမ","မေ","မေ","မေ"],
+		["June","ဇွန်","ဇြန္","ဂျုန်","ဇွန်","ဇွန်"],
+		["July","ဇူလိုင်","ဇူလိုင္","ဂျူလာၚ်","ဇူလိုင်","ဇူလိုင်"],
+		["August","ဩဂုတ်","ဩဂုတ္","အဝ်ဂါတ်","ဩဂုတ်","ဩဂုတ်"],
+		["September","စက်တင်ဘာ","စက္တင္ဘာ","သိတ်ထီဗာ","စက်တင်ဘာ","စက်တင်ဘာ"],
+		["October","အောက်တိုဘာ","ေအာက္တိုဘာ","အံက်ထဝ်ဗာ","အောက်တိုဘာ","အောက်တိုဘာ"],
+		["November","နိုဝင်ဘာ","နိုဝင္ဘာ","နဝ်ဝါမ်ဗာ","နိုဝင်ဘာ","နိုဝင်ဘာ"],		
+		["December","ဒီဇင်ဘာ","ဒီဇင္ဘာ","ဒီဇြေန်ဗာ","ဒီဇင်ဘာ","ဒီဇင်ဘာ"],		
+		["Tagu","တန်ခူး","တန္ခူး","ဂိတုစဲ","တန်ခူး","တန်ခူး"],
+		["Kason","ကဆုန်","ကဆုန္","ဂိတုပသာ်","ကဆုန်","ကဆုန်"],
+		["Nayon","နယုန်","နယုန္","ဂိတုဇှေ်","နယုန်","နယုန်"],
+		["Waso","ဝါဆို","ဝါဆို","ဂိတုဒ္ဂိုန်","ဝါဆို","ဝါဆို"],
+		["Wagaung","ဝါခေါင်","ဝါေခါင္","ဂိတုခ္ဍဲသဳ","ဝါခေါင်","ဝါခေါင်"],
+		["Tawthalin","တော်သလင်း","ေတာ္သလင္း","ဂိတုဘတ်","တော်သလင်း","တော်သလင်း"],
+		["Thadingyut","သီတင်းကျွတ်","သီတင္းကြ်တ္","ဂိတုဝှ်","သီတင်းကျွတ်","သီတင်းကျွတ်"],
+		["Tazaungmon","တန်ဆောင်မုန်း","တန္ေဆာင္မုန္း","ဂိတုက္ထိုန်","တန်ဆောင်မုန်း","တန်ဆောင်မုန်း"],
+		["Nadaw","နတ်တော်","နတ္ေတာ္","ဂိတုမြေက္ကသဵု","နတ်တော်","နတ်တော်"],
+		["Pyatho","ပြာသို","ျပာသို","ဂိတုပှော်","ပြာသို","ပြာသို"],
+		["Tabodwe","တပို့တွဲ","တပို႔တြဲ","ဂိတုမာ်","တပို့တွဲ","တပို့တွဲ"],
+		["Tabaung","တပေါင်း","တေပါင္း","ဂိတုဖဝ်ရဂိုန်","တပေါင်း","တပေါင်း"],		
+		["First","ပ","ပ","ပ","ပ","ပ"],
+		["Second","ဒု","ဒု","ဒု","ဒု","ဒု"],
+		["Late","နှောင်း","ေႏွာင္း","နှောင်း","နှောင်း","နှောင်း"],
+		["Waxing","လဆန်း","လဆန္း","မံက်","လဆန်း","လဆန်း"],
+		["Waning","လဆုတ်","လဆုတ္","စွေက်","လဆုတ်","လဆုတ်"],
+		["Full Moon","လပြည့်","လျပည့္","ပေၚ်","လပြည့်","လပြည့်"],
+		["New Moon","လကွယ်","လကြယ္","အိုတ်","လကွယ်","လကွယ်"],
+		["Myanmar","မြန်မာ","ျမန္မာ","ဍုၚ်","မြန်မာ","မြန်မာ"],		
+		["Good Friday","သောကြာနေ့ကြီး","ေသာၾကာေန႔ႀကီး","သောကြာနေ့ကြီး","သောကြာနေ့ကြီး","သောကြာနေ့ကြီး"],
+		["Sunday","တနင်္ဂနွေ","တနဂၤေႏြ","တ္ၚဲအဒိုတ်","တနင်္ဂနွေ","တနင်္ဂနွေ"],
+		["Monday","တနင်္လာ","တနလၤာ","တ္ၚဲစန်","တနင်္လာ","တနင်္လာ"],
+		["Tuesday","အင်္ဂါ","အဂၤါ","တ္ၚဲအင္ၚာ","အင်္ဂါ","အင်္ဂါ"],
+		["Wednesday","ဗုဒ္ဓဟူး","ဗုဒၶဟူး","တ္ၚဲဗုဒ္ဓဝါ","ဗုဒ္ဓဟူး","ဗုဒ္ဓဟူး"],
+		["Thursday","ကြာသပတေး","ၾကာသပေတး","တ္ၚဲဗြဴဗတိ","ကြာသပတေး","ကြာသပတေး"],		
+		["Friday","သောကြာ","ေသာၾကာ","သောကြာ","တ္ၚဲသိုက်","သောကြာ"],
+		["Saturday","စနေ","စေန","တ္ၚဲသ္ၚိသဝ်","စနေ","စနေ"],		
+		["Sabbath Eve","အဖိတ်","အဖိတ္","တ္ၚဲတိၚ်","အဖိတ်","အဖိတ်"],
+		["Sabbath","ဥပုသ်","ဥပုသ္","တ္ၚဲသဳ","ဥပုသ်","ဥပုသ်"],
+		["Yatyaza","ရက်ရာဇာ","ရက္ရာဇာ","တ္ၚဲရာဇာ","ရက်ရာဇာ","ရက်ရာဇာ"],
+		["Pyathada","ပြဿဒါး","ျပႆဒါး","တ္ၚဲပြာဗ္ဗဒါ","ပြဿဒါး","ပြဿဒါး"],
+		["Afternoon","မွန်းလွဲ","မြန္းလြဲ","မွန်းလွဲ","မွန်းလွဲ","မွန်းလွဲ"],
+		["New Year's","နှစ်ဆန်း","ႏွစ္ဆန္း","လှာဲသၞာံ","နှစ်ဆန်း","နှစ်ဆန်း"],
+		["Independence","လွတ်လပ်ရေး","လြတ္လပ္ေရး","သၠးပွး","လွတ်လပ်ရေး","လွတ်လပ်ရေး"],
+		["Union","ပြည်ထောင်စု","ျပည္ေထာင္စု","ကၟိန်ဍုၚ်","ပြည်ထောင်စု","ပြည်ထောင်စု"],
+		["Peasants'","တောင်သူလယ်သမား","ေတာင္သူလယ္သမား","သၟာဗ္ၚ","တောင်သူလယ်သမား","တောင်သူလယ်သမား"],
+		["Resistance","တော်လှန်ရေး","ေတာ္လွန္ေရး","ပၠန်ဂတးဗၟာ","တော်လှန်ရေး","တော်လှန်ရေး"],
+		["Labour","အလုပ်သမား","အလုပ္သမား","သၟာကမၠောန်","အလုပ်သမား","အလုပ်သမား"],
+		["Martyrs'","အာဇာနည်","အာဇာနည္","အာဇာနဲ","အာဇာနည်","အာဇာနည်"],
+		["Christmas","ခရစ္စမတ်","ခရစၥမတ္","ခရေဿမာတ်","ခရစ္စမတ်","ခရစ္စမတ်"],
+		["Buddha","ဗုဒ္ဓ","ဗုဒၶ","သ္ဘၚ်ဖဍာ်ဇြဲ","ဗုဒ္ဓ","ဗုဒ္ဓ"],
+		["Start of Buddhist Lent","ဓမ္မစကြာနေ့","ဓမၼစၾကာေန႔","တ္ၚဲတွံဓဝ်ဓမ္မစက်","ဓမ္မစကြာနေ့","ဓမ္မစကြာနေ့"],
+		["End of Buddhist Lent","မီးထွန်းပွဲ","မီးထြန္းပြဲ","တ္ၚဲအဘိဓရ်","မီးထွန်းပွဲ","မီးထွန်းပွဲ"],
+		["Tazaungdaing","တန်ဆောင်တိုင်","တန္ေဆာင္တိုင္","သ္ဘၚ်ပူဇဴပၟတ်ပၞာၚ်","တန်ဆောင်တိုင်","တန်ဆောင်တိုင်"],
+		["National","အမျိုးသား","အမ်ိဳးသား","ကောန်ဂကူဗၟာ","အမျိုးသား","အမျိုးသား"],
+		["Karen","ကရင်","ကရင္","ကရေၚ်","ကရင်","ကရင်"],
+		["Pwe","ပွဲ","ပြဲ","သ္ဘၚ်","ပွဲ","ပွဲ"],
+		["Thingyan","သင်္ကြန်","သၾကၤန္","အတး","သင်္ကြန်","သင်္ကြန်"],
+		["Akyo","အကြို","အႀကိဳ","ဒစး","အကြို","အကြို"],
+		["Akya","အကျ","အက်","စှေ်","အကျ","အကျ"],
+		["Akyat","အကြတ်","အၾကတ္","ကြာပ်","အကြတ်","အကြတ်"],
+		["Atat","အတက်","အတက္","တိုန်","အတက်","အတက်"],
+		["Amyeittasote","အမြိတ္တစုတ်","အၿမိတၱစုတ္","ကိုန်အမြိုတ်","အမြိတ္တစုတ်","အမြိတ္တစုတ်"],
+		["Warameittugyi","ဝါရမိတ္တုကြီး","ဝါရမိတၱဳႀကီး","ကိုန်ဝါရမိတ္တုဇၞော်","ဝါရမိတ္တုကြီး","ဝါရမိတ္တုကြီး"],
+		["Warameittunge","ဝါရမိတ္တုငယ်","ဝါရမိတၱဳငယ္","ကိုန်ဝါရမိတ္တုဍောတ်","ဝါရမိတ္တုငယ်","ဝါရမိတ္တုငယ်"],
+		["Thamaphyu","သမားဖြူ","သမားျဖဴ","ကိုန်လေၚ်ဒိုက်","သမားဖြူ","သမားဖြူ"],
+		["Thamanyo","သမားညို","သမားညိဳ","ကိုန်ဟုံဗြမ်","သမားညို","သမားညို"],
+		["Yatpote","ရက်ပုပ်","ရက္ပုပ္","ကိုန်လီုလာ်","ရက်ပုပ်","ရက်ပုပ်"],
+		["Yatyotema","ရက်ယုတ်မာ","ရက္ယုတ္မာ","ကိုန်ယုတ်မာ","ရက်ယုတ်မာ","ရက်ယုတ်မာ"],
+		["Mahayatkyan","မဟာရက်ကြမ်း","မဟာရက္ၾကမ္း","ကိုန်ဟွံခိုဟ်","မဟာရက်ကြမ်း","မဟာရက်ကြမ်း"],
+		["Nagapor","နဂါးပေါ်","နဂါးေပၚ","နာ်မံက်","နဂါးပေါ်","နဂါးပေါ်"],
+		["Shanyat","ရှမ်းရက်","ရွမ္းရက္","တ္ၚဲဒတန်","ရှမ်းရက်","ရှမ်းရက်"],			
+		["Mon","မွန်","မြန္","ပၠန်","မွန်","မွန်"],
+		["G. Aung San BD","ဗိုလ်ချုပ်မွေးနေ့","ဗိုလ္ခ်ဳပ္ေမြးေန႔","တ္ၚဲသၟိၚ်ဗၟာ အံၚ်သာန်ဒှ်မၞိဟ်","ဗိုလ်ချုပ်မွေးနေ့","ဗိုလ်ချုပ်မွေးနေ့"],
+		["Valentines","ချစ်သူများ","ခ်စ္သူမ်ား","ဝုတ်ဗၠာဲ","ချစ်သူများ","ချစ်သူများ"],
+		["Earth","ကမ္ဘာမြေ","ကမၻာေျမ","ဂၠးကဝ်","ကမ္ဘာမြေ","ကမ္ဘာမြေ"],
+		["April Fools'","ဧပြီအရူး","ဧၿပီအ႐ူး","သ္ပပရအ်","ဧပြီအရူး","ဧပြီအရူး"],
+		["Red Cross","ကြက်ခြေနီ","ၾကက္ေျခနီ","ဇိုၚ်ခ္ဍာ်ဍာဲ","ကြက်ခြေနီ","ကြက်ခြေနီ"],
+		["United Nations","ကုလသမ္မဂ္ဂ","ကုလသမၼဂၢ","ကုလသမ္မဂ္ဂ","ကုလသမ္မဂ္ဂ","ကုလသမ္မဂ္ဂ"],
+		["Halloween","သရဲနေ့","သရဲေန႔","ဟေဝ်လဝ်ဝိန်","သရဲနေ့","သရဲနေ့"],
+		["Shan","ရှမ်း","ရွမ္း","သေံ","ရှမ်း","ရှမ်း"],
+		["Mothers'","အမေများ","အေမမ်ား","မိအံက်","အမေများ","အမေများ"],
+		["Fathers'","အဖေများ","အေဖမ်ား","မအံက်","အဖေများ","အဖေများ"],
+		["Sasana","သာသနာ","သာသနာ","သာသနာ","သာသနာ","သာသနာ"],
+		["Eid","အိဒ်","အိဒ္","အိဒ်","အိဒ်","အိဒ်"],
+		["Diwali","ဒီဝါလီ","ဒီဝါလီ","ဒီဝါလီ","ဒီဝါလီ","ဒီဝါလီ"],
+		["Mahathamaya","မဟာသမယ","မဟာသမယ","မဟာသမယ","မဟာသမယ","မဟာသမယ"],
+		["Garudhamma","ဂရုဓမ္မ","ဂ႐ုဓမၼ","ဂရုဓမ္မ","ဂရုဓမ္မ","ဂရုဓမ္မ"],
+		["Metta","မေတ္တာ","ေမတၱာ","မေတ္တာ","မေတ္တာ","မေတ္တာ"],
+		["Taungpyone","တောင်ပြုန်း","ေတာင္ျပဳန္း","တောင်ပြုန်း","တောင်ပြုန်း","တောင်ပြုန်း"],
+		["Yadanagu","ရတနာ့ဂူ","ရတနာ့ဂူ","ရတနာ့ဂူ","ရတနာ့ဂူ","ရတနာ့ဂူ"],
+		["Authors'","စာဆိုတော်","စာဆိုေတာ္","စာဆိုတော်","စာဆိုတော်","စာဆိုတော်"],
+		["World","ကမ္ဘာ့","ကမၻာ့","ကမ္ဘာ့","ကမ္ဘာ့","ကမ္ဘာ့"],
+		["Teachers'","ဆရာများ","ဆရာမ်ား","ဆရာများ","ဆရာများ","ဆရာများ"],
+		["Holiday","ရုံးပိတ်ရက်","႐ုံးပိတ္ရက္","ရုံးပိတ်ရက်","ရုံးပိတ်ရက်","ရုံးပိတ်ရက်"],
+		["Chinese","တရုတ်","တ႐ုတ္","တရုတ်","တရုတ်","တရုတ်"],
+		["Easter","ထမြောက်ရာနေ့","ထေျမာက္ရာေန႔","ထမြောက်ရာနေ့","ထမြောက်ရာနေ့","ထမြောက်ရာနေ့"], 
+		["Nay","နေ့","ေန႔","တ္ၚဲ","နေ့","နေ့"],
+		["Day","နေ့","ေန႔","တ္ၚဲ","နေ့","နေ့"],
+		["Yat","ရက်","ရက္","ရက်","ရက်","ရက်"],
+		["Year","နှစ်","ႏွစ္","နှစ်","နှစ်","နှစ်"],
+		["Ku","ခု","ခု","သၞာံ","ခု","ခု"],
+		["Naga","နဂါး","နဂါး","နဂါး","နဂါး","နဂါး"],
+		["Head","ခေါင်း","ေခါင္း","ခေါင်း","ခေါင်း","ခေါင်း"],
+		["Facing","လှည့်","လွည့္","လှည့်","လှည့်","လှည့်"],
+		["East","အရှေ့","အေရွ႕","အရှေ့","အရှေ့","အရှေ့"],
+		["West","အနောက်","အေနာက္","အနောက်","အနောက်","အနောက်"],
+		["South","တောင်","ေတာင္","တောင်","တောင်","တောင်"],
+		["North","မြောက်","ေျမာက္","မြောက်","မြောက်","မြောက်"],
+		["Mahabote","မဟာဘုတ်","မဟာဘုတ္","မဟာဘုတ်","မဟာဘုတ်","မဟာဘုတ်"],
+		["Born","ဖွား","ဖြား","ဖွား","ဖွား","ဖွား"],
+		["Binga","ဘင်္ဂ","ဘဂၤ","ဘင်္ဂ","ဘင်္ဂ","ဘင်္ဂ"],
+		["Atun","အထွန်း","အထြန္း","အထွန်း","အထွန်း","အထွန်း"],
+		["Yaza","ရာဇ","ရာဇ","ရာဇ","ရာဇ","ရာဇ"],
+		["Adipati","အဓိပတိ","အဓိပတိ","အဓိပတိ","အဓိပတိ","အဓိပတိ"],
+		["Marana","မရဏ","မရဏ","မရဏ","မရဏ","မရဏ"],
+		["Thike","သိုက်","သိုက္","သိုက်","သိုက်","သိုက်"],
+		["Puti","ပုတိ","ပုတိ","ပုတိ","ပုတိ","ပုတိ"],
+		["Hpusha","ပုဿ","ပုႆ","ပုဿ","ပုဿ","ပုဿ"],
+		["Magha","မာခ","မာခ","မာခ","မာခ","မာခ"],
+		["Phalguni","ဖ္လကိုန်","ဖႅကိုန္","ဖ္လကိုန်","ဖ္လကိုန်","ဖ္လကိုန်"],
+		["Chitra","စယ်","စယ္","စယ်","စယ်","စယ်"],
+		["Visakha","ပိသျက်","ပိသ်က္","ပိသျက်","ပိသျက်","ပိသျက်"],
+		["Jyeshtha","စိဿ","စိႆ","စိဿ","စိဿ","စိဿ"],
+		["Ashadha","အာသတ်","အာသတ္","အာသတ်","အာသတ်","အာသတ်"],
+		["Sravana","သရဝန်","သရဝန္","သရဝန်","သရဝန်","သရဝန်"],
+		["Bhadrapaha","ဘဒြ","ဘျဒ","ဘဒြ","ဘဒြ","ဘဒြ"],
+		["Asvini","အာသိန်","အာသိန္","အာသိန်","အာသိန်","အာသိန်"],
+		["Krittika","ကြတိုက်","ၾကတိုက္","ကြတိုက်","ကြတိုက်","ကြတိုက်"],
+		["Mrigasiras","မြိက္ကသိုဝ်","ၿမိကၠသိုဝ္","မြိက္ကသိုဝ်","မြိက္ကသိုဝ်"],
+		//[".","။","။","။","။","။"],
+		//[",","၊","၊","၊","၊","၊"],	
+	];
+}
+//-----------------------------------------------------------------------------
+
+} //ceMmTranslate
+//-----------------------------------------------------------------------
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//-----------------------------------------------------------------------
+//Start of chronicle ####################################################
+//-----------------------------------------------------------------------
+
+class ceMmChronicle {
+	//-------------------------------------------------------------------------
+	constructor() {
+		this.m_ev=ceMmChronicle.Init();
+	}
+//-----------------------------------------------------------------------------	
+// get chronicle evidence
+chronicle(jdn) {
+	var str=""; var i=this.hSearch(jdn);
 	if(i>=0){ str=this.m_ev[i]["Description"];}
 	return str;
 }
 //-----------------------------------------------------------------------------
-//Search jd in chronical dates
+//Search jd in chronicle 
 //input: (jdn=Julian day number)
 //output: (i= index)
 hSearch(jdn)
@@ -1302,7 +1508,7 @@ hSearch(jdn)
 	return -1;//not found
 }
 //-----------------------------------------------------------------------------
-static ChronicalDates() {
+static Init() {
 	return [
 	{
 		"Julian Day Number":1995076,
@@ -3673,7 +3879,7 @@ static ChronicalDates() {
 	}
 	];
 }	
-//End of chronical dates ######################################################
+//End of chronicle ######################################################
 
-} //ceMmDateTime
+} //ceMmChronicle
 //-------------------------------------------------------------------------

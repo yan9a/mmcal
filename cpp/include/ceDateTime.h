@@ -83,13 +83,14 @@ public:
 
     // jd to date time string
     // input: (jd:julian date,
-    //  fm: format [Optional argument: "%Www %yyyy-%mm-%d %HH:%nn:%ss %zz"]
+    //  fm: format [Optional argument: "%Www %y-%mm-%dd %HH:%nn:%ss %zz"]
     //  tz : time zone offset in hours (e.g. 8 for GMT +8)
     //  ct:calendar type [Optional argument: 0=British (default), 1=Gregorian, 2=Julian]
     //  SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
     // output: date time string according to fm where formatting strings are as follows
     // %yyyy : year [0000-9999, e.g. 2018]
     // %yy : year [00-99 e.g. 18]
+    // %y : year [0-9999, e.g. 201]
     // %MMM : month [e.g. JAN]
     // %Mmm : month [e.g. Jan]
     // %mm : month with zero padding [01-12]
@@ -114,7 +115,7 @@ public:
     // %W : Weekday [e.g. Saturday]
     // %w : Weekday number [0=sat, 1=sun, ..., 6=fri]
     // %zz : time zone (e.g. +08, +06:30)
-    static std::string j2s(double jd, std::string fm="%Www %yyyy-%mm-%dd %HH:%nn:%ss %zz", double tz=0, long ct=0, long SG=2361222);
+    static std::string j2s(double jd, std::string fm="%Www %y-%mm-%dd %HH:%nn:%ss %zz", double tz=0, long ct=0, long SG=2361222);
 
     // convert date time string to jd
     // inputs
@@ -157,10 +158,11 @@ public:
     void SetSG(long sg);
 
     // Get Date Time string
-    // input: (fm: format [Optional argument: "%Www %yyyy-%mm-%d %HH:%nn:%ss %zz"])
+    // input: (fm: format [Optional argument: "%Www %y-%mm-%dd %HH:%nn:%ss %zz"])
     // output: date time string according to fm where formatting strings are as follows
     // %yyyy : year [0000-9999, e.g. 2018]
     // %yy : year [00-99 e.g. 18]
+    // %y : year [0-9999, e.g. 201]
     // %MMM : month [e.g. JAN]
     // %Mmm : month [e.g. Jan]
     // %mm : month with zero padding [01-12]
@@ -185,7 +187,7 @@ public:
     // %W : Weekday [e.g. Saturday]
     // %w : Weekday number [0=sat, 1=sun, ..., 6=fri]
     // %zz : time zone (e.g. +08, +06:30)
-	std::string ToString(std::string fm = "%Www %yyyy-%mm-%dd %HH:%nn:%ss %zz");
+	std::string ToString(std::string fm = "%Www %y-%mm-%dd %HH:%nn:%ss %zz");
 
 	// filter input string to get digits only
 	static std::string GetDigits(std::string str);

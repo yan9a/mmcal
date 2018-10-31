@@ -281,12 +281,13 @@ public:
 	//-------------------------------------------------------------------------
 	// jd to date string in Myanmar calendar 
 	// input: (jd:julian date,
-	//  fs: format string [Optional argument: "&yyyy &M &P &ff"]
+	//  fs: format string [Optional argument: "&y &M &P &ff"]
 	//  tz : time zone offset in hours (Optional, e.g. 8 for GMT +8))
 	// output: date string in Myanmar calendar according to fm 
 	// where formatting strings are as follows
 	// &yyyy : Myanmar year [0000-9999, e.g. 1380]
 	// &YYYY : Sasana year [0000-9999, e.g. 2562]
+	// &y : Myanmar year [0-9999, e.g. 138]
 	// &mm : month with zero padding [01-14]
 	// &M : month [e.g. January]
 	// &m : month [1-14]
@@ -295,7 +296,7 @@ public:
 	// &d : day of the month [1-31]
 	// &ff : fortnight day with zero padding [01-15]
 	// &f : fortnight day [1-15]
-	static std::string j2ms(double jd, std::string fs="&yyyy &M &P &ff", double tz=0);
+	static std::string j2ms(double jd, std::string fs="&y &M &P &ff", double tz=0);
 	//-------------------------------------------------------------------------
 	// get properties	
 	long myt(); // Myanmar year type	
@@ -322,12 +323,13 @@ public:
 	//-------------------------------------------------------------------------
 	// get Myanmar Date String
 	// input: (
-	//  fs: format string [Optional argument: "&yyyy &M &P &ff"]
+	//  fs: format string [Optional argument: "&y &M &P &ff"]
 	//  tz : time zone offset in hours (Optional, e.g. 8 for GMT +8))
 	// output: date string in Myanmar calendar according to fm 
 	// where formatting strings are as follows
 	// &yyyy : Myanmar year [0000-9999, e.g. 1380]
 	// &YYYY : Sasana year [0000-9999, e.g. 2562]
+	// &y : Myanmar year [0-9999, e.g. 138]
 	// &mm : month with zero padding [01-14]
 	// &M : month [e.g. January]
 	// &m : month [1-14]
@@ -336,7 +338,7 @@ public:
 	// &d : day of the month [1-31]
 	// &ff : fortnight day with zero padding [01-15]
 	// &f : fortnight day [1-15]
-	std::string ToMString(std::string fs="&yyyy &M &P &ff");
+	std::string ToMString(std::string fs="&y &M &P &ff");
 	//-------------------------------------------------------------------------
 };
 
