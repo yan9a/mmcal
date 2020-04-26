@@ -319,6 +319,7 @@ SetUnixTime(ut)
 }
 //-------------------------------------------------------------------------
 // set date time for a timezone and a calendar type
+// timezone and calendar type won't be affected (tz and ct remain unchanged)
 SetDateTime(year,month,day,hour=12,minute=0,second=0,tz=0,ct=0,SG=2361222)
 {
     this.m_jd=ceDateTime.w2j(year,month,day,hour,minute,second,ct,SG)-tz/24.0;
@@ -703,6 +704,19 @@ static m2j(my,mm,md) {
 	return (dd+yo.tg1-1);
 }
 //-------------------------------------------------------------------------
+// set Myanmar date time for a timezone and a calendar type
+// timezone and calendar type won't be affected (tz and ct remain unchanged)
+// input:  (
+//  my = year,
+//  mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+//    Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+//    Tabaung=12 , Late Tagu=13, Late Kason=14 ],
+//  md = day of the month [1-30]
+// ... )
+SetMDateTime(my, mm, md, hour = 12, minute = 0, second = 0, tz = 0) {
+    this.m_jd = ceMmDateTime.m2j(my, mm, md)+ceDateTime.t2d(hour, minute, second) - tz / 24.0;
+}
+//-------------------------------------------------------------------------
 //Checking Astrological days
 // More details @ http://cool-emerald.blogspot.sg/2013/12/myanmar-astrological-calendar-days.html
 //-------------------------------------------------------------------------
@@ -771,7 +785,7 @@ static cal_mahabote(my,wd) {return (my-wd)%7;}
 //-------------------------------------------------------------------------
 // nakhat 
 // input: ( my = year )
-// output: ( [0=Ogre, 1=Spirit, 2=Human] )
+// output: ( [0=Ogre, 1=Elf, 2=Human] )
 static cal_nakhat(my) {return my%3;}
 //-------------------------------------------------------------------------
 // thamanyo 
@@ -1214,6 +1228,11 @@ get mf() {
 	return ceMmDateTime.cal_mf(this.md);
 }
 
+// Length of this Myanmar month
+get mmlen() {
+    return ceMmDateTime.cal_mml(this.mm,this.myt);
+}
+
 // get sabbath string
 get sabbath() {
 	var yo=ceMmDateTime.j2m(this.jdnl);
@@ -1244,11 +1263,18 @@ get nagahle() {
 	return pa[v%4];
 }
 
-// get mahabote direction
+// get mahabote
 get mahabote() {
 	var v=ceMmDateTime.cal_mahabote(this.my,this.w);
 	var pa=["Binga","Atun","Yaza","Adipati","Marana","Thike","Puti"];
 	return pa[v%7];
+    }
+
+// get nakhat
+get nakhat() {
+    var v = ceMmDateTime.cal_nakhat(this.my);
+    var pa = ["Ogre", "Elf", "Human"];
+    return pa[v%3];
 }
 
 // get the array of astrological days
@@ -1276,7 +1302,7 @@ get holidays2() {
 // &yyyy : Myanmar year [0000-9999, e.g. 1380]
 // &YYYY : Sasana year [0000-9999, e.g. 2562]
 // &mm : month with zero padding [01-14]
-// &M : month [e.g. January]
+// &M : month [e.g. Tagu]
 // &m : month [1-14]
 // &P : moon phase [e.g. waxing, waning, full moon, or new moon]
 // &dd : day of the month with zero padding [01-31]
@@ -1319,86 +1345,90 @@ T(str,toLn=1,fromLn=0) {
 //-----------------------------------------------------------------------------
 // Initialize the language catalog with 2 dimensional array
 // Index 0: English, 1: Myanmar (Unicode), 2: Zawgyi, 
-//		3: Mon, 4: Shan, 5: Karen
-//Credit: Mon Language Translation by 'ITVilla' : http://it-villa.blogspot.com/
+//		3: Mon, 4: Tai, 5: Karen
+//Credit: 
+//Mon language translation by 'ITVilla': http://it-villa.blogspot.com/
 //and Proof reading by Mikau Nyan
+//Tai language translation by 'Jao Tai Num'
+// and  https://www.taidictionary.com/
 static Init() {
 	return [
-		["0","၀","၀","၀","၀","၀"],
-		["1","၁","၁","၁","၁","၁"],
-		["2","၂","၂","၂","၂","၂"],
-		["3","၃","၃","၃","၃","၃"],
-		["4","၄","၄","၄","၄","၄"],
-		["5","၅","၅","၅","၅","၅"],
-		["6","၆","၆","၆","၆","၆"],
-		["7","၇","၇","၇","၇","၇"],
-		["8","၈","၈","၈","၈","၈"],
-		["9","၉","၉","၉","၉","၉"],
-		["January","ဇန်နဝါရီ","ဇန္နဝါရီ","ဂျာန်နျူအာရဳ","ဇန်နဝါရီ","ဇန်နဝါရီ"],
-		["February","ဖေဖော်ဝါရီ","ေဖေဖာ္ဝါရီ","ဝှေဝ်ဗျူအာရဳ","ဖေဖော်ဝါရီ","ဖေဖော်ဝါရီ"],
-		["March","မတ်","မတ္","မာတ်ချ်","မတ်","မတ်"],
-		["April","ဧပြီ","ဧၿပီ","ဨပြေယ်လ်","ဧပြီ","ဧပြီ"],
-		["May","မေ","ေမ","မေ","မေ","မေ"],
-		["June","ဇွန်","ဇြန္","ဂျုန်","ဇွန်","ဇွန်"],
-		["July","ဇူလိုင်","ဇူလိုင္","ဂျူလာၚ်","ဇူလိုင်","ဇူလိုင်"],
-		["August","ဩဂုတ်","ဩဂုတ္","အဝ်ဂါတ်","ဩဂုတ်","ဩဂုတ်"],
-		["September","စက်တင်ဘာ","စက္တင္ဘာ","သိတ်ထီဗာ","စက်တင်ဘာ","စက်တင်ဘာ"],
-		["October","အောက်တိုဘာ","ေအာက္တိုဘာ","အံက်ထဝ်ဗာ","အောက်တိုဘာ","အောက်တိုဘာ"],
-		["November","နိုဝင်ဘာ","နိုဝင္ဘာ","နဝ်ဝါမ်ဗာ","နိုဝင်ဘာ","နိုဝင်ဘာ"],		
-		["December","ဒီဇင်ဘာ","ဒီဇင္ဘာ","ဒီဇြေန်ဗာ","ဒီဇင်ဘာ","ဒီဇင်ဘာ"],		
-		["Tagu","တန်ခူး","တန္ခူး","ဂိတုစဲ","တန်ခူး","တန်ခူး"],
-		["Kason","ကဆုန်","ကဆုန္","ဂိတုပသာ်","ကဆုန်","ကဆုန်"],
-		["Nayon","နယုန်","နယုန္","ဂိတုဇှေ်","နယုန်","နယုန်"],
-		["Waso","ဝါဆို","ဝါဆို","ဂိတုဒ္ဂိုန်","ဝါဆို","ဝါဆို"],
-		["Wagaung","ဝါခေါင်","ဝါေခါင္","ဂိတုခ္ဍဲသဳ","ဝါခေါင်","ဝါခေါင်"],
-		["Tawthalin","တော်သလင်း","ေတာ္သလင္း","ဂိတုဘတ်","တော်သလင်း","တော်သလင်း"],
-		["Thadingyut","သီတင်းကျွတ်","သီတင္းကြ်တ္","ဂိတုဝှ်","သီတင်းကျွတ်","သီတင်းကျွတ်"],
-		["Tazaungmon","တန်ဆောင်မုန်း","တန္ေဆာင္မုန္း","ဂိတုက္ထိုန်","တန်ဆောင်မုန်း","တန်ဆောင်မုန်း"],
-		["Nadaw","နတ်တော်","နတ္ေတာ္","ဂိတုမြေက္ကသဵု","နတ်တော်","နတ်တော်"],
-		["Pyatho","ပြာသို","ျပာသို","ဂိတုပှော်","ပြာသို","ပြာသို"],
-		["Tabodwe","တပို့တွဲ","တပို႔တြဲ","ဂိတုမာ်","တပို့တွဲ","တပို့တွဲ"],
-		["Tabaung","တပေါင်း","တေပါင္း","ဂိတုဖဝ်ရဂိုန်","တပေါင်း","တပေါင်း"],		
-		["First","ပ","ပ","ပ","ပ","ပ"],
-		["Second","ဒု","ဒု","ဒု","ဒု","ဒု"],
-		["Late","နှောင်း","ေႏွာင္း","နှောင်း","နှောင်း","နှောင်း"],
-		["Waxing","လဆန်း","လဆန္း","မံက်","လဆန်း","လဆန်း"],
-		["Waning","လဆုတ်","လဆုတ္","စွေက်","လဆုတ်","လဆုတ်"],
-		["Full Moon","လပြည့်","လျပည့္","ပေၚ်","လပြည့်","လပြည့်"],
-		["New Moon","လကွယ်","လကြယ္","အိုတ်","လကွယ်","လကွယ်"],
-		["Myanmar","မြန်မာ","ျမန္မာ","ဍုၚ်","မြန်မာ","မြန်မာ"],		
-		["Good Friday","သောကြာနေ့ကြီး","ေသာၾကာေန႔ႀကီး","သောကြာနေ့ကြီး","သောကြာနေ့ကြီး","သောကြာနေ့ကြီး"],
-		["Sunday","တနင်္ဂနွေ","တနဂၤေႏြ","တ္ၚဲအဒိုတ်","တနင်္ဂနွေ","တနင်္ဂနွေ"],
-		["Monday","တနင်္လာ","တနလၤာ","တ္ၚဲစန်","တနင်္လာ","တနင်္လာ"],
-		["Tuesday","အင်္ဂါ","အဂၤါ","တ္ၚဲအင္ၚာ","အင်္ဂါ","အင်္ဂါ"],
-		["Wednesday","ဗုဒ္ဓဟူး","ဗုဒၶဟူး","တ္ၚဲဗုဒ္ဓဝါ","ဗုဒ္ဓဟူး","ဗုဒ္ဓဟူး"],
-		["Thursday","ကြာသပတေး","ၾကာသပေတး","တ္ၚဲဗြဴဗတိ","ကြာသပတေး","ကြာသပတေး"],		
-		["Friday","သောကြာ","ေသာၾကာ","သောကြာ","တ္ၚဲသိုက်","သောကြာ"],
-		["Saturday","စနေ","စေန","တ္ၚဲသ္ၚိသဝ်","စနေ","စနေ"],		
-		["Sabbath Eve","အဖိတ်","အဖိတ္","တ္ၚဲတိၚ်","အဖိတ်","အဖိတ်"],
-		["Sabbath","ဥပုသ်","ဥပုသ္","တ္ၚဲသဳ","ဥပုသ်","ဥပုသ်"],
-		["Yatyaza","ရက်ရာဇာ","ရက္ရာဇာ","တ္ၚဲရာဇာ","ရက်ရာဇာ","ရက်ရာဇာ"],
-		["Pyathada","ပြဿဒါး","ျပႆဒါး","တ္ၚဲပြာဗ္ဗဒါ","ပြဿဒါး","ပြဿဒါး"],
-		["Afternoon","မွန်းလွဲ","မြန္းလြဲ","မွန်းလွဲ","မွန်းလွဲ","မွန်းလွဲ"],
-		["New Year's","နှစ်ဆန်း","ႏွစ္ဆန္း","လှာဲသၞာံ","နှစ်ဆန်း","နှစ်ဆန်း"],
-		["Independence","လွတ်လပ်ရေး","လြတ္လပ္ေရး","သၠးပွး","လွတ်လပ်ရေး","လွတ်လပ်ရေး"],
-		["Union","ပြည်ထောင်စု","ျပည္ေထာင္စု","ကၟိန်ဍုၚ်","ပြည်ထောင်စု","ပြည်ထောင်စု"],
-		["Peasants'","တောင်သူလယ်သမား","ေတာင္သူလယ္သမား","သၟာဗ္ၚ","တောင်သူလယ်သမား","တောင်သူလယ်သမား"],
-		["Resistance","တော်လှန်ရေး","ေတာ္လွန္ေရး","ပၠန်ဂတးဗၟာ","တော်လှန်ရေး","တော်လှန်ရေး"],
-		["Labour","အလုပ်သမား","အလုပ္သမား","သၟာကမၠောန်","အလုပ်သမား","အလုပ်သမား"],
-		["Martyrs'","အာဇာနည်","အာဇာနည္","အာဇာနဲ","အာဇာနည်","အာဇာနည်"],
-		["Christmas","ခရစ္စမတ်","ခရစၥမတ္","ခရေဿမာတ်","ခရစ္စမတ်","ခရစ္စမတ်"],
-		["Buddha","ဗုဒ္ဓ","ဗုဒၶ","သ္ဘၚ်ဖဍာ်ဇြဲ","ဗုဒ္ဓ","ဗုဒ္ဓ"],
+		["0","၀","၀","၀","0","၀"],
+		["1","၁","၁","၁","1","၁"],
+		["2","၂","၂","၂","2","၂"],
+		["3","၃","၃","၃","3","၃"],
+		["4","၄","၄","၄","4","၄"],
+		["5","၅","၅","၅","5","၅"],
+		["6","၆","၆","၆","6","၆"],
+		["7","၇","၇","၇","7","၇"],
+		["8","၈","၈","၈","8","၈"],
+        ["9", "၉", "၉", "၉", "9", "၉"],
+        ["April Fools'", "ဧပြီအရူး", "ဧၿပီအ႐ူး", "သ္ပပရအ်", "ဢေႇပရႄႇၵူၼ်းယွင်ႇ", "အ့ဖြ့ၣ် fool"],
+        ["January", "ဇန်နဝါရီ", "ဇန္နဝါရီ", "ဂျာန်နျူအာရဳ", "ၸၼ်ႇဝႃႇရီႇ","ယနူၤအါရံၤ"],
+        ["February", "ဖေဖော်ဝါရီ", "ေဖေဖာ္ဝါရီ", "ဝှေဝ်ဗျူအာရဳ", "ၾႅပ်ႉဝႃႇရီႇ","ဖ့ၤဘြူၤအါရံၤ"],
+        ["March", "မတ်", "မတ္", "မာတ်ချ်", "မျၢတ်ႉၶျ်","မၢ်ၡး"],
+        ["April", "ဧပြီ", "ဧၿပီ", "ဨပြေယ်လ်", "ဢေႇပရႄႇ","အ့ဖြ့ၣ်"],
+        ["May", "မေ", "ေမ", "မေ", "မေ","မ့ၤ"],
+        ["June", "ဇွန်", "ဇြန္", "ဂျုန်", "ၵျုၼ်ႇ","ယူၤ"],
+        ["July", "ဇူလိုင်", "ဇူလိုင္", "ဂျူလာၚ်", "ၵျူႇလၢႆႇ","ယူၤလံ"],
+        ["August", "ဩဂုတ်", "ဩဂုတ္", "အဝ်ဂါတ်", "ဢေႃးၵၢတ်ႉ","အီကူး"],
+        ["September", "စက်တင်ဘာ", "စက္တင္ဘာ", "သိတ်ထီဗာ", "သႅပ်ႇထႅမ်ႇပႃႇ","စဲးပတ့ဘၢၣ်"],
+        ["October", "အောက်တိုဘာ", "ေအာက္တိုဘာ", "အံက်ထဝ်ဗာ", "ဢွၵ်ႇထူဝ်ႇပႃႇ","အီးကထိဘၢၣ်"],
+        ["November", "နိုဝင်ဘာ", "နိုဝင္ဘာ", "နဝ်ဝါမ်ဗာ", "ၼူဝ်ႇဝႅမ်ႇပႃႇ","နိၣ်ဝ့ဘၢၣ်"],		
+        ["December", "ဒီဇင်ဘာ", "ဒီဇင္ဘာ", "ဒီဇြေန်ဗာ", "တီႇသႅမ်ႇပႃႇ","ဒံၣ်စ့ဘၢၣ်"],		
+        ["Tagu", "တန်ခူး", "တန္ခူး", "ဂိတုစဲ", "ႁႃႈ","လါချံ"],
+        ["Kason", "ကဆုန်", "ကဆုန္", "ဂိတုပသာ်", "ႁူၵ်း","ဒ့ၣ်ညါ"],
+        ["Nayon", "နယုန်", "နယုန္", "ဂိတုဇှေ်", "ၸဵတ်း","လါနွံ"],
+        ["Waso", "ဝါဆို", "ဝါဆို", "ဂိတုဒ္ဂိုန်", "ပႅတ်ႇ","လါဃိး"],
+        ["Wagaung", "ဝါခေါင်", "ဝါေခါင္", "ဂိတုခ္ဍဲသဳ", "ၵဝ်ႈ","လါခူး"],
+        ["Tawthalin", "တော်သလင်း", "ေတာ္သလင္း", "ဂိတုဘတ်", "သိပ်း","ဆံးမုၢ်"],
+        ["Thadingyut", "သီတင်းကျွတ်", "သီတင္းကြ်တ္", "ဂိတုဝှ်", "သိပ်းဢဵတ်း","ဆံးဆၣ်"],
+        ["Tazaungmon", "တန်ဆောင်မုန်း", "တန္ေဆာင္မုန္း", "ဂိတုက္ထိုန်", "သိပ်းသွင်","လါနီ"],
+        ["Nadaw", "နတ်တော်", "နတ္ေတာ္", "ဂိတုမြေက္ကသဵု", "ၸဵင်","လါပျုၤ"],
+        ["Pyatho", "ပြာသို", "ျပာသို", "ဂိတုပှော်", "ၵမ်","သလ့ၤ"],
+        ["Tabodwe", "တပို့တွဲ", "တပို႔တြဲ", "ဂိတုမာ်", "သၢမ်","ထ့ကူး"],
+        ["Tabaung", "တပေါင်း", "တေပါင္း", "ဂိတုဖဝ်ရဂိုန်", "သီႇ","သွ့ကီ"],		
+        ["First", "ပ", "ပ", "ပ", "ပ","၁ "],
+        ["Second", "ဒု", "ဒု", "ဒု", "တု","၂ "],
+        ["Late", "နှောင်း", "ေႏွာင္း", "နှောင်း", "ဝၢႆး","စဲၤ"],
+        ["Waxing", "လဆန်း", "လဆန္း", "မံက်", "လိူၼ်မႂ်ႇ","လါထီၣ်"],
+        ["Waning", "လဆုတ်", "လဆုတ္", "စွေက်", "လိူၼ်လွင်ႈ","လါလီၤ"],
+        ["Full Moon", "လပြည့်", "လျပည့္", "ပေၚ်", "လိူၼ်မူၼ်း","လါပှဲၤ"],
+        ["New Moon", "လကွယ်", "လကြယ္", "အိုတ်", "လိူၼ်လပ်း","လါဘၢ"],
+        ["Myanmar", "မြန်မာ", "ျမန္မာ", "ဍုၚ်", "မိူင်းႁူမ်ႈတုမ်မၢၼ်ႈ","ကီၢ်ပယီၤ"],		
+        ["Good Friday", "သောကြာနေ့ကြီး", "ေသာၾကာေန႔ႀကီး", "သောကြာနေ့ကြီး", "ဢၼ်လီဝၼ်းသုၵ်","မုၢ်ဖီဖး"],
+        ["Sunday", "တနင်္ဂနွေ", "တနဂၤေႏြ", "တ္ၚဲအဒိုတ်", "ဝၼ်းဢႃးတိတ်ႉ","မုၢ်ဒဲး"],
+        ["Monday", "တနင်္လာ", "တနလၤာ", "တ္ၚဲစန်", "ဝၼ်းၸၼ်","မုၢ်ဆၣ်"],
+        ["Tuesday", "အင်္ဂါ", "အဂၤါ", "တ္ၚဲအင္ၚာ", "ဝၼ်းဢၢင်းၵၢၼ်း","မုၢ်ယူာ်"],
+        ["Wednesday", "ဗုဒ္ဓဟူး", "ဗုဒၶဟူး", "တ္ၚဲဗုဒ္ဓဝါ", "ဝၼ်းပုတ်ႉ","မုၢ်ပျဲၤ"],
+        ["Thursday", "ကြာသပတေး", "ၾကာသပေတး", "တ္ၚဲဗြဴဗတိ", "ဝၼ်းၽတ်း","မုၢ်လ့ၤဧိၤ"],		
+        ["Friday", "သောကြာ", "ေသာၾကာ", "သောကြာ", "တ္ၚဲသိုက်", "ဝၼ်းသုၵ်း", "မုၢ်ဖီဖး"],
+        ["Saturday", "စနေ", "စေန", "တ္ၚဲသ္ၚိသဝ်", "ဝၼ်းသဝ်","မုၢ်ဘူၣ်"],		
+        ["Sabbath Eve", "အဖိတ်", "အဖိတ္", "တ္ၚဲတိၚ်", "ၽိတ်ႈ","အဖိတ်"],
+        ["Sabbath", "ဥပုသ်", "ဥပုသ္", "တ္ၚဲသဳ", "သိၼ်","အိၣ်ဘှံး"],
+        ["Yatyaza", "ရက်ရာဇာ", "ရက္ရာဇာ", "တ္ၚဲရာဇာ","ဝၼ်းထုၼ်း","ရက်ရာဇာ"],
+        ["Pyathada", "ပြဿဒါး", "ျပႆဒါး", "တ္ၚဲပြာဗ္ဗဒါ","ဝၼ်းပျၢတ်ႈ","ပြဿဒါး"],
+        ["Afternoon", "မွန်းလွဲ", "မြန္းလြဲ", "မွန်းလွဲ","ဝၢႆးဝၼ်း","မွန်းလွဲ"],
+        ["New Year's", "နှစ်ဆန်း", "ႏွစ္ဆန္း", "လှာဲသၞာံ","ပီမႂ်ႇ","နှစ်ဆန်း"],
+        ["Independence", "လွတ်လပ်ရေး", "လြတ္လပ္ေရး", "သၠးပွး","ဢၼ်လွတ်ႈလႅဝ်","လွတ်လပ်ရေး"],
+        ["Union", "ပြည်ထောင်စု", "ျပည္ေထာင္စု", "ကၟိန်ဍုၚ်","ၸိုင်ႈမိူင်းႁူမ်ႈတုမ်ႊ","ပြည်ထောင်စု"],
+        ["Peasants'", "တောင်သူလယ်သမား", "ေတာင္သူလယ္သမား", "သၟာဗ္ၚ","ၸဝ်ႈႁႆႈၸဝ်ႈၼႃး","တောင်သူလယ်သမား"],
+        ["Resistance", "တော်လှန်ရေး", "ေတာ္လွန္ေရး", "ပၠန်ဂတးဗၟာ","လွင်ႈလုၵ်ႉၽိုၼ်","တော်လှန်ရေး"],
+        ["Labour", "အလုပ်သမား", "အလုပ္သမား", "သၟာကမၠောန်","ၵူၼ်းႁဵတ်းၵၢၼ်","အလုပ်သမား"],
+        ["Martyrs'", "အာဇာနည်", "အာဇာနည္", "အာဇာနဲ","ၽူႈႁတ်းငၢၼ်","အာဇာနည်"],
+        ["Christmas", "ခရစ္စမတ်", "ခရစၥမတ္", "ခရေဿမာတ်", "ပွႆးၶရိတ်ႉသမတ်ႉၸ်","ခရံာ်အိၣ်ဖျဲၣ်မူးပွဲန့ၣ်"],
+        ["Buddha", "ဗုဒ္ဓ", "ဗုဒၶ", "သ္ဘၚ်ဖဍာ်ဇြဲ","ပုတ်ႉထ","ဗုဒ္ဓ"],
 		["Start of Buddhist Lent","ဓမ္မစကြာနေ့","ဓမၼစၾကာေန႔","တ္ၚဲတွံဓဝ်ဓမ္မစက်","ဓမ္မစကြာနေ့","ဓမ္မစကြာနေ့"],
-		["End of Buddhist Lent","မီးထွန်းပွဲ","မီးထြန္းပြဲ","တ္ၚဲအဘိဓရ်","မီးထွန်းပွဲ","မီးထွန်းပွဲ"],
+        ["End of Buddhist Lent", "မီးထွန်းပွဲ", "မီးထြန္းပြဲ", "တ္ၚဲအဘိဓရ်","ပွႆတႆႈၾႆး","မီးထွန်းပွဲ"],
 		["Tazaungdaing","တန်ဆောင်တိုင်","တန္ေဆာင္တိုင္","သ္ဘၚ်ပူဇဴပၟတ်ပၞာၚ်","တန်ဆောင်တိုင်","တန်ဆောင်တိုင်"],
-		["National","အမျိုးသား","အမ်ိဳးသား","ကောန်ဂကူဗၟာ","အမျိုးသား","အမျိုးသား"],
-		["Karen","ကရင်","ကရင္","ကရေၚ်","ကရင်","ကရင်"],
-		["Pwe","ပွဲ","ပြဲ","သ္ဘၚ်","ပွဲ","ပွဲ"],
-		["Thingyan","သင်္ကြန်","သၾကၤန္","အတး","သင်္ကြန်","သင်္ကြန်"],
-		["Akyo","အကြို","အႀကိဳ","ဒစး","အကြို","အကြို"],
-		["Akya","အကျ","အက်","စှေ်","အကျ","အကျ"],
-		["Akyat","အကြတ်","အၾကတ္","ကြာပ်","အကြတ်","အကြတ်"],
-		["Atat","အတက်","အတက္","တိုန်","အတက်","အတက်"],
+        ["National", "အမျိုးသား", "အမ်ိဳးသား", "ကောန်ဂကူဗၟာ","ၵူၼ်းမိူင်","အမျိုးသား"],
+        ["Karen", "ကရင်", "ကရင္", "ကရေၚ်","ယၢင်းၽိူၵ်ႇ","ကရင်"],
+        ["Pwe", "ပွဲ", "ပြဲ", "သ္ဘၚ်","ပွႆ","ပွဲ"],
+        ["Thingyan", "သင်္ကြန်", "သၾကၤန္", "အတး","သၢင်းၵျၢၼ်ႇ","သင်္ကြန်"],
+        ["Akyo", "အကြို", "အႀကိဳ", "ဒစး", "အကြို", "ႁပ်ႉ"],
+        ["Akyat", "အကြတ်", "အၾကတ္", "ကြာပ်", "ၵျၢပ်ႈ", "အကြတ်"],
+        ["Akya", "အကျ", "အက်", "စှေ်","တူၵ်း","အကျ"],
+        ["Atat", "အတက်", "အတက္", "တိုန်","ၶိုၼ်ႈ","အတက်"],
 		["Amyeittasote","အမြိတ္တစုတ်","အၿမိတၱစုတ္","ကိုန်အမြိုတ်","အမြိတ္တစုတ်","အမြိတ္တစုတ်"],
 		["Warameittugyi","ဝါရမိတ္တုကြီး","ဝါရမိတၱဳႀကီး","ကိုန်ဝါရမိတ္တုဇၞော်","ဝါရမိတ္တုကြီး","ဝါရမိတ္တုကြီး"],
 		["Warameittunge","ဝါရမိတ္တုငယ်","ဝါရမိတၱဳငယ္","ကိုန်ဝါရမိတ္တုဍောတ်","ဝါရမိတ္တုငယ်","ဝါရမိတ္တုငယ်"],
@@ -1409,52 +1439,55 @@ static Init() {
 		["Mahayatkyan","မဟာရက်ကြမ်း","မဟာရက္ၾကမ္း","ကိုန်ဟွံခိုဟ်","မဟာရက်ကြမ်း","မဟာရက်ကြမ်း"],
 		["Nagapor","နဂါးပေါ်","နဂါးေပၚ","နာ်မံက်","နဂါးပေါ်","နဂါးပေါ်"],
 		["Shanyat","ရှမ်းရက်","ရွမ္းရက္","တ္ၚဲဒတန်","ရှမ်းရက်","ရှမ်းရက်"],			
-		["Mon","မွန်","မြန္","ပၠန်","မွန်","မွန်"],
-		["G. Aung San BD","ဗိုလ်ချုပ်မွေးနေ့","ဗိုလ္ခ်ဳပ္ေမြးေန႔","တ္ၚဲသၟိၚ်ဗၟာ အံၚ်သာန်ဒှ်မၞိဟ်","ဗိုလ်ချုပ်မွေးနေ့","ဗိုလ်ချုပ်မွေးနေ့"],
-		["Valentines","ချစ်သူများ","ခ်စ္သူမ်ား","ဝုတ်ဗၠာဲ","ချစ်သူများ","ချစ်သူများ"],
-		["Earth","ကမ္ဘာမြေ","ကမၻာေျမ","ဂၠးကဝ်","ကမ္ဘာမြေ","ကမ္ဘာမြေ"],
-		["April Fools'","ဧပြီအရူး","ဧၿပီအ႐ူး","သ္ပပရအ်","ဧပြီအရူး","ဧပြီအရူး"],
-		["Red Cross","ကြက်ခြေနီ","ၾကက္ေျခနီ","ဇိုၚ်ခ္ဍာ်ဍာဲ","ကြက်ခြေနီ","ကြက်ခြေနီ"],
-		["United Nations","ကုလသမ္မဂ္ဂ","ကုလသမၼဂၢ","ကုလသမ္မဂ္ဂ","ကုလသမ္မဂ္ဂ","ကုလသမ္မဂ္ဂ"],
-		["Halloween","သရဲနေ့","သရဲေန႔","ဟေဝ်လဝ်ဝိန်","သရဲနေ့","သရဲနေ့"],
-		["Shan","ရှမ်း","ရွမ္း","သေံ","ရှမ်း","ရှမ်း"],
-		["Mothers'","အမေများ","အေမမ်ား","မိအံက်","အမေများ","အမေများ"],
-		["Fathers'","အဖေများ","အေဖမ်ား","မအံက်","အဖေများ","အဖေများ"],
-		["Sasana","သာသနာ","သာသနာ","သာသနာ","သာသနာ","သာသနာ"],
+        ["Mon", "မွန်", "မြန္", "ပၠန်","မွၼ်း","မွန်"],
+        ["G. Aung San BD", "ဗိုလ်ချုပ်မွေးနေ့", "ဗိုလ္ခ်ဳပ္ေမြးေန႔", "တ္ၚဲသၟိၚ်ဗၟာ အံၚ်သာန်ဒှ်မၞိဟ်","ဝၼ်းၵိူတ်ၸွမ်သိုၵ်","ဗိုလ်ချုပ်မွေးနေ့"],
+        ["Valentines", "ချစ်သူများ", "ခ်စ္သူမ်ား", "ဝုတ်ဗၠာဲ","ၵေႃႈႁၵ်ႉ","ချစ်သူများ"],
+        ["Earth", "ကမ္ဘာမြေ", "ကမၻာေျမ", "ဂၠးကဝ်","လိၼ်မိူင်း","ကမ္ဘာမြေ"],
+        ["Red Cross", "ကြက်ခြေနီ", "ၾကက္ေျခနီ", "ဇိုၚ်ခ္ဍာ်ဍာဲ","ဢၼ်မီးသီလႅင်ႁၢင်ႈၶႂၢႆႇၶႃပေ","ကြက်ခြေနီ"],
+        ["United Nations", "ကုလသမ္မဂ္ဂ", "ကုလသမၼဂၢ", "ကုလသမ္မဂ္ဂ","ဢၼ်ၽွမ်ႉႁူမ်ႈၸိူဝ်ႉၶိူဝ်းၼမ်","ကုလသမ္မဂ္ဂ"],
+        ["Halloween", "သရဲနေ့", "သရဲေန႔", "ဟေဝ်လဝ်ဝိန်","ဝၼ်းၽဵတ်","သရဲနေ့"],
+        ["Shan", "ရှမ်း", "ရွမ္း", "သေံ","တႆး","ရှမ်း"],
+        ["Mothers'", "အမေများ", "အေမမ်ား", "မိအံက်", "မႄႈ","မိၢ်အ"],
+        ["Fathers'", "အဖေများ", "အေဖမ်ား", "မအံက်", "ပေႃ","ပၢ်အ"],
+        ["Sasana", "သာသနာ", "သာသနာ", "သာသနာ","သႃႇသၼႃႇ","သာသနာ"],
 		["Eid","အိဒ်","အိဒ္","အိဒ်","အိဒ်","အိဒ်"],
 		["Diwali","ဒီဝါလီ","ဒီဝါလီ","ဒီဝါလီ","ဒီဝါလီ","ဒီဝါလီ"],
-		["Mahathamaya","မဟာသမယ","မဟာသမယ","မဟာသမယ","မဟာသမယ","မဟာသမယ"],
+        ["Mahathamaya", "မဟာသမယ", "မဟာသမယ", "မဟာသမယ","ဢၼ်ယႂ်ႇၽွမ်ႉႁူမ်ႈ","မဟာသမယ"],
 		["Garudhamma","ဂရုဓမ္မ","ဂ႐ုဓမၼ","ဂရုဓမ္မ","ဂရုဓမ္မ","ဂရုဓမ္မ"],
-		["Metta","မေတ္တာ","ေမတၱာ","မေတ္တာ","မေတ္တာ","မေတ္တာ"],
+        ["Metta", "မေတ္တာ", "ေမတၱာ", "မေတ္တာ","မႅတ်ႉတႃႇ","မေတ္တာ"],
 		["Taungpyone","တောင်ပြုန်း","ေတာင္ျပဳန္း","တောင်ပြုန်း","တောင်ပြုန်း","တောင်ပြုန်း"],
 		["Yadanagu","ရတနာ့ဂူ","ရတနာ့ဂူ","ရတနာ့ဂူ","ရတနာ့ဂူ","ရတနာ့ဂူ"],
-		["Authors'","စာဆိုတော်","စာဆိုေတာ္","စာဆိုတော်","စာဆိုတော်","စာဆိုတော်"],
-		["World","ကမ္ဘာ့","ကမၻာ့","ကမ္ဘာ့","ကမ္ဘာ့","ကမ္ဘာ့"],
-		["Teachers'","ဆရာများ","ဆရာမ်ား","ဆရာများ","ဆရာများ","ဆရာများ"],
-		["Holiday","ရုံးပိတ်ရက်","႐ုံးပိတ္ရက္","ရုံးပိတ်ရက်","ရုံးပိတ်ရက်","ရုံးပိတ်ရက်"],
-		["Chinese","တရုတ်","တ႐ုတ္","တရုတ်","တရုတ်","တရုတ်"],
-		["Easter","ထမြောက်ရာနေ့","ထေျမာက္ရာေန႔","ထမြောက်ရာနေ့","ထမြောက်ရာနေ့","ထမြောက်ရာနေ့"], 
-		["Nay","နေ့","ေန႔","တ္ၚဲ","နေ့","နေ့"],
-		["Day","နေ့","ေန႔","တ္ၚဲ","နေ့","နေ့"],
-		["Yat","ရက်","ရက္","ရက်","ရက်","ရက်"],
-		["Year","နှစ်","ႏွစ္","နှစ်","နှစ်","နှစ်"],
-		["Ku","ခု","ခု","သၞာံ","ခု","ခု"],
-		["Naga","နဂါး","နဂါး","နဂါး","နဂါး","နဂါး"],
-		["Head","ခေါင်း","ေခါင္း","ခေါင်း","ခေါင်း","ခေါင်း"],
-		["Facing","လှည့်","လွည့္","လှည့်","လှည့်","လှည့်"],
-		["East","အရှေ့","အေရွ႕","အရှေ့","အရှေ့","အရှေ့"],
-		["West","အနောက်","အေနာက္","အနောက်","အနောက်","အနောက်"],
-		["South","တောင်","ေတာင္","တောင်","တောင်","တောင်"],
-		["North","မြောက်","ေျမာက္","မြောက်","မြောက်","မြောက်"],
+        ["Authors'", "စာဆိုတော်", "စာဆိုေတာ္", "စာဆိုတော်","ၽူႈတႅမ်ႈၽႅၼ်","စာဆိုတော်"],
+        ["World", "ကမ္ဘာ့", "ကမၻာ့", "ကမ္ဘာ့","လူၵ်","ကမ္ဘာ့"],
+        ["Teachers'", "ဆရာများ", "ဆရာမ်ား", "ဆရာများ","ၶူးသွၼ်","ဆရာများ"],
+        ["Holiday", "ရုံးပိတ်ရက်", "႐ုံးပိတ္ရက္", "ရုံးပိတ်ရက်","ဝၼ်းပိၵ်ႉလုမ်း","ရုံးပိတ်ရက်"],
+        ["Chinese", "တရုတ်", "တ႐ုတ္", "တရုတ်","ၵူၼ်းၸၢဝ်းၶေ","တရုတ်"],
+        ["Easter", "ထမြောက်ရာနေ့", "ထေျမာက္ရာေန႔", "ထမြောက်ရာနေ့","ပၢင်ႇပွႆးၶွပ်ႈၶူပ်ႇၸဝ်ႈၶရိတ်","ထမြောက်ရာနေ့"], 
+        ["Nay", "နေ့", "ေန႔", "တ္ၚဲ", "ဝၼ်း","နံၤ"],
+        ["Day", "နေ့", "ေန႔", "တ္ၚဲ", "ဝၼ်း","နံၤ"],
+        ["Yat", "ရက်", "ရက္", "ရက်","ဝၼ်း","ရက်"],
+        ["Year", "နှစ်", "ႏွစ္", "နှစ်", "ပီ","နံၣ်"],
+        ["Ku", "ခု", "ခု", "သၞာံ","ၶု",""],
+        ["Naga", "နဂါး", "နဂါး", "နဂါး","ႁူဝ်","နဂါး"],
+        ["Head", "ခေါင်း", "ေခါင္း", "ခေါင်း","ၼၵႃး","ခေါင်း"],
+        ["Facing", "လှည့်", "လွည့္", "လှည့်","ဝၢႆႇ","လှည့်"],
+        ["East", "အရှေ့", "အေရွ႕", "အရှေ့","တၢင်းဢွၵ်ႇ","အရှေ့"],
+        ["West", "အနောက်", "အေနာက္", "အနောက်","တၢင်းတူၵ်း","အနောက်"],
+        ["South", "တောင်", "ေတာင္", "တောင်","တၢင်းၸၢၼ်း","တောင်"],
+        ["North", "မြောက်", "ေျမာက္", "မြောက်","တၢင်းႁွင်ႇ","မြောက်"],
 		["Mahabote","မဟာဘုတ်","မဟာဘုတ္","မဟာဘုတ်","မဟာဘုတ်","မဟာဘုတ်"],
-		["Born","ဖွား","ဖြား","ဖွား","ဖွား","ဖွား"],
+        ["Born", "ဖွား", "ဖြား", "ဖွား","ဢၼ်မီးပႃႇရမီ","ဖွား"],
 		["Binga","ဘင်္ဂ","ဘဂၤ","ဘင်္ဂ","ဘင်္ဂ","ဘင်္ဂ"],
 		["Atun","အထွန်း","အထြန္း","အထွန်း","အထွန်း","အထွန်း"],
 		["Yaza","ရာဇ","ရာဇ","ရာဇ","ရာဇ","ရာဇ"],
 		["Adipati","အဓိပတိ","အဓိပတိ","အဓိပတိ","အဓိပတိ","အဓိပတိ"],
 		["Marana","မရဏ","မရဏ","မရဏ","မရဏ","မရဏ"],
 		["Thike","သိုက်","သိုက္","သိုက်","သိုက်","သိုက်"],
-		["Puti","ပုတိ","ပုတိ","ပုတိ","ပုတိ","ပုတိ"],
+        ["Puti", "ပုတိ", "ပုတိ", "ပုတိ", "ပုတိ", "ပုတိ"],
+        ["Ogre", "ဘီလူး", "ဘီလူး", "ဘီလူး", "ၽီလူ", "ဘီလူး"],
+        ["Elf", "နတ်", "နတ္", "နတ်", "ၽီမႅၼ်းဢွၼ်", "နတ်"],
+        ["Human", "လူ", "လူ", "လူ", "ဢၼ်ပဵၼ်ၵူၼ်", "လူ"],
+        ["Nakhat", "နက္ခတ်", "နကၡတ္", "နက္ခတ်", "လႅင်ႊလၢဝ်", "နက္ခတ်"],
 		["Hpusha","ပုဿ","ပုႆ","ပုဿ","ပုဿ","ပုဿ"],
 		["Magha","မာခ","မာခ","မာခ","မာခ","မာခ"],
 		["Phalguni","ဖ္လကိုန်","ဖႅကိုန္","ဖ္လကိုန်","ဖ္လကိုန်","ဖ္လကိုန်"],
@@ -1466,9 +1499,10 @@ static Init() {
 		["Bhadrapaha","ဘဒြ","ဘျဒ","ဘဒြ","ဘဒြ","ဘဒြ"],
 		["Asvini","အာသိန်","အာသိန္","အာသိန်","အာသိန်","အာသိန်"],
 		["Krittika","ကြတိုက်","ၾကတိုက္","ကြတိုက်","ကြတိုက်","ကြတိုက်"],
-		["Mrigasiras","မြိက္ကသိုဝ်","ၿမိကၠသိုဝ္","မြိက္ကသိုဝ်","မြိက္ကသိုဝ်"],
-		//[".","။","။","။","။","။"],
-		//[",","၊","၊","၊","၊","၊"],	
+        ["Mrigasiras", "မြိက္ကသိုဝ်", "ၿမိကၠသိုဝ္", "မြိက္ကသိုဝ်", "မြိက္ကသိုဝ်", "မြိက္ကသိုဝ်"],
+        ["Calculator", "တွက်စက်", "တြက္စက္", "တွက်စက်", "သွၼ်", "တွက်စက်"],
+		//[". ","။ ","။ ","။ ","။ ","။ "],
+		//[", ","၊ ","၊ ","၊ ","၊ ","၊ "],	
 	];
 }
 //-----------------------------------------------------------------------------
@@ -1477,13 +1511,12 @@ static Init() {
 //-----------------------------------------------------------------------
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //-----------------------------------------------------------------------
-//Start of chronicle ####################################################
-//-----------------------------------------------------------------------
-
 class ceMmChronicle {
 	//-------------------------------------------------------------------------
 	constructor() {
-		this.m_ev=ceMmChronicle.Init();
+        this.m_ev = ceMmChronicle.InitChronicle();
+        this.m_rul = ceMmChronicle.InitRulers();
+        this.m_dyn = ceMmChronicle.InitDynasties();
 	}
 //-----------------------------------------------------------------------------	
 // get chronicle evidence
@@ -1508,7 +1541,1636 @@ hSearch(jdn)
 	return -1;//not found
 }
 //-----------------------------------------------------------------------------
-static Init() {
+// get rulers
+ruler(jdn) {
+    var ra = [];//list of rulers
+    var ro; var i = 0; var u = this.m_rul.length;
+    for (i = 0; i < u; i++) {
+        ro = this.m_rul[i];
+        if (jdn >= ro.Beginning_JDN && jdn <= ro.Ending_JDN) ra.push(ro);
+    }
+    return ra;
+}
+//-------------------------------------------------------------------
+// get dynasty
+dynasty(name) {
+    return this.m_dyn[name];
+}
+//-------------------------------------------------------------------
+    // Start of rulers ######################################################
+    static InitRulers() {
+        return [
+            {
+                "Name": "Popa Sawrahan (ပုပ္ပားစောရဟန်း)",
+                "Beginning_JDN": 1944957,
+                "Ending_JDN": 1954904,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://my.wikipedia.org/wiki/%E1%80%95%E1%80%AF%E1%80%95%E1%80%B9%E1%80%95%E1%80%AB%E1%80%B8_%E1%80%85%E1%80%B1%E1%80%AC%E1%80%9B%E1%80%9F%E1%80%94%E1%80%BA%E1%80%B8"
+            },
+            {
+                "Name": "Shwe Ohnthi (ရွှေအုန်းသီး)",
+                "Beginning_JDN": 1954904,
+                "Ending_JDN": 1959201,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Peit Thon (ပိတ်သုံ)",
+                "Beginning_JDN": 1959201,
+                "Ending_JDN": 1962123,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Peit Taung (ပိတ်တောင်း)",
+                "Beginning_JDN": 1962123,
+                "Ending_JDN": 1980386,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Min Khwe (စောခွေး)",
+                "Beginning_JDN": 1980386,
+                "Ending_JDN": 1982577,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Myingyway (မြင်းကျွေး)",
+                "Beginning_JDN": 1982577,
+                "Ending_JDN": 1986230,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Theinga (သိန်ခဲ)",
+                "Beginning_JDN": 1986230,
+                "Ending_JDN": 1989152,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Thein Khun (သိန်ခွန်)",
+                "Beginning_JDN": 1989152,
+                "Ending_JDN": 1992804,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Shwe Laung (ရွှေလောင်း)",
+                "Beginning_JDN": 1992804,
+                "Ending_JDN": 1996092,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Htun Htwin (ထွန်တွင်း)",
+                "Beginning_JDN": 1996092,
+                "Ending_JDN": 1999379,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Shwe Hmauk (ရွှေမှောက်)",
+                "Beginning_JDN": 1999379,
+                "Ending_JDN": 2007780,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Htun Lut (ထွန်လတ်)",
+                "Beginning_JDN": 2007780,
+                "Ending_JDN": 2013989,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Saw Khin Hnit (စောခင်နှစ်)",
+                "Beginning_JDN": 2013989,
+                "Ending_JDN": 2023851,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Khe Lu (ခဲလူး)",
+                "Beginning_JDN": 2023851,
+                "Ending_JDN": 2030060,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom#Middle_Early_Pagan"
+            },
+            {
+                "Name": "Pyinbya (ပျဉ်ပြား)",
+                "Beginning_JDN": 2030060,
+                "Ending_JDN": 2044670,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Pyinbya"
+            },
+            {
+                "Name": "Tannet (တန်နက်)",
+                "Beginning_JDN": 2044670,
+                "Ending_JDN": 2051244,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Tannet_of_Pagan"
+            },
+            {
+                "Name": "Sale Ngahkwe (စလေငခွေး)",
+                "Beginning_JDN": 2051244,
+                "Ending_JDN": 2062202,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Sale_Ngahkwe"
+            },
+            {
+                "Name": "Theinhko (သိန်းခို)",
+                "Beginning_JDN": 2062202,
+                "Ending_JDN": 2070237,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Theinhko"
+            },
+            {
+                "Name": "Nyaung-u Sawrahan [Cucumber King] (ညောင်ဦး စောရဟန်း [တောင်သူကြီးမင်း])",
+                "Beginning_JDN": 2070237,
+                "Ending_JDN": 2086674,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Nyaung-u_Sawrahan"
+            },
+            {
+                "Name": "Kunhsaw Kyaunghpyu (ကွမ်းဆော် ကြောင်းဖြူ)",
+                "Beginning_JDN": 2086674,
+                "Ending_JDN": 2093979,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Kunhsaw_Kyaunghpyu"
+            },
+            {
+                "Name": "Kyiso (ကျဉ်စိုး)",
+                "Beginning_JDN": 2093979,
+                "Ending_JDN": 2100278,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Kyiso"
+            },
+            {
+                "Name": "Sokkate (စုက္ကတေး)",
+                "Beginning_JDN": 2100278,
+                "Ending_JDN": 2102602,
+                "Dynasty": "Early_Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Sokkate"
+            },
+            {
+                "Name": "Anawrahta Minsaw (အနော်ရထာ မင်းစော)",
+                "Beginning_JDN": 2102602,
+                "Ending_JDN": 2114533,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Anawrahta"
+            },
+            {
+                "Name": "Sawlu (စောလူး)",
+                "Beginning_JDN": 2114533,
+                "Ending_JDN": 2117100,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Sawlu"
+            },
+            {
+                "Name": "Kyansittha (ကျန်စစ်သား)",
+                "Beginning_JDN": 2117100,
+                "Ending_JDN": 2127582,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Kyansittha"
+            },
+            {
+                "Name": "Alaungsithu (အလောင်းစည်သူ)",
+                "Beginning_JDN": 2127582,
+                "Ending_JDN": 2147305,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Alaungsithu"
+            },
+            {
+                "Name": "Narathu (နရသူ)",
+                "Beginning_JDN": 2147305,
+                "Ending_JDN": 2148797,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Narathu"
+            },
+            {
+                "Name": "Naratheinkha (နရသိင်္ခ)",
+                "Beginning_JDN": 2148797,
+                "Ending_JDN": 2149982,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Naratheinkha"
+            },
+            {
+                "Name": "Narapati Sithu (နရပတိ စည်သူ)",
+                "Beginning_JDN": 2149982,
+                "Ending_JDN": 2163605,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Narapatisithu"
+            },
+            {
+                "Name": "Htilominlo (ထီးလိုမင်းလို)",
+                "Beginning_JDN": 2163605,
+                "Ending_JDN": 2172341,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Htilominlo"
+            },
+            {
+                "Name": "Naratheinga Uzana (နရသိင်္ဃ ဥဇနာ)",
+                "Beginning_JDN": 2170681,
+                "Ending_JDN": 2172341,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Naratheinga_Uzana"
+            },
+            {
+                "Name": "Kyaswa (ကျစွာ)",
+                "Beginning_JDN": 2172341,
+                "Ending_JDN": 2178106,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Kyaswa"
+            },
+            {
+                "Name": "Uzana (ဥဇနာ)",
+                "Beginning_JDN": 2178106,
+                "Ending_JDN": 2179938,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Uzana_of_Pagan"
+            },
+            {
+                "Name": "Narathihapate (နရသီဟပတေ့)",
+                "Beginning_JDN": 2179938,
+                "Ending_JDN": 2191316,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Narathihapate"
+            },
+            {
+                "Name": "Kyawswa (ကျော်စွာ)",
+                "Beginning_JDN": 2192015,
+                "Ending_JDN": 2195138,
+                "Dynasty": "Pagan",
+                "URL": "https://en.wikipedia.org/wiki/Kyawswa_of_Pagan"
+            },
+            {
+                "Name": "Co-rulers: Athinkhaya, Yazathingyan, Thihathu (အသင်္ခယာ၊ ရာဇသင်္ကြန်၊ သီဟသူ)",
+                "Beginning_JDN": 2195138,
+                "Ending_JDN": 2199638,
+                "Dynasty": "Myinsaing",
+                "URL": "https://en.wikipedia.org/wiki/Athinkhaya"
+            },
+            {
+                "Name": "Co-rulers: Yazathingyan, Thihathu (ရာဇသင်္ကြန်၊ သီဟသူ)",
+                "Beginning_JDN": 2199638,
+                "Ending_JDN": 2200669,
+                "Dynasty": "Myinsaing",
+                "URL": "https://en.wikipedia.org/wiki/Yazathingyan"
+            },
+            {
+                "Name": "Thihathu (သီဟသူ)",
+                "Beginning_JDN": 2200669,
+                "Ending_JDN": 2205046,
+                "Dynasty": "Pinya",
+                "URL": "https://en.wikipedia.org/wiki/Thihathu"
+            },
+            {
+                "Name": "Uzana I of Pinya (ပထမ ဥဇနာ [ပင်းယ])",
+                "Beginning_JDN": 2205046,
+                "Ending_JDN": 2210737,
+                "Dynasty": "Pinya",
+                "URL": "https://en.wikipedia.org/wiki/Uzana_I_of_Pinya"
+            },
+            {
+                "Name": "Sithu of Pinya [Myinsaing Sithu] (စည်သူ [မြင်စိုင်းစည်သူ])",
+                "Beginning_JDN": 2210737,
+                "Ending_JDN": 2212042,
+                "Dynasty": "Pinya",
+                "URL": "https://en.wikipedia.org/wiki/Sithu_of_Pinya"
+            },
+            {
+                "Name": "Ngarsishin Kyawswa (ငါးစီးရှင် ကျော်စွာ)",
+                "Beginning_JDN": 2212042,
+                "Ending_JDN": 2214491,
+                "Dynasty": "Pinya",
+                "URL": "https://en.wikipedia.org/wiki/Kyawswa_I_of_Pinya"
+            },
+            {
+                "Name": "Kyawswange (ကျော်စွာငယ်)",
+                "Beginning_JDN": 2214491,
+                "Ending_JDN": 2217520,
+                "Dynasty": "Pinya",
+                "URL": "https://en.wikipedia.org/wiki/Kyawswa_II_of_Pinya"
+            },
+            {
+                "Name": "Narathu of Pinya (နရသူ [ပင်းယ])",
+                "Beginning_JDN": 2217520,
+                "Ending_JDN": 2219411,
+                "Dynasty": "Pinya",
+                "URL": "https://en.wikipedia.org/wiki/Narathu_of_Pinya"
+            },
+            {
+                "Name": "Uzana Pyaung (ဥဇနာ ပြောင်)",
+                "Beginning_JDN": 2219411,
+                "Ending_JDN": 2219503,
+                "Dynasty": "Pinya",
+                "URL": "https://en.wikipedia.org/wiki/Uzana_II_of_Pinya"
+            },
+            {
+                "Name": "Athinhkaya Sawyun (အသင်္ခယာ စောယွမ်း)",
+                "Beginning_JDN": 2201496,
+                "Ending_JDN": 2205780,
+                "Dynasty": "Sagaing",
+                "URL": "https://en.wikipedia.org/wiki/Sawyun"
+            },
+            {
+                "Name": "Tarabyagyi (တရဖျားကြီး)",
+                "Beginning_JDN": 2205780,
+                "Ending_JDN": 2208667,
+                "Dynasty": "Sagaing",
+                "URL": "https://en.wikipedia.org/wiki/Tarabya_I_of_Sagaing"
+            },
+            {
+                "Name": "Thiri Thihathura Shwetaungtet (သီရိ သီဟသူရ ရွှေတောင်တက်)",
+                "Beginning_JDN": 2208667,
+                "Ending_JDN": 2210128,
+                "Dynasty": "Sagaing",
+                "URL": "https://en.wikipedia.org/wiki/Shwetaungtet"
+            },
+            {
+                "Name": "Kyaswa of Sagaing (ကျစွာ [စစ်ကိုင်း])",
+                "Beginning_JDN": 2210128,
+                "Ending_JDN": 2213415,
+                "Dynasty": "Sagaing",
+                "URL": "https://en.wikipedia.org/wiki/Kyaswa_of_Sagaing"
+            },
+            {
+                "Name": "Nawrahta Minye (နော်ရထာ မင်းရဲ)",
+                "Beginning_JDN": 2213415,
+                "Ending_JDN": 2214205,
+                "Dynasty": "Sagaing",
+                "URL": "https://en.wikipedia.org/wiki/Nawrahta_Minye"
+            },
+            {
+                "Name": "Tarabyange (တရဖျားငယ်)",
+                "Beginning_JDN": 2214205,
+                "Ending_JDN": 2214929,
+                "Dynasty": "Sagaing",
+                "URL": "https://en.wikipedia.org/wiki/Tarabya_II_of_Sagaing"
+            },
+            {
+                "Name": "Minbyauk Thihapate (မင်းပြောက် သီဟပတေ့)",
+                "Beginning_JDN": 2214929,
+                "Ending_JDN": 2219350,
+                "Dynasty": "Sagaing",
+                "URL": "https://en.wikipedia.org/wiki/Minbyauk_Thihapate"
+            },
+            {
+                "Name": "Thadominbya (သတိုးမင်းဖျား)",
+                "Beginning_JDN": 2219350,
+                "Ending_JDN": 2220602,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Thadominbya"
+            },
+            {
+                "Name": "Swasawke (စွာစော်ကဲ)",
+                "Beginning_JDN": 2220602,
+                "Ending_JDN": 2232499,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Swasawke"
+            },
+            {
+                "Name": "Tarabya of Ava (တရဖျား)",
+                "Beginning_JDN": 2232499,
+                "Ending_JDN": 2232737,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Tarabya_of_Ava"
+            },
+            {
+                "Name": "Minkhaung I (ပထမ မင်းခေါင်)",
+                "Beginning_JDN": 2232737,
+                "Ending_JDN": 2240475,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Minkhaung_I"
+            },
+            {
+                "Name": "Thihathu of Ava (သီဟသူ [အင်းဝ])",
+                "Beginning_JDN": 2240475,
+                "Ending_JDN": 2241752,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Thihathu_of_Ava"
+            },
+            {
+                "Name": "Minhlange (မင်းလှငယ်)",
+                "Beginning_JDN": 2241752,
+                "Ending_JDN": 2241844,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Minhlange"
+            },
+            {
+                "Name": "Kale Kyetaungnyo (ကလေး ကျေးတောင်ညို)",
+                "Beginning_JDN": 2241844,
+                "Ending_JDN": 2242044,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Kale_Kyetaungnyo"
+            },
+            {
+                "Name": "Mohnyin Thado (မိုးညှင်းသတိုး)",
+                "Beginning_JDN": 2242044,
+                "Ending_JDN": 2246773,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Mohnyin_Thado"
+            },
+            {
+                "Name": "Minyekyawswa of Ava (မင်းရဲကျော်စွာ [အင်းဝ])",
+                "Beginning_JDN": 2246773,
+                "Ending_JDN": 2247749,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Minyekyawswa_of_Ava"
+            },
+            {
+                "Name": "Narapati of Ava (နရပတိ [အင်းဝ])",
+                "Beginning_JDN": 2247749,
+                "Ending_JDN": 2257450,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Narapati_of_Ava"
+            },
+            {
+                "Name": "Thihathura of Ava (သီဟသူရ [အင်းဝ])",
+                "Beginning_JDN": 2257450,
+                "Ending_JDN": 2261841,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Thihathura_of_Ava"
+            },
+            {
+                "Name": "Minkhaung II (ဒုတိယ မင်းခေါင်)",
+                "Beginning_JDN": 2261841,
+                "Ending_JDN": 2269395,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Minkhaung_II"
+            },
+            {
+                "Name": "Thihathura II of Ava (ဒုတိယ သီဟသူရ [အင်းဝ])",
+                "Beginning_JDN": 2263455,
+                "Ending_JDN": 2269361,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Thihathura_II_of_Ava"
+            },
+            {
+                "Name": "Shwenankyawshin Narapati (ရွှေနန်းကြော့ရှင် နရပတိ)",
+                "Beginning_JDN": 2269395,
+                "Ending_JDN": 2278867,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Shwenankyawshin"
+            },
+            {
+                "Name": "Thohanbwa (သိုဟန်ဘွား)",
+                "Beginning_JDN": 2278867,
+                "Ending_JDN": 2284424,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Thohanbwa"
+            },
+            {
+                "Name": "Hkonmaing (ခုံမှိုင်း)",
+                "Beginning_JDN": 2284425,
+                "Ending_JDN": 2285613,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Hkonmaing"
+            },
+            {
+                "Name": "Mobye Narapati (မိုးဗြဲ နရပတိ)",
+                "Beginning_JDN": 2285613,
+                "Ending_JDN": 2287834,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Mobye_Narapati"
+            },
+            {
+                "Name": "Sithu Kyawhtin [Narapati Sithu] (စည်သူကျော်ထင် [နရပတိ စည်သူ])",
+                "Beginning_JDN": 2287834,
+                "Ending_JDN": 2289043,
+                "Dynasty": "Ava",
+                "URL": "https://en.wikipedia.org/wiki/Sithu_Kyawhtin"
+            },
+            {
+                "Name": "Thado Minsaw of Prome (သတိုးမင်းစော)",
+                "Beginning_JDN": 2262359,
+                "Ending_JDN": 2278430,
+                "Dynasty": "Prome",
+                "URL": "https://en.wikipedia.org/wiki/Thado_Minsaw_of_Prome"
+            },
+            {
+                "Name": "Bayin Htwe (ဘုရင်ထွေး)",
+                "Beginning_JDN": 2278430,
+                "Ending_JDN": 2280956,
+                "Dynasty": "Prome",
+                "URL": "https://en.wikipedia.org/wiki/Bayin_Htwe"
+            },
+            {
+                "Name": "Narapati of Prome (နရပတိ [ပြည်])",
+                "Beginning_JDN": 2280956,
+                "Ending_JDN": 2283209,
+                "Dynasty": "Prome",
+                "URL": "https://en.wikipedia.org/wiki/Narapati_of_Prome"
+            },
+            {
+                "Name": "Minkhaung of Prome ( မင်းခေါင် [ပြည်])",
+                "Beginning_JDN": 2283209,
+                "Ending_JDN": 2284412,
+                "Dynasty": "Prome",
+                "URL": "https://en.wikipedia.org/wiki/Minkhaung_of_Prome"
+            },
+            {
+                "Name": "Wareru (ဝါရီရူး)",
+                "Beginning_JDN": 2191228,
+                "Ending_JDN": 2198440,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Wareru"
+            },
+            {
+                "Name": "Hkun Law (ခွန်လော)",
+                "Beginning_JDN": 2198440,
+                "Ending_JDN": 2199960,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Hkun_Law"
+            },
+            {
+                "Name": "Saw O (စောအော)",
+                "Beginning_JDN": 2200000,
+                "Ending_JDN": 2204527,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Saw_O"
+            },
+            {
+                "Name": "Saw Zein (စောဇိတ်)",
+                "Beginning_JDN": 2204527,
+                "Ending_JDN": 2206931,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Saw_Zein"
+            },
+            {
+                "Name": "Zein Pun (ဇိတ်ပွန်)",
+                "Beginning_JDN": 2206931,
+                "Ending_JDN": 2206938,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Zein_Pun"
+            },
+            {
+                "Name": "Saw E (စောအဲ)",
+                "Beginning_JDN": 2206938,
+                "Ending_JDN": 2206961,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Saw_E"
+            },
+            {
+                "Name": "Binnya E Law (ဗညားအဲလော)",
+                "Beginning_JDN": 2206961,
+                "Ending_JDN": 2213415,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Binnya_E_Law"
+            },
+            {
+                "Name": "Binnya U (ဗညားဦး)",
+                "Beginning_JDN": 2213415,
+                "Ending_JDN": 2226567,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Binnya_U"
+            },
+            {
+                "Name": "Razadarit (ရာဇာဓိရာဇ်)",
+                "Beginning_JDN": 2226567,
+                "Ending_JDN": 2240110,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Razadarit"
+            },
+            {
+                "Name": "Binnya Dhammaraza (ဗညားဓမ္မရာဇာ)",
+                "Beginning_JDN": 2240110,
+                "Ending_JDN": 2241174,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Binnya_Dhammaraza"
+            },
+            {
+                "Name": "Binnya Ran I (ပထမ ဗညားရံ)",
+                "Beginning_JDN": 2241174,
+                "Ending_JDN": 2249210,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Binnya_Ran_I"
+            },
+            {
+                "Name": "Binnya Waru (ဗညားဗရူး)",
+                "Beginning_JDN": 2249210,
+                "Ending_JDN": 2251185,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Binnya_Waru"
+            },
+            {
+                "Name": "Binnya Kyan (ဗညားကျန်း)",
+                "Beginning_JDN": 2251185,
+                "Ending_JDN": 2251918,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Binnya_Kyan"
+            },
+            {
+                "Name": "Leik Munhtaw (လိပ်မွတ်ထော)",
+                "Beginning_JDN": 2251918,
+                "Ending_JDN": 2252132,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Leik_Munhtaw"
+            },
+            {
+                "Name": "Shin Sawbu (ရှင်စောပု)",
+                "Beginning_JDN": 2252132,
+                "Ending_JDN": 2258341,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Shin_Sawbu"
+            },
+            {
+                "Name": "Dhammazedi (ဓမ္မစေတီ)",
+                "Beginning_JDN": 2258341,
+                "Ending_JDN": 2266011,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Dhammazedi"
+            },
+            {
+                "Name": "Binnya Ran II (ဒုတိယ ဗညားရံ)",
+                "Beginning_JDN": 2266011,
+                "Ending_JDN": 2278430,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Binnya_Ran_II"
+            },
+            {
+                "Name": "Takayutpi (သုရှင်တကာရွတ်ပိ)",
+                "Beginning_JDN": 2278430,
+                "Ending_JDN": 2283178,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Takayutpi"
+            },
+            {
+                "Name": "Smim Sawhtut (သမိန်စောထွတ်)",
+                "Beginning_JDN": 2287347,
+                "Ending_JDN": 2287408,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Smim_Sawhtut"
+            },
+            {
+                "Name": "Smim Htaw (သမိန်ထော)",
+                "Beginning_JDN": 2287408,
+                "Ending_JDN": 2287997,
+                "Dynasty": "Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Smim_Htaw"
+            },
+            {
+                "Name": "Narameikhla Min Saw Mon(နရမိတ်လှ မင်းစောမွန်)",
+                "Beginning_JDN": 2243108,
+                "Ending_JDN": 2244590,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Saw_Mon"
+            },
+            {
+                "Name": "Min Khayi(မင်းခရီ)",
+                "Beginning_JDN": 2244590,
+                "Ending_JDN": 2253958,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Khayi"
+            },
+            {
+                "Name": "Ba Saw Phyu(ဘစောဖြူ)",
+                "Beginning_JDN": 2253958,
+                "Ending_JDN": 2262575,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Ba_Saw_Phyu"
+            },
+            {
+                "Name": "Min Dawlya(မင်းဒေါလျာ)",
+                "Beginning_JDN": 2262575,
+                "Ending_JDN": 2266042,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Dawlya"
+            },
+            {
+                "Name": "Ba Saw Nyo(ဘစောညို)",
+                "Beginning_JDN": 2266042,
+                "Ending_JDN": 2266742,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Ba_Saw_Nyo"
+            },
+            {
+                "Name": "Min Ran Aung(မင်းရန်အောင်)",
+                "Beginning_JDN": 2266742,
+                "Ending_JDN": 2266923,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Ran_Aung"
+            },
+            {
+                "Name": "Salingathu(စလင်္ကာသူ)",
+                "Beginning_JDN": 2266923,
+                "Ending_JDN": 2269701,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Salingathu"
+            },
+            {
+                "Name": "Min Raza(မင်းရာဇာ)",
+                "Beginning_JDN": 2269701,
+                "Ending_JDN": 2273986,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Raza_of_Mrauk-U"
+            },
+            {
+                "Name": "Gazapati(ဂဇာပတိ)",
+                "Beginning_JDN": 2273986,
+                "Ending_JDN": 2274412,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Gazapati"
+            },
+            {
+                "Name": "Min Saw O(မင်းစောအို)",
+                "Beginning_JDN": 2274412,
+                "Ending_JDN": 2274593,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Saw_O"
+            },
+            {
+                "Name": "Thazata(သဇာတ)",
+                "Beginning_JDN": 2274593,
+                "Ending_JDN": 2276694,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Thazata"
+            },
+            {
+                "Name": "Minkhaung of Mrauk-U(မင်းခေါင်)",
+                "Beginning_JDN": 2276694,
+                "Ending_JDN": 2280402,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Minkhaung_of_Mrauk-U"
+            },
+            {
+                "Name": "Min Bin(မင်းပင်၊ မင်းဗာကြီး)",
+                "Beginning_JDN": 2280402,
+                "Ending_JDN": 2288667,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Bin"
+            },
+            {
+                "Name": "Min Dikkha(မင်းတိက္ခာ)",
+                "Beginning_JDN": 2288667,
+                "Ending_JDN": 2289452,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Dikkha"
+            },
+            {
+                "Name": "Min Saw Hla(မင်းစောလှ)",
+                "Beginning_JDN": 2289452,
+                "Ending_JDN": 2292514,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Saw_Hla"
+            },
+            {
+                "Name": "Min Sekkya(မင်းစကြာ)",
+                "Beginning_JDN": 2292514,
+                "Ending_JDN": 2295268,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Sekkya"
+            },
+            {
+                "Name": "Min Phalaung(မင်းဖလောင်း)",
+                "Beginning_JDN": 2295268,
+                "Ending_JDN": 2303076,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Phalaung"
+            },
+            {
+                "Name": "Min Razagyi (မင်းရာဇာကြီး)",
+                "Beginning_JDN": 2303076,
+                "Ending_JDN": 2310016,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Razagyi"
+            },
+            {
+                "Name": "Min Khamaung (မင်းခမောင်း)",
+                "Beginning_JDN": 2303076,
+                "Ending_JDN": 2313617,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Khamaung"
+            },
+            {
+                "Name": "Thiri Thudhamma (သီရိသုဓမ္မ)",
+                "Beginning_JDN": 2313617,
+                "Ending_JDN": 2319476,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Thiri_Thudhamma"
+            },
+            {
+                "Name": "Min Sanay (မင်းစနေ)",
+                "Beginning_JDN": 2319476,
+                "Ending_JDN": 2319495,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Min_Sanay"
+            },
+            {
+                "Name": "Narapati of Mrauk-U (နရပတိ)",
+                "Beginning_JDN": 2319495,
+                "Ending_JDN": 2322231,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Narapati_of_Mrauk-U"
+            },
+            {
+                "Name": "Thado of Mrauk-U (သတိုဝ်မင်းတရား)",
+                "Beginning_JDN": 2322231,
+                "Ending_JDN": 2324562,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Thado_of_Mrauk-U"
+            },
+            {
+                "Name": "Sanda Thudhamma(စန္ဒသုဓမ္မရာဇာ)",
+                "Beginning_JDN": 2324562,
+                "Ending_JDN": 2332638,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Sanda_Thudhamma"
+            },
+            {
+                "Name": "Oaggar Bala(ဥဂ္ဂါဗလရာဇာ)",
+                "Beginning_JDN": 2332638,
+                "Ending_JDN": 2336600,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Oaggar Bala"
+            },
+            {
+                "Name": "Wara Dhammaraza(၀ရဓမ္မရာဇာ)",
+                "Beginning_JDN": 2336600,
+                "Ending_JDN": 2339222,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Wara_Dhammaraza"
+            },
+            {
+                "Name": "Muni Thudhammaraza(မဏိသုဓမ္မရာဇာ)",
+                "Beginning_JDN": 2339222,
+                "Ending_JDN": 2340135,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Muni_Thudhammaraza"
+            },
+            {
+                "Name": "Sanda Thuriya I(စန္ဒသုရိယ ၁)",
+                "Beginning_JDN": 2340135,
+                "Ending_JDN": 2340728,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Sanda_Thuriya_I"
+            },
+            {
+                "Name": "Nawrahta (ငတုံအနော်ရထာ)",
+                "Beginning_JDN": 2340728,
+                "Ending_JDN": 2340742,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Nawrahta_of_Mrauk-U"
+            },
+            {
+                "Name": "Mayuppiya (မဂုမ္မီယ)",
+                "Beginning_JDN": 2340742,
+                "Ending_JDN": 2341010,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Mayuppiya"
+            },
+            {
+                "Name": "Kalamandat (ကာလဗန္ဒလ)",
+                "Beginning_JDN": 2341010,
+                "Ending_JDN": 2341398,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Kalamandat"
+            },
+            {
+                "Name": "Naradipati I (ပထမ နာရာဓိပတိ)",
+                "Beginning_JDN": 2341398,
+                "Ending_JDN": 2342140,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Naradipati_I"
+            },
+            {
+                "Name": "Sanda Wimala I (ပထမ စန္ဒဝိမလရာဇာ)",
+                "Beginning_JDN": 2342141,
+                "Ending_JDN": 2344617,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Sanda_Wimala_I"
+            },
+            {
+                "Name": "Sanda Thuriya II (စန္ဒသုရိယရာဇာ ၂)",
+                "Beginning_JDN": 2344621,
+                "Ending_JDN": 2345868,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Sanda_Thuriya_II"
+            },
+            {
+                "Name": "Sanda Wizaya I (ပထမ စန္ဒဝိဇလရာဇာ)",
+                "Beginning_JDN": 2345929,
+                "Ending_JDN": 2353385,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Sanda_Wizaya_I"
+            },
+            {
+                "Name": "Sanda Thuriya III (စန္ဒသုရိယရာဇာ ၃)",
+                "Beginning_JDN": 2353385,
+                "Ending_JDN": 2354391,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Sanda_Thuriya_III"
+            },
+            {
+                "Name": "Naradipati II (နာရာဓိပတိ ၂)",
+                "Beginning_JDN": 2354391,
+                "Ending_JDN": 2354756,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Naradipati_II"
+            },
+            {
+                "Name": "Narapawara (နာရာပါဝရ)",
+                "Beginning_JDN": 2354756,
+                "Ending_JDN": 2355730,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Narapawara"
+            },
+            {
+                "Name": "Sanda Wizaya II (စန္ဒဝိဇလ ၂)",
+                "Beginning_JDN": 2355730,
+                "Ending_JDN": 2355935,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Sanda_Wizaya_II"
+            },
+            {
+                "Name": "Madarit (မဒရာဇ်ရာဇာ)",
+                "Beginning_JDN": 2355938,
+                "Ending_JDN": 2357714,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Madarit"
+            },
+            {
+                "Name": "Nara Apaya (နရာအဘယရာဇာ)",
+                "Beginning_JDN": 2357714,
+                "Ending_JDN": 2364553,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Nara_Apaya"
+            },
+            {
+                "Name": "Thirithu (သီရိသူ)",
+                "Beginning_JDN": 2364553,
+                "Ending_JDN": 2364651,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Thirithu"
+            },
+            {
+                "Name": "Sanda Parama (စန္ဒ၀ရမ)",
+                "Beginning_JDN": 2364651,
+                "Ending_JDN": 2365469,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Sanda_Parama"
+            },
+            {
+                "Name": "Apaya (အဘယ)",
+                "Beginning_JDN": 2365469,
+                "Ending_JDN": 2369017,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Apaya"
+            },
+            {
+                "Name": "Sanda Thumana (စန္ဒသုမန)",
+                "Beginning_JDN": 2369017,
+                "Ending_JDN": 2370221,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Sanda_Thumana"
+            },
+            {
+                "Name": "Sanda Wimala II (စန္ဒဝိမလ ၂)",
+                "Beginning_JDN": 2370221,
+                "Ending_JDN": 2370252,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Sanda_Wimala_II"
+            },
+            {
+                "Name": "Sanda Thaditha (စန္ဒသတိဿ)",
+                "Beginning_JDN": 2370252,
+                "Ending_JDN": 2372257,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Sanda_Thaditha"
+            },
+            {
+                "Name": "Maha Thammada (သမ္မတ)",
+                "Beginning_JDN": 2372258,
+                "Ending_JDN": 2373020,
+                "Dynasty": "Mrauk_U",
+                "URL": "https://en.wikipedia.org/wiki/Maha_Thammada_of_Mrauk-U"
+            },
+            {
+                "Name": "Mingyinyo(မင်းကြီးညို)",
+                "Beginning_JDN": 2272874,
+                "Ending_JDN": 2280218,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Mingyinyo"
+            },
+            {
+                "Name": "Tabinshwehti(တပင်‌ရွှေထီး)",
+                "Beginning_JDN": 2280218,
+                "Ending_JDN": 2287315,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Tabinshwehti"
+            },
+            {
+                "Name": "Bayinnaung Kyawhtin Nawrahta(ဘုရင့်နောင်ကျော်ထင်နော်ရထာ)",
+                "Beginning_JDN": 2287315,
+                "Ending_JDN": 2298801,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Bayinnaung"
+            },
+            {
+                "Name": "Nanda Bayin(နန္ဒဘုရင်)",
+                "Beginning_JDN": 2298801,
+                "Ending_JDN": 2305435,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Nanda_Bayin"
+            },
+            {
+                "Name": "Nyaungyan Min(ညောင်ရမ်းမင်း)",
+                "Beginning_JDN": 2305435,
+                "Ending_JDN": 2307583,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Nyaungyan_Min"
+            },
+            {
+                "Name": "Anaukpetlun(အနောက်ဖက်လွန်)",
+                "Beginning_JDN": 2307583,
+                "Ending_JDN": 2315865,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Anaukpetlun"
+            },
+            {
+                "Name": "Minyedeippa(မင်းရဲဒိဗ္ဗ)",
+                "Beginning_JDN": 2315865,
+                "Ending_JDN": 2316271,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Minyedeippa"
+            },
+            {
+                "Name": "Thalun(သာလွန်မင်း)",
+                "Beginning_JDN": 2316271,
+                "Ending_JDN": 2323219,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Thalun"
+            },
+            {
+                "Name": "Pindale Min(ပင်းတလဲမင်း)",
+                "Beginning_JDN": 2323219,
+                "Ending_JDN": 2327882,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Pindale_Min"
+            },
+            {
+                "Name": "Pye Min(ပြည်မင်း)",
+                "Beginning_JDN": 2327882,
+                "Ending_JDN": 2331850,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Pye_Min"
+            },
+            {
+                "Name": "Narawara(နရာဝရ)",
+                "Beginning_JDN": 2331850,
+                "Ending_JDN": 2332169,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Narawara"
+            },
+            {
+                "Name": "Minyekyawdin(မင်းရဲကျော်ထင်)",
+                "Beginning_JDN": 2332169,
+                "Ending_JDN": 2341366,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Minyekyawdin"
+            },
+            {
+                "Name": "Sanay Min(စနေမင်း)",
+                "Beginning_JDN": 2341366,
+                "Ending_JDN": 2347319,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Sanay_Min"
+            },
+            {
+                "Name": "Taninganway Min(တနင်္ဂနွေမင်း)",
+                "Beginning_JDN": 2347319,
+                "Ending_JDN": 2354343,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Taninganway_Min"
+            },
+            {
+                "Name": "Mahadhammaraza Dipadi(မဟာဓမ္မရာဇာဓိပတိ)",
+                "Beginning_JDN": 2354343,
+                "Ending_JDN": 2361046,
+                "Dynasty": "Taungoo",
+                "URL": "https://en.wikipedia.org/wiki/Mahadhammaraza_Dipadi"
+            },
+            {
+                "Name": "Smim Htaw Buddhaketi(သမိန်ထောဗုဒ္ဓကိတ္တိ)",
+                "Beginning_JDN": 2356887,
+                "Ending_JDN": 2359473,
+                "Dynasty": "Restored_Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Smim_Htaw_Buddhaketi"
+            },
+            {
+                "Name": "Binnya Dala(ဗညားဒလ)",
+                "Beginning_JDN": 2359473,
+                "Ending_JDN": 2362917,
+                "Dynasty": "Restored_Hanthawaddy",
+                "URL": "https://en.wikipedia.org/wiki/Binnya_Dala"
+            },
+            {
+                "Name": "Alaungpaya(အလောင်းဘုရား)",
+                "Beginning_JDN": 2361024,
+                "Ending_JDN": 2364018,
+                "Dynasty": "Konbaung",
+                "URL": "https://en.wikipedia.org/wiki/Alaungpaya"
+            },
+            {
+                "Name": "Naungdawgyi(နောင်တော်ကြီး)",
+                "Beginning_JDN": 2364018,
+                "Ending_JDN": 2365314,
+                "Dynasty": "Konbaung",
+                "URL": "https://en.wikipedia.org/wiki/Naungdawgyi"
+            },
+            {
+                "Name": "Hsinbyushin(ဆင်ဖြူရှင်)",
+                "Beginning_JDN": 2365314,
+                "Ending_JDN": 2369892,
+                "Dynasty": "Konbaung",
+                "URL": "https://en.wikipedia.org/wiki/Hsinbyushin"
+            },
+            {
+                "Name": "Singu Min(စဉ့်ကူးမင်း)",
+                "Beginning_JDN": 2369892,
+                "Ending_JDN": 2371958,
+                "Dynasty": "Konbaung",
+                "URL": "https://en.wikipedia.org/wiki/Singu_Min"
+            },
+            {
+                "Name": "Phaungkaza Maung Maung(ဖောင်းကားစားမောင်မောင်)",
+                "Beginning_JDN": 2371958,
+                "Ending_JDN": 2371964,
+                "Dynasty": "Konbaung",
+                "URL": "https://en.wikipedia.org/wiki/Phaungkaza_Maung_Maung"
+            },
+            {
+                "Name": "Bodawpaya(ဘိုးတော်ဘုရား)",
+                "Beginning_JDN": 2371964,
+                "Ending_JDN": 2385591,
+                "Dynasty": "Konbaung",
+                "URL": "https://en.wikipedia.org/wiki/Bodawpaya"
+            },
+            {
+                "Name": "Bagyidaw(ဘကြီးတော်)",
+                "Beginning_JDN": 2385591,
+                "Ending_JDN": 2392115,
+                "Dynasty": "Konbaung",
+                "URL": "https://en.wikipedia.org/wiki/Bagyidaw"
+            },
+            {
+                "Name": "Tharrawaddy Min(သာယာဝတီမင်း)",
+                "Beginning_JDN": 2392115,
+                "Ending_JDN": 2395618,
+                "Dynasty": "Konbaung",
+                "URL": "https://en.wikipedia.org/wiki/Tharrawaddy_Min"
+            },
+            {
+                "Name": "Pagan Min(ပုဂံမင်း)",
+                "Beginning_JDN": 2395618,
+                "Ending_JDN": 2397903,
+                "Dynasty": "Konbaung",
+                "URL": "https://en.wikipedia.org/wiki/Pagan_Min"
+            },
+            {
+                "Name": "Mindon Min(မင်းတုန်းမင်း)",
+                "Beginning_JDN": 2397903,
+                "Ending_JDN": 2407259,
+                "Dynasty": "Konbaung",
+                "URL": "https://en.wikipedia.org/wiki/Mindon_Min"
+            },
+            {
+                "Name": "Thibaw Min(သီပေါ‌မင်း)",
+                "Beginning_JDN": 2407259,
+                "Ending_JDN": 2409875,
+                "Dynasty": "Konbaung",
+                "URL": "https://en.wikipedia.org/wiki/Thibaw_Min"
+            },
+            {
+                "Name": "Arthur Purves Phayre",
+                "Beginning_JDN": 2401172,
+                "Ending_JDN": 2403014,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Arthur_Purves_Phayre"
+            },
+            {
+                "Name": "Albert Fytche",
+                "Beginning_JDN": 2403014,
+                "Ending_JDN": 2404536,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Albert_Fytche"
+            },
+            {
+                "Name": "Ashley Eden",
+                "Beginning_JDN": 2404536,
+                "Ending_JDN": 2405993,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Ashley_Eden"
+            },
+            {
+                "Name": "Augustus Rivers Thompson",
+                "Beginning_JDN": 2405993,
+                "Ending_JDN": 2407074,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Augustus_Rivers_Thompson"
+            },
+            {
+                "Name": "Charles Umpherston Aitchison",
+                "Beginning_JDN": 2407074,
+                "Ending_JDN": 2407899,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Charles_Umpherston_Aitchison"
+            },
+            {
+                "Name": "Charles Edward Bernard",
+                "Beginning_JDN": 2407899,
+                "Ending_JDN": 2408872,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Charles_Bernard_(civil_servant)"
+            },
+            {
+                "Name": "Charles Hawkes Todd Crosthwaite",
+                "Beginning_JDN": 2408872,
+                "Ending_JDN": 2409908,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Charles_Crosthwaite"
+            },
+            {
+                "Name": "Charles Hawkes Todd Crosthwaite",
+                "Beginning_JDN": 2409908,
+                "Ending_JDN": 2409964,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Charles_Crosthwaite"
+            },
+            {
+                "Name": "Charles Hawkes Todd Crosthwaite",
+                "Beginning_JDN": 2409964,
+                "Ending_JDN": 2410175,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Charles_Crosthwaite"
+            },
+            {
+                "Name": "Charles Edward Bernard",
+                "Beginning_JDN": 2410175,
+                "Ending_JDN": 2410343,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Charles_Bernard_(civil_servant)"
+            },
+            {
+                "Name": "Charles Hawkes Todd Crosthwaite",
+                "Beginning_JDN": 2410343,
+                "Ending_JDN": 2411712,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Charles_Crosthwaite"
+            },
+            {
+                "Name": "Alexander Mackenzie",
+                "Beginning_JDN": 2411712,
+                "Ending_JDN": 2413287,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Alexander_Mackenzie_(civil_servant)"
+            },
+            {
+                "Name": "Frederick William Richard Fryer",
+                "Beginning_JDN": 2413287,
+                "Ending_JDN": 2414046,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Frederick_William_Richard_Fryer"
+            },
+            {
+                "Name": "Frederick William Richard Fryer",
+                "Beginning_JDN": 2414046,
+                "Ending_JDN": 2416209,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Frederick_William_Richard_Fryer"
+            },
+            {
+                "Name": "Hugh Shakespear Barnes",
+                "Beginning_JDN": 2416209,
+                "Ending_JDN": 2416975,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Hugh_Shakespear_Barnes"
+            },
+            {
+                "Name": "Herbert Thirkell White",
+                "Beginning_JDN": 2416975,
+                "Ending_JDN": 2418811,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Herbert_Thirkell_White"
+            },
+            {
+                "Name": "Harvey Adamson",
+                "Beginning_JDN": 2418811,
+                "Ending_JDN": 2420799,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Harvey_Adamson"
+            },
+            {
+                "Name": "George Shaw",
+                "Beginning_JDN": 2419903,
+                "Ending_JDN": 2420073,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/George_Shaw_(civil_servant)"
+            },
+            {
+                "Name": "Spencer Harcourt Butler",
+                "Beginning_JDN": 2420799,
+                "Ending_JDN": 2421494,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Harcourt_Butler"
+            },
+            {
+                "Name": "Walter Francis Rice",
+                "Beginning_JDN": 2421494,
+                "Ending_JDN": 2421640,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Walter_Francis_Rice"
+            },
+            {
+                "Name": "Reginald Henry Craddock",
+                "Beginning_JDN": 2421640,
+                "Ending_JDN": 2423410,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Reginald_Craddock"
+            },
+            {
+                "Name": "Spencer Harcourt Butler",
+                "Beginning_JDN": 2423410,
+                "Ending_JDN": 2423422,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Harcourt_Butler"
+            },
+            {
+                "Name": "Spencer Harcourt Butler",
+                "Beginning_JDN": 2423422,
+                "Ending_JDN": 2425235,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Harcourt_Butler"
+            },
+            {
+                "Name": "Charles Alexander Innes",
+                "Beginning_JDN": 2425235,
+                "Ending_JDN": 2427062,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Charles_Alexander_Innes"
+            },
+            {
+                "Name": "Hugh Landsdowne Stephenson",
+                "Beginning_JDN": 2427062,
+                "Ending_JDN": 2428297,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Hugh_Lansdown_Stephenson"
+            },
+            {
+                "Name": "Archibald Douglas Cochrane",
+                "Beginning_JDN": 2428297,
+                "Ending_JDN": 2428625,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Archibald_Cochrane_(politician)"
+            },
+            {
+                "Name": "Archibald Douglas Cochrane",
+                "Beginning_JDN": 2428625,
+                "Ending_JDN": 2430121,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Archibald_Cochrane_(politician)"
+            },
+            {
+                "Name": "Reginald Hugh Dorman-Smith",
+                "Beginning_JDN": 2430121,
+                "Ending_JDN": 2432064,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Reginald_Dorman-Smith"
+            },
+            {
+                "Name": "Shōjirō Iida",
+                "Beginning_JDN": 2430470,
+                "Ending_JDN": 2430802,
+                "Dynasty": "Japanese_Occupation",
+                "URL": "https://en.wikipedia.org/wiki/Sh%C5%8Djir%C5%8D_Iida"
+            },
+            {
+                "Name": "Masakazu Kawabe",
+                "Beginning_JDN": 2430802,
+                "Ending_JDN": 2431333,
+                "Dynasty": "Japanese_Occupation",
+                "URL": "https://en.wikipedia.org/wiki/Masakazu_Kawabe"
+            },
+            {
+                "Name": "Heitarō Kimura",
+                "Beginning_JDN": 2431333,
+                "Ending_JDN": 2431683,
+                "Dynasty": "Japanese_Occupation",
+                "URL": "https://en.wikipedia.org/wiki/Heitar%C5%8D_Kimura"
+            },
+            {
+                "Name": "Admiral Lord Louis Mountbatten",
+                "Beginning_JDN": 2431091,
+                "Ending_JDN": 2431730,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Louis_Mountbatten,_1st_Earl_Mountbatten_of_Burma"
+            },
+            {
+                "Name": "Hubert Elvin Rance",
+                "Beginning_JDN": 2431730,
+                "Ending_JDN": 2432064,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Hubert_Rance"
+            },
+            {
+                "Name": "Hubert Elvin Rance",
+                "Beginning_JDN": 2432064,
+                "Ending_JDN": 2432555,
+                "Dynasty": "British_Colonial_Period",
+                "URL": "https://en.wikipedia.org/wiki/Hubert_Rance"
+            },
+            {
+                "Name": "Sao Shwe Thaik (စဝ်ရွှေသိုက်)",
+                "Beginning_JDN": 2432555,
+                "Ending_JDN": 2434088,
+                "Dynasty": "Union_of_Burma",
+                "URL": "https://en.wikipedia.org/wiki/Sao_Shwe_Thaik"
+            },
+            {
+                "Name": "Ba U (ဘဦး)",
+                "Beginning_JDN": 2434088,
+                "Ending_JDN": 2435911,
+                "Dynasty": "Union_of_Burma",
+                "URL": "https://en.wikipedia.org/wiki/Ba_U"
+            },
+            {
+                "Name": "Mahn Win Maung (မန်းဝင်းမောင်)",
+                "Beginning_JDN": 2435911,
+                "Ending_JDN": 2437726,
+                "Dynasty": "Union_of_Burma",
+                "URL": "https://en.wikipedia.org/wiki/Win_Maung"
+            },
+            {
+                "Name": "Ne Win (နေဝင်း)",
+                "Beginning_JDN": 2437726,
+                "Ending_JDN": 2442109,
+                "Dynasty": "Union_of_Burma",
+                "URL": "https://en.wikipedia.org/wiki/Ne_Win"
+            },
+            {
+                "Name": "Ne Win (နေဝင်း)",
+                "Beginning_JDN": 2442109,
+                "Ending_JDN": 2444918,
+                "Dynasty": "Socialist_Republic",
+                "URL": "https://en.wikipedia.org/wiki/Ne_Win"
+            },
+            {
+                "Name": "စန်းယု - San Yu ",
+                "Beginning_JDN": 2444918,
+                "Ending_JDN": 2447370,
+                "Dynasty": "Socialist_Republic",
+                "URL": "https://en.wikipedia.org/wiki/San_Yu"
+            },
+            {
+                "Name": "စိန်လွင် - Sein Lwin ",
+                "Beginning_JDN": 2447370,
+                "Ending_JDN": 2447386,
+                "Dynasty": "Socialist_Republic",
+                "URL": "https://en.wikipedia.org/wiki/Sein_Lwin"
+            },
+            {
+                "Name": "အေးကို - Aye Ko ",
+                "Beginning_JDN": 2447386,
+                "Ending_JDN": 2447393,
+                "Dynasty": "Socialist_Republic",
+                "URL": "https://en.wikipedia.org/wiki/Aye_Ko"
+            },
+            {
+                "Name": "မောင်မောင် - Maung Maung ",
+                "Beginning_JDN": 2447393,
+                "Ending_JDN": 2447423,
+                "Dynasty": "Socialist_Republic",
+                "URL": "https://en.wikipedia.org/wiki/Maung_Maung"
+            },
+            {
+                "Name": "စောမောင် - Saw Maung ",
+                "Beginning_JDN": 2447423,
+                "Ending_JDN": 2448736,
+                "Dynasty": "Union_of_Myanmar",
+                "URL": "https://en.wikipedia.org/wiki/Saw_Maung"
+            },
+            {
+                "Name": "သန်းရွှေ - Than Shwe",
+                "Beginning_JDN": 2448736,
+                "Ending_JDN": 2450758,
+                "Dynasty": "Union_of_Myanmar",
+                "URL": "https://en.wikipedia.org/wiki/Than_Shwe"
+            },
+            {
+                "Name": "သန်းရွှေ - Than Shwe",
+                "Beginning_JDN": 2450758,
+                "Ending_JDN": 2455651,
+                "Dynasty": "Union_of_Myanmar",
+                "URL": "https://en.wikipedia.org/wiki/Than_Shwe"
+            },
+            {
+                "Name": "သိန်းစိန် - Thein Sein ",
+                "Beginning_JDN": 2455651,
+                "Ending_JDN": 2457477,
+                "Dynasty": "Republic_Myanmar",
+                "URL": "https://en.wikipedia.org/wiki/Thein_Sein"
+            },
+            {
+                "Name": "ထင်ကျော် - Htin Kyaw ",
+                "Beginning_JDN": 2457478,
+                "Ending_JDN": 2458207,
+                "Dynasty": "Republic_Myanmar",
+                "URL": "https://en.wikipedia.org/wiki/Htin_Kyaw"
+            },
+            {
+                "Name": "ဝင်းမြင့် - Win Myint ",
+                "Beginning_JDN": 2458208,
+                "Ending_JDN": 2459303,
+                "Dynasty": "Republic_Myanmar",
+                "URL": "https://en.wikipedia.org/wiki/Win_Myint"
+            }
+        ];
+    }
+//End of rulers ######################################################
+//--------------------------------------------------------------------
+//Start of dynasties #################################################
+    static InitDynasties() {
+        return {
+            "Konbaung": {
+                "Description": "Konbaung (ကုန်းဘောင်ခေတ်)",
+                "URL": "https://en.wikipedia.org/wiki/Konbaung_Dynasty"
+            },
+            "Restored_Hanthawaddy": {
+                "Description": "Restored Hanthawaddy Kingdom (ဟံသာဝတီပဲခူးတိုင်းပြည်)",
+                "URL": "https://en.wikipedia.org/wiki/Restored_Hanthawaddy_Kingdom"
+            },
+            "Taungoo": {
+                "Description": "Taungoo (တောင်ငူခေတ်)",
+                "URL": "https://en.wikipedia.org/wiki/Taungoo_Dynasty"
+            },
+            "Mrauk_U": {
+                "Description": "Mrauk-U Dynasty (မြောက်‌ဦး)",
+                "URL": "https://en.wikipedia.org/wiki/Kingdom_of_Mrauk_U"
+            },
+            "Hanthawaddy": {
+                "Description": "Hanthawaddy Dynasty (ဟံသာဝတီ)",
+                "URL": "https://en.wikipedia.org/wiki/Hanthawaddy_Kingdom"
+            },
+            "Prome": {
+                "Description": "Prome Dynasty (ဒုတိယ သရေခေတ္တရာ)",
+                "URL": "https://en.wikipedia.org/wiki/Prome_Kingdom"
+            },
+            "Ava": {
+                "Description": "Ava Dynasty (အင်းဝခေတ်)",
+                "URL": "https://en.wikipedia.org/wiki/Kingdom_of_Ava"
+            },
+            "Sagaing": {
+                "Description": "Sagaing Kingdom (စစ်ကိုင်းခေတ်)",
+                "URL": "https://en.wikipedia.org/wiki/Sagaing_Kingdom"
+            },
+            "Pinya": {
+                "Description": "Pinya Kingdom (ပင်းယခေတ်)",
+                "URL": "https://en.wikipedia.org/wiki/Pinya_Kingdom"
+            },
+            "Myinsaing": {
+                "Description": "Myinsaing Kingdom (မြင်စိုင်းခေတ်)",
+                "URL": "https://en.wikipedia.org/wiki/Myinsaing_Kingdom"
+            },
+            "Pagan": {
+                "Description": "Pagan Kingdom (ပုဂံခေတ်)",
+                "URL": "https://en.wikipedia.org/wiki/Pagan_Kingdom"
+            },
+            "Early_Pagan": {
+                "Description": "Early Pagan Kingdom (ခေတ်ဦး ပုဂံ ပြည်)",
+                "URL": "https://en.wikipedia.org/wiki/Early_Pagan_Kingdom"
+            },
+            "British_Colonial_Period": {
+                "Description": "British Colonial Period (ဗြိတိသျှကိုလိုနီခေတ်)",
+                "URL": "https://en.wikipedia.org/wiki/British_rule_in_Burma"
+            },
+            "Japanese_Occupation": {
+                "Description": "Japanese Occupation (ဂျပန်ခေတ်)",
+                "URL": "https://en.wikipedia.org/wiki/Japanese_occupation_of_Burma"
+            },
+            "Union_of_Burma": {
+                "Description": "Union of Burma",
+                "URL": "https://en.wikipedia.org/wiki/Post-independence_Burma,_1948%E2%80%9362"
+            },
+            "Socialist_Republic": {
+                "Description": "Socialist Republic of the Union of Burma",
+                "URL": "https://en.wikipedia.org/wiki/Burmese_Way_to_Socialism"
+            },
+            "Union_of_Myanmar": {
+                "Description": "Union of Myanmar",
+                "URL": "https://en.wikipedia.org/wiki/State_Peace_and_Development_Council"
+            },
+            "Republic_Myanmar": {
+                "Description": "Republic of the Union of Myanmar",
+                "URL": "https://en.wikipedia.org/wiki/Myanmar"
+            }
+        };
+    }
+//End of dynasties ######################################################
+//--------------------------------------------------------------------
+//Start of chronicle ######################################################
+static InitChronicle() {
 	return [
 	{
 		"Julian Day Number":1995076,
@@ -3879,7 +5541,7 @@ static Init() {
 	}
 	];
 }	
-//End of chronicle ######################################################
-
+// End of chronicle #####################################################
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 } //ceMmChronicle
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------

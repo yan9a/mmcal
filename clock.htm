@@ -1,0 +1,175 @@
+<html>
+<head>
+<meta http-equiv="refresh" content="1">
+<meta charset="UTF-8">
+<meta name='description' content='Myanmar Calendar'/>
+<meta name='keywords' content='Myanmar, Calendar' />
+<meta name='author' content='Yan Naing Aye' />
+<meta name="viewport" content="width=device-width">
+<title>Myanmar Calendar</title>
+<link href="./html/play.css" rel="stylesheet">
+<style type="text/css">
+ body {
+	    font-size: 15px;
+		background-color: #111111;
+		font-family: 'Play', sans-serif;
+		text-align: left;
+		/* line-height: 1.5; */
+    	color: #7ece7e;
+	}	
+	a {
+    text-decoration: none;
+    color: #cca6f2;
+	}
+	a:hover
+	{
+		text-decoration: underline;
+		color: #cca6f2;
+	}
+	.WT {
+		font-size: 12vw;
+		text-align: center;
+		padding: 10px;
+	}
+	.WD {
+		font-size: 5vw;	
+		text-align: center;
+		color: #7ece7e;
+		padding: 10px;
+	}
+	.MT {
+		font-size: 5vw;
+		font-family: 'Tharlon';		
+		text-align: center;
+		color: #999999;
+		float: left;
+		padding-left: 100px;
+		padding-right: 10px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	.MD {
+		font-size: 5vw;
+		font-family: 'Tharlon';		
+		text-align: center;
+		color: #cca6f2;
+		padding: 10px;
+	}
+	.SC {
+		font-size: 5vw;
+		font-family: 'Tharlon';
+		text-align: center;
+        color: #f2f1a6;
+		float: right;
+		padding: 10px;
+	}
+	.YC {
+		font-size: 5vw;
+		font-family: 'Tharlon';
+		text-align: center;
+    	color: #70a7f0;
+		float: right;
+		padding: 10px;
+	}
+	.HD {
+		font-size: 5vw;
+		font-family: 'Tharlon';
+		text-align: center;
+    	color: #ff8080;
+		float: right;
+		padding: 10px;
+	}
+	.DW
+	{
+		margin-left: auto;
+		margin-right: auto;
+		position: relative;
+		/* width: 100%; */
+		/* height: 100%; */
+		background-color: #222222;
+		padding: 30px;
+		box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+	}
+</style>
+<script src='./javascript/ceMmDateTime.js'></script>
+<script type="text/javascript">
+function cal()
+{	
+	var lang=1;
+	var x=new ceMmTranslate();
+	var str;
+	var t1=0;
+	var t2 = 0;
+	var mdt=new ceMmDateTime();	
+	var nzt = document.getElementById("nzt");
+	str = mdt.ToString("%hh:%nn:%ss %AA");
+	nzt.innerHTML=str;
+
+	var nzd = document.getElementById("nzd");
+	str = mdt.ToString("%y-%Mmm-%dd %Www");
+	nzd.innerHTML=str;
+
+	var mdt2=new ceMmDateTime();	
+
+	// testing purpose
+	// mdt.SetJD(mdt.jd-7);
+
+	var mmt = document.getElementById("mmt");
+	mdt2.SetTimezone(6.5);
+	if(mdt2.ToString("%aa")=="pm"){
+		str = "ညနေ "+mdt2.ToString("%hh:%nn");
+	}
+	else {
+		str = "မနက် "+mdt2.ToString("%hh:%nn");
+	}
+	str=x.T(str,lang);
+	mmt.innerHTML=str;
+
+	var mmd = document.getElementById("mmd");
+	str=mdt.ToMString("&yyyy &M &P &f");
+	str=x.T(str,lang);
+	mmd.innerHTML=str;
+
+	var sb = document.getElementById("sb");
+	str="";
+	if(ceMmDateTime.cal_sabbath(mdt.md,mdt.mm,mdt.myt)==1) str="☸ ";
+	sb.innerHTML=str;
+
+	var yyz = document.getElementById("yyz");
+	// str=mdt.yatyaza;
+	//str=x.T(str,lang);
+	str="";
+	t1 = ceMmDateTime.cal_yatyaza(mdt.mm,mdt.w);
+	t2 = ceMmDateTime.cal_pyathada(mdt.mm,mdt.w);
+	if(t1==1) str="☑ ";
+	if (t2 ==1) str="☒ ";
+	if (t2 == 2 && mdt.h >= 12) str="☒ ";
+	yyz.innerHTML=str;
+
+	var hld = document.getElementById("hld");
+	str="";
+	var h = mdt.holidays;
+	var h2 = mdt.holidays2;
+
+	if(h.length>0) str="⛱ ";
+	if(h2.length>0) str+="🎀 ";
+
+	hld.innerHTML=str;
+}
+</script>
+</head>
+<body>
+<!-- <div class='DW'> -->
+<div id="nzt" class='WT'></div>
+<div id="nzd" class='WD'></div>
+<div id="mmd" class='MD'></div>
+<div id="mmt" class='MT'></div>
+<div id="sb" class='SC'></div>
+<div id="yyz" class='YC'></div>
+<div id="hld" class='HD'></div>
+<script type="text/javascript">	
+	cal();
+</script>
+<!-- </div> -->
+</body>
+</html>

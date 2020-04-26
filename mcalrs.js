@@ -1,6 +1,6 @@
 ﻿//Author: Yan Naing Aye
-//https://yan9a.github.io/mcal/
-//Version: 20170621 (only for ME 1312 and later)
+//https://yan9a.github.io/mmcal/
+//Version: 20200426 (only for ME 1312 and later)
 //#############################################################################
 var mc_no=0,grX;
 rmDisp();
@@ -15,14 +15,16 @@ function rmDisp() {
 		ormcal.id="mcalr"+(mc_no++).toString();
 		rmcalLang=ormcal.lang; //get the language to display
 		//---------------------------------------------------------------------
-		rLang=0;  //language number - default is 0 (Myanmar unicode)
-		if (rmcalLang=="my-Mon" || rmcalLang=="my-mon") rLang=2; //Mon language
-		else if (rmcalLang=="my-En" || rmcalLang=="my-en") rLang=1; //English
+		rLang=1;  //language number - default is 1 (Myanmar unicode)
+		if (rmcalLang=="my-Mon" || rmcalLang=="my-mon") rLang=3; //Mon language
+		else if (rmcalLang=="my-En" || rmcalLang=="my-en") rLang=0; //English
 		else if (rmcalLang=="my-Z1" || ormcal.style.fontFamily=="Zawgyi-One" ||
-				 rmcalLang=="my-z1") rLang=3; // Zawgyi font
+            rmcalLang == "my-z1") rLang = 2; // Zawgyi font
+        else if (rmcalLang == "my-Tai" || rmcalLang == "my-tai") rLang = 4; //Tai language
+        else if (rmcalLang == "my-Kar" || rmcalLang == "my-kar") rLang = 5; //Tai language
 		grX=rSetLang(rLang);  //Initialize the selected language catalog
 		//--------------------------------------------------------------------
-		ormcal.style.textDecoration="none"; ormcal.href="https://yan9a.github.io/mcal/";
+		ormcal.style.textDecoration="none"; ormcal.href="https://yan9a.github.io/mmcal/";
 		ormcal.target="_blank"; // decorate the display element
 		if(rLang==3) ormcal.style.fontFamily="Zawgyi-One";
 		ormcal.innerHTML=rmStr(rLang); //get Myanmar date string to display
@@ -167,7 +169,7 @@ function rn2s(n) {
 //-----------------------------------------------------------------------------
 function rSetLang(lang) //Internationalization---------------------------------
 {
-	if (lang==1) { //Catalog for  English Language
+	if (lang==0) { //Catalog for  English Language
 	return {'First Waso':'First Waso','Tagu':'Tagu','Kason':'Kason',
 	'Nayon':'Nayon','Waso':'Waso',	'Wagaung':'Wagaung','Tawthalin':'Tawthalin',
 	'Thadingyut':'Thadingyut','Tazaungmon':'Tazaungmon','Nadaw':'Nadaw',
@@ -181,7 +183,7 @@ function rSetLang(lang) //Internationalization---------------------------------
 	'Sabbath':'Sabbath','0': '0','1': '1','2': '2','3': '3','4': '4','5': '5',
 	'6': '6','7': '7','8': '8','9': '9',',':',','.':'.'};}
 
-	else if (lang==2) { //Catalog for Mon Language  using Unicode,
+	else if (lang==3) { //Catalog for Mon Language  using Unicode,
 	//Mon Language Translation by: 'ITVilla' : http://it-villa.blogspot.com/,
 	//Proof reading: Mikau Nyan
 	return {'First Waso':'ဂိတုပ-ဒ္ဂိုန်','Tagu':'ဂိတုစဲ','Kason':'ဂိတုပသာ်','Nayon':'ဂိတုဇှေ်',
@@ -195,7 +197,7 @@ function rSetLang(lang) //Internationalization---------------------------------
 	'0': '၀','1': '၁','2': '၂','3': '၃','4': '၄','5': '၅','6': '၆','7': '၇',
 	'8': '၈','9': '၉',',':'၊','.':'။'};}
 
-	else if (lang==3) { //Catalog for Zawgyi-One
+	else if (lang==2) { //Catalog for Zawgyi-One
 	return {'First Waso':'ပဝါဆို','Tagu':'တန္ခူး','Kason':'ကဆုန္','Nayon':'နယုန္',
 	'Waso':'ဝါဆို','Wagaung':'ဝါေခါင္','Tawthalin':'ေတာ္သလင္း','Thadingyut':'သီတင္းကြ်တ္',
 	'Tazaungmon':'တန္ေဆာင္မုန္း','Nadaw':'နတ္ေတာ္','Pyatho':'ျပာသို','Tabodwe':'တပို႔တြဲ',
@@ -205,7 +207,41 @@ function rSetLang(lang) //Internationalization---------------------------------
 	'Tuesday':'အဂၤါ','Wednesday':'ဗုဒၶဟူး','Thursday':'ၾကာသပေတး','Friday':'ေသာၾကာ',
 	'Saturday':'စေန','Nay':'ေန႔','Yat':'ရက္','Sabbath Eve':'အဖိတ္','Sabbath':'ဥပုသ္',
 	'0': '၀','1': '၁','2': '၂','3': '၃','4': '၄','5': '၅','6': '၆','7': '၇',
-	'8': '၈','9': '၉',',':'၊','.':'။'};}
+            '8': '၈', '9': '၉', ',': '၊', '.': '။'
+        };
+    }
+
+    else if (lang == 4) {	//Catalog for Tai
+        return {
+            'First Waso': 'ပပႅတ်ႇ', 'Tagu': 'ႁႃႈ', 'Kason': 'ႁူၵ်း', 'Nayon': 'ၸဵတ်း',
+            'Waso': 'ပႅတ်ႇ', 'Wagaung': 'ၵဝ်ႈ', 'Tawthalin': 'သိပ်း',
+            'Thadingyut': 'သိပ်းဢဵတ်း', 'Tazaungmon': 'သိပ်းသွင်', 'Nadaw': 'ၸဵင်', 'Pyatho': 'ၵမ်',
+            'Tabodwe': 'သၢမ်', 'Tabaung': 'သီႇ',
+            'waxing': 'လိူၼ်မႂ်ႇ', 'waning': 'လိူၼ်လွင်ႈ', 'full moon': 'လိူၼ်မူၼ်း', 'new moon': 'လိူၼ်လပ်း',
+            'Sasana Year': 'သႃႇသၼႃႇပီ', 'Myanmar Year': 'မြန်မာပီ', 'Ku': 'ၶု', 'Late': 'ဝၢႆး',
+            'Second': 'ဒု', 'Sunday': 'ဝၼ်းဢႃးတိတ်ႉ', 'Monday': 'ဝၼ်းၸၼ်', 'Tuesday': 'ဝၼ်းဢၢင်းၵၢၼ်း',
+            'Wednesday': 'ဝၼ်းပုတ်ႉ', 'Thursday': 'ဝၼ်းၽတ်း', 'Friday': 'ဝၼ်းသုၵ်း', 'Saturday': 'ဝၼ်းသဝ်',
+            'Nay': 'ဝၼ်း', 'Yat': 'ဝၼ်း', 'Sabbath Eve': 'ၽိတ်ႈ', 'Sabbath': 'သိၼ်',
+            '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7',
+            '8': '8', '9': '9', ',': '၊', '.': '။'
+        };
+    }
+
+    else if (lang == 5) {	//Catalog for S'gaw Karen
+        return {
+            'First Waso': 'ပလါဃိး', 'Tagu': 'လါချံ', 'Kason': 'ဒ့ၣ်ညါ', 'Nayon': 'လါနွံ',
+            'Waso': 'လါဃိး', 'Wagaung': 'လါခူး', 'Tawthalin': 'ဆံးမုၢ်',
+            'Thadingyut': 'ဆံးဆၣ်', 'Tazaungmon': 'လါနီ', 'Nadaw': 'လါပျုၤ', 'Pyatho': 'သလ့ၤ',
+            'Tabodwe': 'ထ့ကူး', 'Tabaung': 'သွ့ကီ',
+            'waxing': 'လါထီၣ်', 'waning': 'လါလီၤ', 'full moon': 'လါပှဲၤ', 'new moon': 'လါဘၢ',
+            'Sasana Year': 'နံၣ်သာသနာ', 'Myanmar Year': 'နံၣ်မြန်မာ', 'Ku': 'ခု', 'Late': 'စဲၤ',
+            'Second': '၂ ', 'Sunday': 'မုၢ်ဒဲး', 'Monday': 'မုၢ်ဆၣ်', 'Tuesday': 'မုၢ်ယူာ်',
+            'Wednesday': 'မုၢ်ပျဲၤ', 'Thursday': 'မုၢ်လ့ၤဧိၤ', 'Friday': 'မုၢ်ဖီဖး', 'Saturday': 'မုၢ်ဘူၣ်',
+            'Nay': 'နံၤ', 'Yat': 'ရက်', 'Sabbath Eve': 'အဖိတ်', 'Sabbath': 'အိၣ်ဘှံး',
+            '0': '၀', '1': '၁', '2': '၂', '3': '၃', '4': '၄', '5': '၅', '6': '၆', '7': '၇',
+            '8': '၈', '9': '၉', ',': '၊', '.': '။'
+        };
+    }
 
 	else {	//Catalog for Myanmar Unicode
 	return {'First Waso':'ပဝါဆို','Tagu':'တန်ခူး','Kason':'ကဆုန်','Nayon':'နယုန်',
