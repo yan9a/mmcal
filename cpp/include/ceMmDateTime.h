@@ -1,6 +1,6 @@
 // File: ceMmDateTime.h
 // Description: Modern Myanmar Calendrical Calculations
-// WebSite: https://yan9a.github.io/mcal/
+// WebSite: https://yan9a.github.io/mmcal/
 // MIT License (https://opensource.org/licenses/MIT)
 // Copyright (c) 2018 Yan Naing Aye
 // Doc: http://cool-emerald.blogspot.com/2013/06/algorithm-program-and-calculation-of.html

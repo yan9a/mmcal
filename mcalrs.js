@@ -218,7 +218,7 @@ function rSetLang(lang) //Internationalization---------------------------------
             'Thadingyut': 'သိပ်းဢဵတ်း', 'Tazaungmon': 'သိပ်းသွင်', 'Nadaw': 'ၸဵင်', 'Pyatho': 'ၵမ်',
             'Tabodwe': 'သၢမ်', 'Tabaung': 'သီႇ',
             'waxing': 'လိူၼ်မႂ်ႇ', 'waning': 'လိူၼ်လွင်ႈ', 'full moon': 'လိူၼ်မူၼ်း', 'new moon': 'လိူၼ်လပ်း',
-            'Sasana Year': 'သႃႇသၼႃႇပီ', 'Myanmar Year': 'မြန်မာပီ', 'Ku': 'ၶု', 'Late': 'ဝၢႆး',
+            'Sasana Year': 'ပီသႃႇသၼႃႇ', 'Myanmar Year': 'ပီ​​ၵေႃးၸႃႇ', 'Ku': 'ၶု', 'Late': 'ဝၢႆး',
             'Second': 'ဒု', 'Sunday': 'ဝၼ်းဢႃးတိတ်ႉ', 'Monday': 'ဝၼ်းၸၼ်', 'Tuesday': 'ဝၼ်းဢၢင်းၵၢၼ်း',
             'Wednesday': 'ဝၼ်းပုတ်ႉ', 'Thursday': 'ဝၼ်းၽတ်း', 'Friday': 'ဝၼ်းသုၵ်း', 'Saturday': 'ဝၼ်းသဝ်',
             'Nay': 'ဝၼ်း', 'Yat': 'ဝၼ်း', 'Sabbath Eve': 'ၽိတ်ႈ', 'Sabbath': 'သိၼ်',

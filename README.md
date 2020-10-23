@@ -1,8 +1,8 @@
-# mcal - Implementation of Myanmar Calendar in C++ and Javascript
+# mmcal - Implementation of Myanmar Calendar in C++ and Javascript
 
 Description: Modern Myanmar Calendrical Calculations
 
-WebSite: https://yan9a.github.io/mcal/
+WebSite: https://yan9a.github.io/mmcal/
 
 MIT License (https://opensource.org/licenses/MIT)
 
@@ -17,20 +17,20 @@ See the detail explanations about Myanmar Calendar at
 
 To get the source from github, you can visit to 
 
-[https://github.com/yan9a/mcal](https://github.com/yan9a/mcal)
+[https://github.com/yan9a/mmcal](https://github.com/yan9a/mmcal)
 
 and click --Clone or download-- button near the upper right corner.
-It consists of both C++ and Javascript source code in **[cpp](https://github.com/yan9a/mcal/tree/master/cpp)** and **[javascript](https://github.com/yan9a/mcal/tree/master/javascript)** folders respectively.
+It consists of both C++ and Javascript source code in **[cpp](https://github.com/yan9a/mmcal/tree/master/cpp)** and **[javascript](https://github.com/yan9a/mmcal/tree/master/javascript)** folders respectively.
 Alternatively, you can use git clone command as follow.
 
 ```
-git clone https://github.com/yan9a/mcal.git
-cd mcal
+git clone https://github.com/yan9a/mmcal.git
+cd mmcal
 ```
 
 ### Javascript 
 
-Javascript for Myanmar Calendrical Calculations is at **[ceMmDateTime.js](https://github.com/yan9a/mcal/blob/master/javascript/ceMmDateTime.js)** in **[mcal/javascript/](https://github.com/yan9a/mcal/tree/master/javascript)** folder.
+Javascript for Myanmar Calendrical Calculations is at **[ceMmDateTime.js](https://github.com/yan9a/mmcal/blob/master/javascript/ceMmDateTime.js)** in **[mmcal/javascript/](https://github.com/yan9a/mmcal/tree/master/javascript)** folder.
 
 
 If you want the version 1.0 javascript
@@ -49,26 +49,26 @@ Usage example to calculate Myanmar calendar date
 
  Example html/javascript code can be seen at
  
- >    [https://github.com/yan9a/mcal/blob/master/index.htm](https://github.com/yan9a/mcal/blob/master/index.htm)
+ >    [https://github.com/yan9a/mmcal/blob/master/index.htm](https://github.com/yan9a/mmcal/blob/master/index.htm)
      
 
 ### C++ 
 
-C++ class for Myanmar Calendrical Calculations is in **[cpp/](https://github.com/yan9a/mcal/tree/master/cpp)** folder.
+C++ class for Myanmar Calendrical Calculations is in **[cpp/](https://github.com/yan9a/mmcal/tree/master/cpp)** folder.
 
 It consists of the following files
 
-> [ceDateTime.h](https://github.com/yan9a/mcal/blob/master/cpp/include/ceDateTime.h)
+> [ceDateTime.h](https://github.com/yan9a/mmcal/blob/master/cpp/include/ceDateTime.h)
 
-> [ceDateTime.cpp](https://github.com/yan9a/mcal/blob/master/cpp/source/ceDateTime.cpp)
+> [ceDateTime.cpp](https://github.com/yan9a/mmcal/blob/master/cpp/source/ceDateTime.cpp)
 
-> [ceMmDateTime.h](https://github.com/yan9a/mcal/blob/master/cpp/include/ceMmDateTime.h)
+> [ceMmDateTime.h](https://github.com/yan9a/mmcal/blob/master/cpp/include/ceMmDateTime.h)
 
-> [ceMmDateTime.cpp](https://github.com/yan9a/mcal/blob/master/cpp/source/ceMmDateTime.cpp)
+> [ceMmDateTime.cpp](https://github.com/yan9a/mmcal/blob/master/cpp/source/ceMmDateTime.cpp)
 
 Example C++ program can be seen at 
 
->    [https://github.com/yan9a/mcal/blob/master/cpp/eg/cedate/cedate.cpp](https://github.com/yan9a/mcal/blob/master/cpp/eg/cedate/cedate.cpp)
+>    [https://github.com/yan9a/mmcal/blob/master/cpp/eg/cedate/cedate.cpp](https://github.com/yan9a/mmcal/blob/master/cpp/eg/cedate/cedate.cpp)
 
 
 #### Windows
@@ -92,8 +92,8 @@ For Linux, you need to install the necessary tools and then you can clone from i
 ```
 $ sudo apt update
 $ sudo apt install build-essential git cmake
-$ git clone https://github.com/yan9a/mcal.git
-$ cd mcal
+$ git clone https://github.com/yan9a/mmcal.git
+$ cd mmcal
 ```
 
 Thereafter, you can navigate to the example folder, build it using cmake, and run it as follows.
