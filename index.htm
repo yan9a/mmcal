@@ -1,475 +1,477 @@
 ﻿<!DOCTYPE html>
-<html class='v2' dir='ltr'
-      xmlns='http://www.w3.org/1999/xhtml'
-      xmlns:b='http://www.google.com/2005/gml/b'
-      xmlns:data='http://www.google.com/2005/gml/data'
-      xmlns:expr='http://www.google.com/2005/gml/expr'>
+<html class='v2' dir='ltr' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b'
+	xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+
 <head>
-<meta charset="UTF-8">
-<meta name='description' content='About 1500 Myanmar years, starting from 2 ME, can be found in this Myanmar calendar.
-မြန်မာသက္ကရာဇ် 2 ခု ကစပြီး နှစ်ပေါင်း တစ်ထောင့်ငါးရာ ခန့်ရှိတဲ့ မြန်မာရက်တွေကို ဒီပြက္ခဒိန်မှာ ကြည့်နိုင်ပါတယ်။ '/>
-<meta name='keywords' content='Myanmar, Burmese, calendar, English, ပြက္ခဒိန်, ျပကၡဒိန္, မြန်မာ, ျမန္မာ,
+	<meta charset="UTF-8">
+	<meta name='description' content='About 1500 Myanmar years, starting from 2 ME, can be found in this Myanmar calendar.
+မြန်မာသက္ကရာဇ် 2 ခု ကစပြီး နှစ်ပေါင်း တစ်ထောင့်ငါးရာ ခန့်ရှိတဲ့ မြန်မာရက်တွေကို ဒီပြက္ခဒိန်မှာ ကြည့်နိုင်ပါတယ်။ ' />
+	<meta name='keywords' content='Myanmar, Burmese, calendar, English, ပြက္ခဒိန်, ျပကၡဒိန္, မြန်မာ, ျမန္မာ,
 lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရက်ရာဇာ, ျပႆဒါး, ပြဿဒါး,Yatyaza,Pyathada' />
-<meta name="viewport" content="width=device-width">
-<title>Myanmar Calendar ~1500 years</title>
-<link rel="icon" type="image/ico" href="favicon.ico"/>
-<link rel='stylesheet' href='mc_s.css'>
-<script src='./javascript/ceMmDateTime.js'></script>
-<script>
-// Version: 20200422
-// Required: ./javascript/ceMmDateTime.js
-//----------------------------------------------------------------------------
-//Start of UI ################################################################
-var x = new ceMmTranslate();
-var chron = new ceMmChronicle();
-var dt=new Date();
-//User Interface setting
-var uis={
-	Lang:undefined,//Language
-	Type:0,//Gregorian or Julian
-	y:dt.getFullYear(),m:(1+dt.getMonth()),d:dt.getDate(),//y,m,d to display
-	cy:dt.getFullYear(),cm:(1+dt.getMonth()),cd:dt.getDate(),//current y,m,d
-	BY:640,EY:2140, //beginning and end of the calendar,
-	LT:1700,UT:2022,//lower and upper threshold for accurate years
-};
-//-------------------------------------------------------------------------
-//initialize the calendar
-function initc(){
-	var ce = document.getElementById("mcalg");
-	//ce.className="DivMain";
-	if (uis.Lang===undefined) {
-		var L=ce.lang;
-		var F=ce.style.fontFamily;
-		if (F=="Zawgyi-One") L="Zawgyi";
-		uis.Lang=SelectLang(L);//set a global variable for translation
-	}
-  ce.innerHTML=UI();
-}
-//-------------------------------------------------------------------------
-//Select language
-//input: (L: number[0=English, 1=Myanmar, 2=Zawgyi, 3=Mon, 4=Tai, 5=Karen])
-function SelectLang(L){
-	var l=1;
-	if (L==0 || L=="English" || L=="my-En" || L=="my-en") {l=0; }
-	else if (L==3 || L=="Moon" || L=="my-Mon" || L=="my-mon") { l=3;}
-	else if (L==2 || L=="Zawgyi" || L=="my-Z1" || L=="my-z1" || L=="Zawgyi-One") { l=2;}
-    else if (L == 4 || L == "Tai" || L == "my-Tai" || L == "my-tai") { l = 4; }
-    else if (L==5 || L=="Karen" || L=="my-Kar" || L=="my-kar") { l=5;}
-	else {l=1;}
-	return l;
-}
-//-------------------------------------------------------------------------
-//Produce html string for user interface
-//this function is mainly for table that contains controls
-//output: (str: html string)
-function UI(){
-	var ema=["Jan","Feb","Mar","Apr","May","Jun"
-			 ,"Jul","Aug","Sep","Oct","Nov","Dec"];
-	//------------------------------------------------------------------------
-	var i=0; var str="";
-	//Start of div container for month
-	str+="<div id='divMonth' class='DivContainerMonth'>";
-	//------------------------------------------------------------------------
-	//Start of table to accommodate controls
-	str+="<table class='TableContainerCtrl'> <tbody><tr>";
-		//Button for previous month
-		str+="<td class='TdContainerBtnDec'>\
+	<meta name="viewport" content="width=device-width">
+	<title>Myanmar Calendar ~1500 years</title>
+	<link rel="icon" type="image/ico" href="favicon.ico" />
+	<link rel='stylesheet' href='mc_s.css'>
+	<script src='./javascript/ceMmDateTime.js'></script>
+	<script>
+		// Version: 20200422
+		// Required: ./javascript/ceMmDateTime.js
+		//----------------------------------------------------------------------------
+		//Start of UI ################################################################
+		var x = new ceMmTranslate();
+		var chron = new ceMmChronicle();
+		var dt = new Date();
+		//User Interface setting
+		var uis = {
+			Lang: undefined,//Language
+			Type: 0,//Gregorian or Julian
+			y: dt.getFullYear(), m: (1 + dt.getMonth()), d: dt.getDate(),//y,m,d to display
+			cy: dt.getFullYear(), cm: (1 + dt.getMonth()), cd: dt.getDate(),//current y,m,d
+			BY: 640, EY: 2140, //beginning and end of the calendar,
+			LT: 1700, UT: 2022,//lower and upper threshold for accurate years
+		};
+		//-------------------------------------------------------------------------
+		//initialize the calendar
+		function initc() {
+			var ce = document.getElementById("mcalg");
+			//ce.className="DivMain";
+			if (uis.Lang === undefined) {
+				var L = ce.lang;
+				var F = ce.style.fontFamily;
+				if (F == "Zawgyi-One") L = "Zawgyi";
+				uis.Lang = SelectLang(L);//set a global variable for translation
+			}
+			ce.innerHTML = UI();
+		}
+		//-------------------------------------------------------------------------
+		//Select language
+		//input: (L: number[0=English, 1=Myanmar, 2=Zawgyi, 3=Mon, 4=Tai, 5=Karen])
+		function SelectLang(L) {
+			var l = 1;
+			if (L == 0 || L == "English" || L == "my-En" || L == "my-en") { l = 0; }
+			else if (L == 3 || L == "Moon" || L == "my-Mon" || L == "my-mon") { l = 3; }
+			else if (L == 2 || L == "Zawgyi" || L == "my-Z1" || L == "my-z1" || L == "Zawgyi-One") { l = 2; }
+			else if (L == 4 || L == "Tai" || L == "my-Tai" || L == "my-tai") { l = 4; }
+			else if (L == 5 || L == "Karen" || L == "my-Kar" || L == "my-kar") { l = 5; }
+			else { l = 1; }
+			return l;
+		}
+		//-------------------------------------------------------------------------
+		//Produce html string for user interface
+		//this function is mainly for table that contains controls
+		//output: (str: html string)
+		function UI() {
+			var ema = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"
+				, "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			//------------------------------------------------------------------------
+			var i = 0; var str = "";
+			//Start of div container for month
+			str += "<div id='divMonth' class='DivContainerMonth'>";
+			//------------------------------------------------------------------------
+			//Start of table to accommodate controls
+			str += "<table class='TableContainerCtrl'> <tbody><tr>";
+			//Button for previous month
+			str += "<td class='TdContainerBtnDec'>\
 			<input type='button' id='decm' value='&lt;' onclick='emc(-1);'  \
 			class='BtnDec'  title='Previous Month'></td>";
-		//Number input for year
-		str+="<td  class='TdContainerYear'> \
-			<input type='number' id='y' min='"+uis.BY+"' max='"+uis.EY+"' value='"
-			+uis.y.toString()+"'onchange='DisplayUI(1)'  \
+			//Number input for year
+			str += "<td  class='TdContainerYear'> \
+			<input type='number' id='y' min='"+ uis.BY + "' max='" + uis.EY + "' value='"
+				+ uis.y.toString() + "'onchange='DisplayUI(1)'  \
 			class='InpYear' title='Year'> </td> ";
-		//Select input for month
-		str+="<td  class='TdContainerMonth'>\
+			//Select input for month
+			str += "<td  class='TdContainerMonth'>\
 			<select  id='m'  onchange='DisplayUI(2)'  \
 			class='InpMonth' title='Month'>";
-				for(i=1;i<=12;i++) { str+="<option value='"+i.toString()+"'  "
-				+((i==uis.m)?"selected":"")+">"+ema[i-1]+" </option> ";}
-			str+="</select> </td>";
-		//Button for next month
-		str+="<td class='TdContainerBtnInc'>\
+			for (i = 1; i <= 12; i++) {
+				str += "<option value='" + i.toString() + "'  "
+					+ ((i == uis.m) ? "selected" : "") + ">" + ema[i - 1] + " </option> ";
+			}
+			str += "</select> </td>";
+			//Button for next month
+			str += "<td class='TdContainerBtnInc'>\
 			<input type='button' id='incm' value='&gt;' onclick='emc(1);'  \
 			class='BtnInc' \
 			title='Next Month'></td>";
-		//empty space
-		str+="<td class='TdContainerSpace'>&nbsp;</td>";
-		//Select input for calendar type
-		str+="<td class='TdContainerType'>\
+			//empty space
+			str += "<td class='TdContainerSpace'>&nbsp;</td>";
+			//Select input for calendar type
+			str += "<td class='TdContainerType'>\
 			<select  id='calType' class='InpType'  \
 			onchange='DisplayUI(3)' title='Calendar Type'>\
-				<option value='0'  "+((uis.Type==0)?"selected":"")+
-					">British </option> \
-				<option value='1'  "+((uis.Type==1)?"selected":"")+
-					">Gregorian </option> \
-				<option value='2'  "+((uis.Type==2)?"selected":"")+
-					">Julian </option> \
+				<option value='0'  "+ ((uis.Type == 0) ? "selected" : "") +
+				">British </option> \
+				<option value='1'  "+ ((uis.Type == 1) ? "selected" : "") +
+				">Gregorian </option> \
+				<option value='2'  "+ ((uis.Type == 2) ? "selected" : "") +
+				">Julian </option> \
 			</select> </td>";
-		//Select input for language
-		str+="<td class='TdContainerLanguage'>\
+			//Select input for language
+			str += "<td class='TdContainerLanguage'>\
 			<select  id='calLang' class='InpLanguage'  \
 			onchange='DisplayUI(4)' title='Language'>\
-				<option value='0'  "+((uis.Lang==0)?"selected":"")+
-					">English </option>\
-				<option value='1'  "+((uis.Lang==1)?"selected":"")+
-					">Myanmar </option>\
-				<option value='2'  "+((uis.Lang==2)?"selected":"")+
-					">Zawgyi </option>\
-				<option value='3'  "+((uis.Lang==3)?"selected":"")+
-					">Mon </option> \
-				<option value='4'  "+((uis.Lang==4)?"selected":"")+
-					">Tai </option> \
-                 <option value='5'  "+((uis.Lang==5)?"selected":"")+
-					">S'Karen </option> \
+				<option value='0'  "+ ((uis.Lang == 0) ? "selected" : "") +
+				">English </option>\
+				<option value='1'  "+ ((uis.Lang == 1) ? "selected" : "") +
+				">Myanmar </option>\
+				<option value='2'  "+ ((uis.Lang == 2) ? "selected" : "") +
+				">Zawgyi </option>\
+				<option value='3'  "+ ((uis.Lang == 3) ? "selected" : "") +
+				">Mon </option> \
+				<option value='4'  "+ ((uis.Lang == 4) ? "selected" : "") +
+				">Tai </option> \
+                 <option value='5'  "+ ((uis.Lang == 5) ? "selected" : "") +
+				">S'Karen </option> \
 			</select> </td>";
-	str+="</tr></tbody></table>";
-	//End of table for the controls
-	//------------------------------------------------------------------------
-	//Division to accommodate calendar month
-	str+="<div id='oc'>"+UIContent()+"</div>";
+			str += "</tr></tbody></table>";
+			//End of table for the controls
+			//------------------------------------------------------------------------
+			//Division to accommodate calendar month
+			str += "<div id='oc'>" + UIContent() + "</div>";
 
-	str+="</div>";
-	//end of div container month
-	//------------------------------------------------------------------------
-	//Division to accommodate calendar day
-	str+="<div id='divDay' class='DivContainerDay' style='display:none;'></div>";
-	//------------------------------------------------------------------------
-	return str;
-}
-//-----------------------------------------------------------------------------
-//change month
-//input: (v: value [1: increase, -1: decrease])
-function emc(v) {
-	var me = document.getElementById("m"); var mn=Number(me.value);
-	var ye = document.getElementById("y"); var yn=Number(ye.value);
-	mn+=Number(v); if (mn<=0) { mn+=12; yn--; }
-	else if (mn>12) { mn-=12; yn++; }
-	uis.y=yn; uis.m=mn;
-	mn--; me.selectedIndex=mn; ye.value=yn; DisplayUI(0);
-}
-//-------------------------------------------------------------------------
-//display UI
-//input: (cev: calendar element to update [1:year, 2:month,
-//4:language, 3: type])
-function DisplayUI(cev) {
-	switch(cev) {
-		case 1: var ye = document.getElementById("y");
-			var yn=Number(ye.value);
-			if(yn<uis.BY) {ye.value=yn=uis.BY;}
-			else if(yn>uis.EY) {ye.value=yn=uis.EY;}
-			else {ye.value=yn;}
-			uis.y=yn;
-			break;//year
-		case 2: var me = document.getElementById("m");
-			uis.m=Number(me.value); break;//month
-		case 3: var te = document.getElementById("calType");
-			uis.Type=te.value; break;//type
-		case 4: var le = document.getElementById("calLang");
-			uis.Lang=SelectLang(le.value); break;//Language
-	}
-	var oce = document.getElementById("oc");
-	oce.innerHTML=UIContent();
-}
-//-------------------------------------------------------------------------
-//Produce html string for calendar content
-//output: (str: html string)
-function UIContent() {
-    var r, i, js, je, eml, tstr;
-    //------------------------------------------------------------------------
-    var Cday = new ceMmDateTime(); // start of month
-    Cday.SetTimezone(0);
-    Cday.SetDateTime(uis.cy, uis.cm, uis.cd, 12, 0, 0, 0); // time zone is irrelevant
-	//------------------------------------------------------------------------
-    var MS = new ceMmDateTime(); // start of month
-    MS.SetTimezone(0);
-    MS.SetDateTime(uis.y, uis.m, 1, 12, 0, 0, 0, uis.Type); // time zone is irrelevant
-    js = MS.jdn;//Find julian day number of start of
-	//the month according to calendar type
-	eml=MS.mlen;//get the length of the month
-    je = js + eml - 1;//Julian day number of end of the month
-    var ME = new ceMmDateTime(); // end of month
-    ME.SetTimezone(0);
-	ME.SetJD(je);
-	//------------------------------------------------------------------------
-	//Start of the table for calendar days
-	var str=" <table class='TableMC'> ";
-    str += tHead(MS, ME);	//header
-    str += tFoot();//footer    
-    str += "<tbody>"; str += tWeek(); //Weekday header row
-    
-	//Calendar days are populated starting from second row
-    r = (MS.w + 6) % 7; eml = Math.ceil((eml + r) / 7) * 7;
-    var M = new ceMmDateTime(); // end of month
-    M.SetTimezone(0);
-    M.SetCT(uis.Type);
-	for(i=0;i<eml;i++){
-		if ((i%7)==0) str+="<tr>";
-		//start of checking valid day to display
-		if ((i>=r)&&(js<=je)) {
-            M.SetJD(js);
-			//Check holidays, weekend, inaccurate days and change style
-			tstr="PriDay";
-			if (js==Cday.jdn) tstr="PriDayToday";
-			else if (M.holidays.length>0) tstr="PriDayHoliday";
-			else if ((M.w==0) || (M.w==1)) tstr="PriDayWeekend";
-			else if (uis.y<uis.LT || uis.y>uis.UT) tstr="PriDayInaccu";
+			str += "</div>";
+			//end of div container month
+			//------------------------------------------------------------------------
+			//Division to accommodate calendar day
+			str += "<div id='divDay' class='DivContainerDay' style='display:none;'></div>";
+			//------------------------------------------------------------------------
+			return str;
+		}
+		//-----------------------------------------------------------------------------
+		//change month
+		//input: (v: value [1: increase, -1: decrease])
+		function emc(v) {
+			var me = document.getElementById("m"); var mn = Number(me.value);
+			var ye = document.getElementById("y"); var yn = Number(ye.value);
+			mn += Number(v); if (mn <= 0) { mn += 12; yn--; }
+			else if (mn > 12) { mn -= 12; yn++; }
+			uis.y = yn; uis.m = mn;
+			mn--; me.selectedIndex = mn; ye.value = yn; DisplayUI(0);
+		}
+		//-------------------------------------------------------------------------
+		//display UI
+		//input: (cev: calendar element to update [1:year, 2:month,
+		//4:language, 3: type])
+		function DisplayUI(cev) {
+			switch (cev) {
+				case 1: var ye = document.getElementById("y");
+					var yn = Number(ye.value);
+					if (yn < uis.BY) { ye.value = yn = uis.BY; }
+					else if (yn > uis.EY) { ye.value = yn = uis.EY; }
+					else { ye.value = yn; }
+					uis.y = yn;
+					break;//year
+				case 2: var me = document.getElementById("m");
+					uis.m = Number(me.value); break;//month
+				case 3: var te = document.getElementById("calType");
+					uis.Type = te.value; break;//type
+				case 4: var le = document.getElementById("calLang");
+					uis.Lang = SelectLang(le.value); break;//Language
+			}
+			var oce = document.getElementById("oc");
+			oce.innerHTML = UIContent();
+		}
+		//-------------------------------------------------------------------------
+		//Produce html string for calendar content
+		//output: (str: html string)
+		function UIContent() {
+			var r, i, js, je, eml, tstr;
+			//------------------------------------------------------------------------
+			var Cday = new ceMmDateTime(); // start of month
+			Cday.SetTimezone(0);
+			Cday.SetDateTime(uis.cy, uis.cm, uis.cd, 12, 0, 0, 0); // time zone is irrelevant
+			//------------------------------------------------------------------------
+			var MS = new ceMmDateTime(); // start of month
+			MS.SetTimezone(0);
+			MS.SetDateTime(uis.y, uis.m, 1, 12, 0, 0, 0, uis.Type); // time zone is irrelevant
+			js = MS.jdn;//Find julian day number of start of
+			//the month according to calendar type
+			eml = MS.mlen;//get the length of the month
+			je = js + eml - 1;//Julian day number of end of the month
+			var ME = new ceMmDateTime(); // end of month
+			ME.SetTimezone(0);
+			ME.SetJD(je);
+			//------------------------------------------------------------------------
+			//Start of the table for calendar days
+			var str = " <table class='TableMC'> ";
+			str += tHead(MS, ME);	//header
+			str += tFoot();//footer    
+			str += "<tbody>"; str += tWeek(); //Weekday header row
 
-			str+="<td class='TdMC' onclick='ShowDay("+js+")'>";
-			str+="<p class='PTdMC'>";
-            str += "<span class='" + tstr + "'>" + M.d + "</span>";//display English day
+			//Calendar days are populated starting from second row
+			r = (MS.w + 6) % 7; eml = Math.ceil((eml + r) / 7) * 7;
+			var M = new ceMmDateTime(); // end of month
+			M.SetTimezone(0);
+			M.SetCT(uis.Type);
+			for (i = 0; i < eml; i++) {
+				if ((i % 7) == 0) str += "<tr>";
+				//start of checking valid day to display
+				if ((i >= r) && (js <= je)) {
+					M.SetJD(js);
+					//Check holidays, weekend, inaccurate days and change style
+					tstr = "PriDay";
+					if (js == Cday.jdn) tstr = "PriDayToday";
+					else if (M.holidays.length > 0) tstr = "PriDayHoliday";
+					else if ((M.w == 0) || (M.w == 1)) tstr = "PriDayWeekend";
+					else if (uis.y < uis.LT || uis.y > uis.UT) tstr = "PriDayInaccu";
 
-			//sabbath and moon just beside English day
-			str+=" <span class='MCSabbath'> "+x.T(M.sabbath,uis.Lang)+"</span>";
-			if(M.mp==1) str+=" <canvas class='FM'></canvas> ";
-			else if(M.mp==3) str+=" <canvas class='NM'></canvas> ";
-            str += "</p>";
-			//displaying Myanmar date
-			if (M.my>=2) { str+=mMDStr(M); }
-            
-			str+="</td>";
-			js++;//Julian day number for next day
-		}//end of checking valid day to display
-		else {
-			str+="<td class='TdMC'><p class='PTdMC'>";
-			str+="&nbsp;";
-			str+="</p></td>";
-		} //if no day to display
-		if ((i%7)==6) str+="</tr>";//next row
-	}//end of for loop
-    
-	str+="</tbody></table>";
-	//------------------------------------------------------------------------
-	return str;
-}
-//-------------------------------------------------------------------------
-//Produce html string for calendar day table header
-//input: (MS: Myanmar date at the start ,
-// ME: Myanmar date at the end)
-//output: (str: html string)
-function tHead(MS, ME) {
-    var str = "";
-	var tstr="<thead> <tr> <th colspan=7 class='ThMC'>\
+					str += "<td class='TdMC' onclick='ShowDay(" + js + ")'>";
+					str += "<p class='PTdMC'>";
+					str += "<span class='" + tstr + "'>" + M.d + "</span>";//display English day
+
+					//sabbath and moon just beside English day
+					str += " <span class='MCSabbath'> " + x.T(M.sabbath, uis.Lang) + "</span>";
+					if (M.mp == 1) str += " <canvas class='FM'></canvas> ";
+					else if (M.mp == 3) str += " <canvas class='NM'></canvas> ";
+					str += "</p>";
+					//displaying Myanmar date
+					if (M.my >= 2) { str += mMDStr(M); }
+
+					str += "</td>";
+					js++;//Julian day number for next day
+				}//end of checking valid day to display
+				else {
+					str += "<td class='TdMC'><p class='PTdMC'>";
+					str += "&nbsp;";
+					str += "</p></td>";
+				} //if no day to display
+				if ((i % 7) == 6) str += "</tr>";//next row
+			}//end of for loop
+
+			str += "</tbody></table>";
+			//------------------------------------------------------------------------
+			return str;
+		}
+		//-------------------------------------------------------------------------
+		//Produce html string for calendar day table header
+		//input: (MS: Myanmar date at the start ,
+		// ME: Myanmar date at the end)
+		//output: (str: html string)
+		function tHead(MS, ME) {
+			var str = "";
+			var tstr = "<thead> <tr> <th colspan=7 class='ThMC'>\
 	    <p class='PThMC'>";//table header
-	    str+=MS.ToString("%y %M")+(",")+ //english year and month
-	    " Sasana Year "+MS.ToMString("&YYYY"); //Sasana year
-	    if (MS.my!=ME.my) str+=" - "+ME.ToMString("&YYYY");
-	    str+=" Ku,";
-	    if (ME.my>=2) { //if Myanmar year after 2 ME
-		    str+=" Myanmar Year ";
-		    if (MS.my>=2) {str+=MS.ToMString("&yyyy"); if(MS.my!=ME.my) str+=" - ";}
-		    if (MS.my!=ME.my) str+=ME.ToMString("&yyyy");
-		    str+=" Ku, ";
-		    if (MS.my>=2) {
-			    str+=MS.ToMString("&M");
-			    if (MS.mm!=ME.mm) str+=" - ";
-		    }
-		    if (MS.mm!=ME.mm) {
-			    str+=ME.ToMString("&M");
-            }             
-        }
-        str=x.T(str,uis.Lang);
-    tstr += str + "</p></th></tr></thead>";
-	return tstr;
-}
-//-------------------------------------------------------------------------
-//Produce html string for calendar day table footer
-//output: (str: html string)
-function tFoot() {
-	//table footer consists of various links
-	var str="<tfoot> <tr> <td colspan=7 class='TdFootMC'> \
+			str += MS.ToString("%y %M") + (",") + //english year and month
+				" Sasana Year " + MS.ToMString("&YYYY"); //Sasana year
+			if (MS.sy != ME.sy) str += " - " + ME.ToMString("&YYYY");
+			str += " Ku,";
+			if (ME.my >= 2) { //if Myanmar year after 2 ME
+				str += " Myanmar Year ";
+				if (MS.my >= 2) { str += MS.ToMString("&yyyy"); if (MS.my != ME.my) str += " - "; }
+				if (MS.my != ME.my) str += ME.ToMString("&yyyy");
+				str += " Ku, ";
+				if (MS.my >= 2) {
+					str += MS.ToMString("&M");
+					if (MS.mm != ME.mm) str += " - ";
+				}
+				if (MS.mm != ME.mm) {
+					str += ME.ToMString("&M");
+				}
+			}
+			str = x.T(str, uis.Lang);
+			tstr += str + "</p></th></tr></thead>";
+			return tstr;
+		}
+		//-------------------------------------------------------------------------
+		//Produce html string for calendar day table footer
+		//output: (str: html string)
+		function tFoot() {
+			//table footer consists of various links
+			var str = "<tfoot> <tr> <td colspan=7 class='TdFootMC'> \
 	<p class='PTdMC'>";
-		str+="<a class='AnchorFootMC' href=\
+			str += "<a class='AnchorFootMC' href=\
 			'./m.htm'>M&gt;E Calendar </a> ";
-		str+="<a  class='AnchorFootMC'  style='float: right;' href=\
+			str += "<a  class='AnchorFootMC'  style='float: right;' href=\
 	 		'./html/more.htm'> About</a>";
-	str+="</p></td></tr></tfoot>";
-	return str;
-}
-//-------------------------------------------------------------------------
-//Produce html string for calendar day table weekday header row
-//output: (str: html string)
-function tWeek() {
-	//first row of table body is weekdays starting from Sunday to Saturday
-	var str = "<tr><td class='TdMC'><p class='PTdWeekendMC'>"+("Sunday")+"</p></td> \
-	<td class='TdMC'><p class='PTdWeekdayMC'>"+("Monday")+"</p></td> \
-	<td class='TdMC'><p class='PTdWeekdayMC'>"+("Tuesday")+"</p></td> \
-	<td class='TdMC'><p class='PTdWeekdayMC'>"+("Wednesday")+"</p></td>\
-	<td class='TdMC'><p class='PTdWeekdayMC'>"+("Thursday")+"</p></td> \
-	<td class='TdMC'><p class='PTdWeekdayMC'>"+("Friday")+"</p></td> \
+			str += "</p></td></tr></tfoot>";
+			return str;
+		}
+		//-------------------------------------------------------------------------
+		//Produce html string for calendar day table weekday header row
+		//output: (str: html string)
+		function tWeek() {
+			//first row of table body is weekdays starting from Sunday to Saturday
+			var str = "<tr><td class='TdMC'><p class='PTdWeekendMC'>" + ("Sunday") + "</p></td> \
+	<td class='TdMC'><p class='PTdWeekdayMC'>"+ ("Monday") + "</p></td> \
+	<td class='TdMC'><p class='PTdWeekdayMC'>"+ ("Tuesday") + "</p></td> \
+	<td class='TdMC'><p class='PTdWeekdayMC'>"+ ("Wednesday") + "</p></td>\
+	<td class='TdMC'><p class='PTdWeekdayMC'>"+ ("Thursday") + "</p></td> \
+	<td class='TdMC'><p class='PTdWeekdayMC'>"+ ("Friday") + "</p></td> \
 	<td class='TdMC'><p class='PTdWeekendMC'>"+ ("Saturday") + "</p></td></tr>";
-    str=x.T(str,uis.Lang);
-    return str;
-}
-//-------------------------------------------------------------------------
-//Produce html string for Myanmar day 
-//input: (M: Myanmar date)
-//output: (str: html string)
-function mMDStr(M) {
-	var str="",tstr="";
-
-	//month name
-	str+="<p class='PTdMC'>";
-	str+=M.ToMString("&M");
-	str+="</p>";
-
-	//moon phase and day
-	tstr="SecDa"; if(M.sabbath == "Sabbath") tstr="SecDaH";
-	str+="<p class='"+tstr+"'>";
-		str+=M.ToMString("&P");
-		if((M.mp%2)==0) {str+=" "+M.ToMString("&f");}
-	str+="</p>";
-        
-	//holiday
-    var sa=M.holidays;
-    str += "<p class='MCPubHol'>" + sa.join("<br/>") +"</p>";
-    sa=M.holidays2;
-    str += "<p class='MCHol'>" + sa.join("<br/>") +"</p>";
-
-    
-	//astroligical days
-	str+="<p class='MCYtyz'>"+M.yatyaza+"</p>";
-	str+="<p class='MCYtyz'>"+M.pyathada+"</p>";
-
-	//historical dates
-	try {
-		var ih=chron.hSearch(M.jdn); //search for historical date 
-		if (ih>=0) {
-			str+="<br/><p class='HLabel'>Chronicled</p>";
+			str = x.T(str, uis.Lang);
+			return str;
 		}
-	}
-	catch(err) {}
-    str=x.T(str,uis.Lang);
-	return str;
-}
-//-------------------------------------------------------------------------
-//Show day and hide month
-//input: js (Julian day)
-//output: void
-function ShowDay(js) {
-	var str="",tstr="";
-    var M = new ceMmDateTime(js,0,uis.Type); 	
-	//display English day
-	str+="<div class='DayHead' onclick='ShowMonth();'>"+M.ToString("%y-%M-%dd")+"</div>";
+		//-------------------------------------------------------------------------
+		//Produce html string for Myanmar day 
+		//input: (M: Myanmar date)
+		//output: (str: html string)
+		function mMDStr(M) {
+			var str = "", tstr = "";
 
-	//displaying Myanmar date
-	if (M.my>=2) {
-        tstr = "Sasana Year " + M.ToMString("&YYYY");
-        tstr=x.T(tstr,uis.Lang);
-        str += "<p class='DaFontSize'>" + tstr + "</p>"; //Sasana year
+			//month name
+			str += "<p class='PTdMC'>";
+			str += M.ToMString("&M");
+			str += "</p>";
 
-        tstr = "Myanmar Year " + M.ToMString("&yyyy");
-        tstr=x.T(tstr,uis.Lang);
-		str+="<p class='DaFontSize'>"+tstr+"</p>"; //Myanmar year
+			//moon phase and day
+			tstr = "SecDa"; if (M.sabbath == "Sabbath") tstr = "SecDaH";
+			str += "<p class='" + tstr + "'>";
+			str += M.ToMString("&P");
+			if ((M.mp % 2) == 0) { str += " " + M.ToMString("&f"); }
+			str += "</p>";
 
-		//month name, moon phase and day
-		tstr="SecDa"; if (M.sabbath=="Sabbath") tstr="SecDaH";
-		str+="<p class='"+tstr+" DaFontSize'>";
-        tstr = M.ToMString("&M &P");
-        if ((M.mp % 2) == 0) { tstr += " " + M.ToMString("&f"); }
-        tstr=x.T(tstr,uis.Lang);
-		str+=tstr+"</p>"
-        
-		//weekday
-        tstr = M.ToString("%W");
-        tstr=x.T(tstr,uis.Lang);
-		str+="<p>"+tstr+"</p>";
+			//holiday
+			var sa = M.holidays;
+			str += "<p class='MCPubHol'>" + sa.join("<br/>") + "</p>";
+			sa = M.holidays2;
+			str += "<p class='MCHol'>" + sa.join("<br/>") + "</p>";
 
-		//sabbath and moon
-        if (M.sabbath != "") {
-            tstr = M.sabbath;
-            tstr=x.T(tstr,uis.Lang);
-			str+="<p class='MCSabbath DaFontSize'>"+tstr;
-			if(M.mp==1) str+=" <canvas class='FM'></canvas> ";
-			else if(M.mp==3) str+=" <canvas class='NM'></canvas> ";
-			str+="</p>";
+
+			//astroligical days
+			str += "<p class='MCYtyz'>" + M.yatyaza + "</p>";
+			str += "<p class='MCYtyz'>" + M.pyathada + "</p>";
+
+			//historical dates
+			try {
+				var ih = chron.hSearch(M.jdn); //search for historical date 
+				if (ih >= 0) {
+					str += "<br/><p class='HLabel'>Chronicled</p>";
+				}
+			}
+			catch (err) { }
+			str = x.T(str, uis.Lang);
+			return str;
 		}
+		//-------------------------------------------------------------------------
+		//Show day and hide month
+		//input: js (Julian day)
+		//output: void
+		function ShowDay(js) {
+			var str = "", tstr = "";
+			var M = new ceMmDateTime(js, 0, uis.Type);
+			//display English day
+			str += "<div class='DayHead' onclick='ShowMonth();'>" + M.ToString("%y-%M-%dd") + "</div>";
 
-		//holiday  DaFontSize
-        var sa=M.holidays;
-        tstr = "<p class='MCPubHol DaFontSize'>" + sa.join("<br/>") +"</p>";
-        sa=M.holidays2;
-        tstr += "<p class='MCHol DaFontSize'>" + sa.join("<br/>") +"</p>";
-        str+=x.T(tstr,uis.Lang);
+			//displaying Myanmar date
+			if (M.my >= 2) {
+				tstr = "Sasana Year " + M.ToMString("&YYYY");
+				tstr = x.T(tstr, uis.Lang);
+				str += "<p class='DaFontSize'>" + tstr + "</p>"; //Sasana year
 
-		//astroligical days
-		if(M.yatyaza!="") {	tstr="<p class='MCYtyz DaFontSize'>"+M.yatyaza+"</p>";}
-		if(M.pyathada!="") { tstr+="<p class='MCYtyz DaFontSize'>"+M.pyathada+"</p>";}
-        sa = M.astro;
-		tstr+="<p class='MCAstro DaFontSize'>" + sa.join("<br/>") +"</p>";
-        str += x.T(tstr, uis.Lang);
-        
-		str+="<p class='MCAstro DaFontSize'>"+x.T(M.my_name+" Year", uis.Lang)+"</p>"; //year name
-		str+="<p class='MCAstro DaFontSize'>"+x.T("Mahabote - "+M.mahabote+" Born", uis.Lang)+"</p>"; //mahabote
-		str+="<p class='MCAstro DaFontSize'>"+x.T(M.nakhat+" Nakhat", uis.Lang)+"</p>";
-        str += "<p class='MCAstro DaFontSize'>" + x.T("Naga Head " + M.nagahle + " Facing", uis.Lang) + "<p/>";
+				tstr = "Myanmar Year " + M.ToMString("&yyyy");
+				tstr = x.T(tstr, uis.Lang);
+				str += "<p class='DaFontSize'>" + tstr + "</p>"; //Myanmar year
 
-		//Thingyan
-		if (M.m==4) {
-		str+="<p><a class='AnchorFootMC DaFontSize' href='https://yan9a.github.io/mmcal/html/Thingyan.htm'>"+
-			x.T("Thingyan Calculator", uis.Lang)+" &gt;&gt;</a></p>";
-		}
-	}
-    str += "<p class='DaFoot'>JDN: " + js + "</p>"; //julian day number
+				//month name, moon phase and day
+				tstr = "SecDa"; if (M.sabbath == "Sabbath") tstr = "SecDaH";
+				str += "<p class='" + tstr + " DaFontSize'>";
+				tstr = M.ToMString("&M &P");
+				if ((M.mp % 2) == 0) { tstr += " " + M.ToMString("&f"); }
+				tstr = x.T(tstr, uis.Lang);
+				str += tstr + "</p>"
 
-	//historical dates
-	try {
-		var ih=chron.hSearch(M.jdn); //search for historical date 
-		if (ih>=0) {
-			str+="<p class='MCAstro DaFontSize'>Chronicled: "+chron.chronicle(M.jdn)+"</p>";
-		}
-	}
-	catch(err) {}
+				//weekday
+				tstr = M.ToString("%W");
+				tstr = x.T(tstr, uis.Lang);
+				str += "<p>" + tstr + "</p>";
 
-    if(M.y<uis.cy){
-	    //rulers
-	    try {
-		    var ra=chron.ruler(M.jdn);
-		    if(ra.length>0){
-			    var i=0; var r; var dyn;
-			    if(js<2432555) str+="<p class='DaFoot'>Ruler(s):</p>";
-			    else str+="<p class='DaFoot'>President:</p> ";
-			    str+="<ul class='DaFoot'>";
-			    for(i=0;i<ra.length;i++) {
-				    r=ra[i];
-				    str+="<li><a class='AnchorFootMC DaFoot' href='"+r.URL+"'>"+r.Name+"</a>";
-				    dyn=chron.dynasty(r.Dynasty);
-				    str+="<br/>"+"<a class='AnchorFootMC DaFoot' href='"+dyn.URL+"'>"+dyn.Description+"</a>";;
-				    str+="</li>";
-			    }
-			    str+="</ul>";
-		    }
-	    }
-	    catch(err) {}
-    }
+				//sabbath and moon
+				if (M.sabbath != "") {
+					tstr = M.sabbath;
+					tstr = x.T(tstr, uis.Lang);
+					str += "<p class='MCSabbath DaFontSize'>" + tstr;
+					if (M.mp == 1) str += " <canvas class='FM'></canvas> ";
+					else if (M.mp == 3) str += " <canvas class='NM'></canvas> ";
+					str += "</p>";
+				}
 
-	//accuracy
-	if (uis.y<uis.LT || uis.y>uis.UT) str+="<p class='DaFoot'>Important note: the accuracy of this Myanmar date is in question!</p>";
+				//holiday  DaFontSize
+				var sa = M.holidays;
+				tstr = "<p class='MCPubHol DaFontSize'>" + sa.join("<br/>") + "</p>";
+				sa = M.holidays2;
+				tstr += "<p class='MCHol DaFontSize'>" + sa.join("<br/>") + "</p>";
+				str += x.T(tstr, uis.Lang);
 
-	//Back button
-	str+="<br/><input type='button' id='back2main' value='Back' onclick='ShowMonth();'  \
+				//astroligical days
+				if (M.yatyaza != "") { tstr = "<p class='MCYtyz DaFontSize'>" + M.yatyaza + "</p>"; }
+				if (M.pyathada != "") { tstr += "<p class='MCYtyz DaFontSize'>" + M.pyathada + "</p>"; }
+				sa = M.astro;
+				tstr += "<p class='MCAstro DaFontSize'>" + sa.join("<br/>") + "</p>";
+				str += x.T(tstr, uis.Lang);
+
+				str += "<p class='MCAstro DaFontSize'>" + x.T(M.my_name + " Year", uis.Lang) + "</p>"; //year name
+				str += "<p class='MCAstro DaFontSize'>" + x.T("Mahabote - " + M.mahabote + " Born", uis.Lang) + "</p>"; //mahabote
+				str += "<p class='MCAstro DaFontSize'>" + x.T(M.nakhat + " Nakhat", uis.Lang) + "</p>";
+				str += "<p class='MCAstro DaFontSize'>" + x.T("Naga Head " + M.nagahle + " Facing", uis.Lang) + "<p/>";
+
+				//Thingyan
+				if (M.m == 4) {
+					str += "<p><a class='AnchorFootMC DaFontSize' href='https://yan9a.github.io/mmcal/html/Thingyan.htm'>" +
+						x.T("Thingyan Calculator", uis.Lang) + " &gt;&gt;</a></p>";
+				}
+			}
+			str += "<p class='DaFoot'>JDN: " + js + "</p>"; //julian day number
+
+			//historical dates
+			try {
+				var ih = chron.hSearch(M.jdn); //search for historical date 
+				if (ih >= 0) {
+					str += "<p class='MCAstro DaFontSize'>Chronicled: " + chron.chronicle(M.jdn) + "</p>";
+				}
+			}
+			catch (err) { }
+
+			if (M.y < uis.cy) {
+				//rulers
+				try {
+					var ra = chron.ruler(M.jdn);
+					if (ra.length > 0) {
+						var i = 0; var r; var dyn;
+						if (js < 2432555) str += "<p class='DaFoot'>Ruler(s):</p>";
+						else str += "<p class='DaFoot'>President:</p> ";
+						str += "<ul class='DaFoot'>";
+						for (i = 0; i < ra.length; i++) {
+							r = ra[i];
+							str += "<li><a class='AnchorFootMC DaFoot' href='" + r.URL + "'>" + r.Name + "</a>";
+							dyn = chron.dynasty(r.Dynasty);
+							str += "<br/>" + "<a class='AnchorFootMC DaFoot' href='" + dyn.URL + "'>" + dyn.Description + "</a>";;
+							str += "</li>";
+						}
+						str += "</ul>";
+					}
+				}
+				catch (err) { }
+			}
+
+			//accuracy
+			if (uis.y < uis.LT || uis.y > uis.UT) str += "<p class='DaFoot'>Important note: the accuracy of this Myanmar date is in question!</p>";
+
+			//Back button
+			str += "<br/><input type='button' id='back2main' value='Back' onclick='ShowMonth();'  \
 			class='BtnBack' title='Back to main'>";
 
-	var ddiv=document.getElementById("divDay");
-	ddiv.innerHTML=str;
-	ddiv.style.display = "block";
-	var mdiv=document.getElementById("divMonth");
-	mdiv.style.display="none";
-}
-//-------------------------------------------------------------------------
-//Show month and hide day
-function ShowMonth() {
-	var mdiv=document.getElementById("divMonth");
-	mdiv.style.display="block";
-	var ddiv=document.getElementById("divDay");
-	ddiv.style.display = "none";
-}
-//-------------------------------------------------------------------------
-//End of UI ##################################################################
-</script>
+			var ddiv = document.getElementById("divDay");
+			ddiv.innerHTML = str;
+			ddiv.style.display = "block";
+			var mdiv = document.getElementById("divMonth");
+			mdiv.style.display = "none";
+		}
+		//-------------------------------------------------------------------------
+		//Show month and hide day
+		function ShowMonth() {
+			var mdiv = document.getElementById("divMonth");
+			mdiv.style.display = "block";
+			var ddiv = document.getElementById("divDay");
+			ddiv.style.display = "none";
+		}
+		//-------------------------------------------------------------------------
+		//End of UI ##################################################################
+	</script>
 </head>
+
 <body>
-<div  id='mcalg'></div>
-<script>initc();</script>
+	<div id='mcalg'></div>
+	<script>initc();</script>
 </body>
+
 </html>
