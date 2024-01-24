@@ -681,7 +681,8 @@ std::string ceMmDateTime::j2ms(double jd, std::string fs, double tz) {
 	rstr = rstr.substr(rstr.length() - 4);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
-	long sy=my+1182; //Sasana year
+	long buddhistEraOffset = (mm == 1 || (mm == 2 && md < 16)) ? 1181 : 1182;
+	long sy = my + buddhistEraOffset; //Sasana year
 	fstr = "&YYYY";
 	rstr = string(4, '0') + to_string(my); 
 	rstr = rstr.substr(rstr.length() - 4);
@@ -747,7 +748,8 @@ long ceMmDateTime::my(){
 
 // Sasana year
 long ceMmDateTime::sy(){ 
-	long sy=this->my()+1182;
+	long buddhistEraOffset = (this->mm() == 1 || (this->mm() == 2 && this->md() < 16)) ? 1181 : 1182;
+	long sy = this->my() + buddhistEraOffset;
 	return sy;
 } 
 
