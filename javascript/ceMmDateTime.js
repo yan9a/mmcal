@@ -971,11 +971,20 @@ class ceMmDateTime extends ceDateTime {
 			else if (jdn == akn) { hs.push("Thingyan Akya"); }
 			else if (jdn == (akn - 1)) { hs.push("Thingyan Akyo"); }
 			else if (((my + mmt) >= 1369) && ((my + mmt) < 1379) && ((jdn == (akn - 2)) ||
-				((jdn >= (atn + 2)) && (jdn <= (akn + 7))))) { hs.push("Holiday"); }
+				((jdn >= (atn + 2)) && (jdn <= (akn + 7))))) {
+				hs.push("Holiday");
+			}
+			else if ((((my + mmt) >= 1384) && (my + mmt) <= 1385)
+				&& ((jdn == (akn - 5)) || (jdn == (akn - 4)) || (jdn == (akn - 3)) || (jdn == (akn - 2)))) {
+				hs.push("Holiday");
+			} else if ((my + mmt) >= 1386
+				&& (((jdn >= (atn + 2)) && (jdn <= (akn + 7))))) {
+				hs.push("Holiday");
+			}
 		}
 		//---------------------------------
 		// holidays on gregorian calendar	
-		if ((gy >= 2018) && (gm == 1) && (gd == 1)) { hs.push("New Year's Day"); }
+		if ((gy >= 2018 && gy <= 2021) && (gm == 1) && (gd == 1)) { hs.push("New Year's Day"); }
 		else if ((gy >= 1948) && (gm == 1) && (gd == 4)) { hs.push("Independence Day"); }
 		else if ((gy >= 1947) && (gm == 2) && (gd == 12)) { hs.push("Union Day"); }
 		else if ((gy >= 1958) && (gm == 3) && (gd == 2)) { hs.push("Peasants' Day"); }
@@ -984,7 +993,7 @@ class ceMmDateTime extends ceDateTime {
 		else if ((gy >= 1947) && (gm == 7) && (gd == 19)) { hs.push("Martyrs' Day"); }
 		else if ((gy >= 1752) && (gm == 12) && (gd == 25)) { hs.push("Christmas Day"); }
 		else if ((gy == 2017) && (gm == 12) && (gd == 30)) { hs.push("Holiday"); }
-		else if ((gy >= 2017) && (gm == 12) && (gd == 31)) { hs.push("Holiday"); }
+		else if ((gy >= 2017 && gy <= 2021) && (gm == 12) && (gd == 31)) { hs.push("Holiday"); }
 		//---------------------------------
 		// holidays on myanmar calendar
 		if ((mm == 2) && (mp == 1)) { hs.push("Buddha Day"); }//Vesak day
@@ -997,11 +1006,31 @@ class ceMmDateTime extends ceDateTime {
 		else if ((mm == 10) && (md == 1)) { hs.push("Karen New Year's Day"); }
 		else if ((mm == 12) && (mp == 1)) { hs.push("Tabaung Pwe"); }
 		//---------------------------------
+		// substitute holidays 2019 to 2021
+		if (gy > 2018 && gy < 2022) {
+			const substituteHoliday = [
+				// 2019
+				2458768, 2458772, 2458785, 2458800,
+				// 2020
+				2458855, 2458918, 2458950, 2459051, 2459062,
+				2459152, 2459156, 2459167, 2459181, 2459184,
+				// 2021
+				2459300, 2459303, 2459323, 2459324,
+				2459335, 2459548, 2459573,
+			];
+
+			if (ceMmDateTime.bSearch1(jdn, substituteHoliday) >= 0) {
+				hs.push("Holiday");
+			}
+		}
+		//---------------------------------
 		// //other holidays	
-		// var ghEid=[2456513,2456867,2457221,2457576,2457930,2458285,2458640];	
+		// var ghEid=[2456513, 2456867, 2457221, 2457576, 2457930, 2458285, 2458640, 2459063,
+		// 2459416, 2459702, 2460125, 2460261];
 		// if(ceMmDateTime.bSearch1(jdn,ghEid)>=0) {hs.push("Eid");}
 
-		// // var ghDiwali=[2456599,2456953,2457337,2457691,2458045,2458430,2458784];
+		// // var ghDiwali=[2456599, 2456953, 2457337, 2457691, 2458045, 2458430, 2458784, 2459168,
+		// // 2459523, 2459877];
 		// // if(ceMmDateTime.bSearch1(jdn,ghDiwali)>=0) {hs.push("Diwali");}
 		// if((mm==7) && (mp==3)) {hs.push("~Diwali");}
 		//---------------------------------
@@ -1074,8 +1103,9 @@ class ceMmDateTime extends ceDateTime {
 		//----------------------------------------------------------------------------
 		// //other holidays
 		// var ghEid2=[2456936,2457290,2457644,2457998,2458353,2458707];
-		// var ghCNY=[2456689,2456690,2457073,2457074,2457427,2457428,2457782,
-		// 	2457783,2458166,2458167,2458520,2458521];
+		// var ghCNY=[2456689, 2456690, 2457073, 2457074, 2457427, 2457428, 2457782,
+		// 2457783, 2458166, 2458167, 2458520, 2458874, 2459257, 2459612, 2459967, 2460351,
+		// 	2460705, 2461089, 2461443, 2461797, 2462181, 2462536];
 		// if(ceMmDateTime.bSearch1(jdn,ghEid2)>=0) {hs.push("Eid");}
 		// if(ceMmDateTime.bSearch1(jdn,ghCNY)>=0) {hs.push("Chinese New Year's Day");}
 		//----------------------------------------------------------------------------
