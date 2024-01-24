@@ -1088,7 +1088,7 @@ class ceMmDateTime extends ceDateTime {
 		else if ((gy >= 1876) && (jdn == (doe - 2))) { hs.push("Good Friday"); }
 		//---------------------------------
 		// holidays on myanmar calendar
-		if ((my >= 1309) && (mm == 11) && (md == 16)) { hs.push("Mon National Day"); }//the ancient founding of Hanthawady
+		if ((my >= 1309) && (mm == 11) && (md == 16)) { hs.push("'Mon' National Day"); }//the ancient founding of Hanthawady
 		else if ((mm == 9) && (md == 1)) {
 			hs.push("Shan New Year's Day");
 			if (my >= 1306) { hs.push("Authors' Day"); }
@@ -1401,7 +1401,7 @@ class ceMmTranslate {
 			["Mahayatkyan", "မဟာရက်ကြမ်း", "မဟာရက္ၾကမ္း", "ကိုန်ဟွံခိုဟ်", "မဟာရက်ကြမ်း", "မဟာရက်ကြမ်း"],
 			["Nagapor", "နဂါးပေါ်", "နဂါးေပၚ", "နာ်မံက်", "နဂါးပေါ်", "နဂါးပေါ်"],
 			["Shanyat", "ရှမ်းရက်", "ရွမ္းရက္", "တ္ၚဲဒတန်", "ရှမ်းရက်", "ရှမ်းရက်"],
-			["Mon", "မွန်", "မြန္", "ပၠန်", "မွၼ်း", "မွန်"],
+			["'Mon'", "မွန်", "မြန္", "ပၠန်", "မွၼ်း", "မွန်"],
 			["G. Aung San BD", "ဗိုလ်ချုပ်မွေးနေ့", "ဗိုလ္ခ်ဳပ္ေမြးေန႔", "တ္ၚဲသၟိၚ်ဗၟာ အံၚ်သာန်ဒှ်မၞိဟ်", "ဝၼ်းၵိူတ်ၸွမ်သိုၵ်", "ဗိုလ်ချုပ်မွေးနေ့"],
 			["Valentines", "ချစ်သူများ", "ခ်စ္သူမ်ား", "ဝုတ်ဗၠာဲ", "ၵေႃႈႁၵ်ႉ", "ချစ်သူများ"],
 			["Earth", "ကမ္ဘာမြေ", "ကမၻာေျမ", "ဂၠးကဝ်", "လိၼ်မိူင်း", "ကမ္ဘာမြေ"],
