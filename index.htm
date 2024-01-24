@@ -391,13 +391,15 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 				sa = M.holidays2;
 				tstr += "<p class='MCHol DaFontSize'>" + sa.join("<br/>") + "</p>";
 
+				str += x.T(tstr, uis.Lang);
+				tstr = "";
 				//astroligical days
 				if (M.yatyaza != "") { tstr = "<p class='MCYtyz DaFontSize'>" + M.yatyaza + "</p>"; }
 				if (M.pyathada != "") { tstr += "<p class='MCYtyz DaFontSize'>" + M.pyathada + "</p>"; }
 				sa = M.astro;
 				tstr += "<p class='MCAstro DaFontSize'>" + sa.join("<br/>") + "</p>";
-				str += x.T(tstr, uis.Lang);
 
+				str += x.T(tstr, uis.Lang);
 				str += "<p class='MCAstro DaFontSize'>" + x.T(M.my_name + " Year", uis.Lang) + "</p>"; //year name
 				str += "<p class='MCAstro DaFontSize'>" + x.T("Mahabote - " + M.mahabote + " Born", uis.Lang) + "</p>"; //mahabote
 				str += "<p class='MCAstro DaFontSize'>" + x.T(M.nakhat + " Nakhat", uis.Lang) + "</p>";
