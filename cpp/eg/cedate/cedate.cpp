@@ -1,6 +1,6 @@
-#include<stdio.h>
-#include<math.h>
-#include"ceMmDateTime.h"
+#include<cstdio>
+#include<cmath>
+#include"cemmdt.h"
 using namespace ce;
 using namespace std;
 int main()
