@@ -58,13 +58,10 @@ C++ class for Myanmar Calendrical Calculations is in **[cpp/](https://github.com
 
 It consists of the following files
 
-> [ceDateTime.h](https://github.com/yan9a/mmcal/blob/master/cpp/include/ceDateTime.h)
+> [cedt.h](https://github.com/yan9a/mmcal/blob/master/cpp/include/cedt.h)
 
-> [ceDateTime.cpp](https://github.com/yan9a/mmcal/blob/master/cpp/source/ceDateTime.cpp)
+> [cemmdt.h](https://github.com/yan9a/mmcal/blob/master/cpp/include/cemmdt.h)
 
-> [ceMmDateTime.h](https://github.com/yan9a/mmcal/blob/master/cpp/include/ceMmDateTime.h)
-
-> [ceMmDateTime.cpp](https://github.com/yan9a/mmcal/blob/master/cpp/source/ceMmDateTime.cpp)
 
 Example C++ program can be seen at 
 
@@ -73,13 +70,25 @@ Example C++ program can be seen at
 
 #### Windows
 
-For Windows, there is a Visual Studio 2017 project in cedate_visualstudio2017 folder.
+For Windows, you can use MSVC and cmake as follows.
+
+```
+cd cpp/eg/cedate/
+mkdir buildw
+cd buildw
+cmake .. 
+# multi-configuration generators
+cmake --build . --config Release
+.\Release\cedate.exe
+```
+
+
 Alternatively, if you want to build the program using MinGW and CMake, you can build it as follows.
 
 ```
 cd cpp/eg/cedate/
-mkdir build
-cd build
+mkdir buildw
+cd buildw
 cmake .. -G "MinGW Makefiles"
 mingw32-make.exe all
 .\cedate

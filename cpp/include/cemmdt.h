@@ -124,6 +124,28 @@ public:
 	// dependency: cal_my(my)
 	static long m2j(long my,long mm,long md);
 	//-------------------------------------------------------------------------
+	// Myanmar year to Sasana year
+	// input:  (
+	//  my = year,
+	//  mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//      Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//      Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//  md= day of the month [1-30], 
+	//  k = optional argument [
+	//		default 0 = do not take account kason full moon day for Sasana year
+	//		1 = Sasana year starts on Kason full moon day
+	//	]
+	// output: (sy -Sasana year)
+	// 
+	// Description: Pull Request #9 by Chan Mrate Ko Ko
+	// Proposal to mark Kason full moon day (Buddha's birthday) as the start of the Sasana year.
+	// This suggestion references certain versions of the Shan and Rakhine Calendars.
+	// It aligns with Shan culture, where the new year begins on the first day of Nadaw,
+	// incorporating the lunar phase into the new year calculation.
+	// Conversely, Burmese culture sets the new year independently of the moon phase.
+	// This update offers flexibility in defining the Sasana year which is preferable to enforcing a single fixed approach.
+	static long my2sy(long my, long mm, long md, long k = 0);
+	//-------------------------------------------------------------------------
 	// Checking Astrological days
 	// More details @ http://cool-emerald.blogspot.sg/2013/12/myanmar-astrological-calendar-days.html
 	//-------------------------------------------------------------------------
@@ -303,7 +325,13 @@ public:
 	// get properties	
 	long myt(); // Myanmar year type	
 	long my(); // Myanmar year
-	long sy(); // Sasana year
+
+	// Sasana year
+	//  k = optional argument [
+	//		default 0 = do not take account kason full moon day for Sasana year
+	//		1 = Sasana year starts on Kason full moon day
+	//	]
+	long sy(long k = 0); 
 	std::string my_name(); // Myanmar year name
 		
 	long mm(); // Myanmar month [1-14]
@@ -598,6 +626,31 @@ inline long ceMmDateTime::m2j(long my,long mm,long md) {
 		+b*long(floor((mm+12)/16));	
 	myl=354+(1-c)*30+b; dd+=mmt*myl;//adjust day count with year length
 	return (dd+tg1-1);
+}
+//-------------------------------------------------------------------------
+// Myanmar year to Sasana year
+// input:  (
+//  my = year,
+//  mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+//      Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+//      Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+//  md= day of the month [1-30], 
+//  k = optional argument [
+//		default 0 = do not take account kason full moon day for Sasana year
+//		1 = Sasana year starts on Kason full moon day
+//	]
+// output: (sy -Sasana year)
+// 
+// Description: Pull Request #9 by Chan Mrate Ko Ko
+// Proposal to mark Kason full moon day (Buddha's birthday) as the start of the Sasana year.
+// This suggestion references certain versions of the Shan and Rakhine Calendars.
+// It aligns with Shan culture, where the new year begins on the first day of Nadaw,
+// incorporating the lunar phase into the new year calculation.
+// Conversely, Burmese culture sets the new year independently of the moon phase.
+// This update offers flexibility in defining the Sasana year which is preferable to enforcing a single fixed approach.
+inline long ceMmDateTime::my2sy(long my, long mm, long md, long k) {
+	long buddhistEraOffset = ((mm == 1 || (mm == 2 && md < 15)) && (k==1)) ? 1181 : 1182;
+	return (my + buddhistEraOffset); 
 }
 //-------------------------------------------------------------------------
 //Checking Astrological days
@@ -989,7 +1042,8 @@ inline std::vector<std::string> ceMmDateTime::cal_holiday2(long jdn) {
 // output: date string in Myanmar calendar according to fm 
 // where formatting strings are as follows
 // &yyyy : Myanmar year [0000-9999, e.g. 1380]
-// &YYYY : Sasana year [0000-9999, e.g. 2562]
+// &YYYY : Sasana year neglection moon phase [0000-9999, e.g. 2562]
+// &SSSS : Sasana year starting at Kason full moon day [0000-9999, e.g. 2562]
 // &y : Myanmar year [0-9999, e.g. 138]
 // &mm : month with zero padding [01-14]
 // &M : month [e.g. January]
@@ -1017,10 +1071,15 @@ inline std::string ceMmDateTime::j2ms(double jd, std::string fs, double tz) {
 	rstr = rstr.substr(rstr.length() - 4);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
-	long buddhistEraOffset = (mm == 1 || (mm == 2 && md < 16)) ? 1181 : 1182;
-	long sy = my + buddhistEraOffset; //Sasana year
+	long sy = ceMmDateTime::my2sy(my,mm,md,0); //Sasana year neglecting moon phase
 	fstr = "&YYYY";
-	rstr = std::string(4, '0') + std::to_string(my); 
+	rstr = std::string(4, '0') + std::to_string(sy); 
+	rstr = rstr.substr(rstr.length() - 4);
+	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
+	//--------------------------------------------------------
+	long sy2 = ceMmDateTime::my2sy(my,mm,md,1); //Sasana year to start on Kason full moon day
+	fstr = "&SSSS";
+	rstr = std::string(4, '0') + std::to_string(sy2); 
 	rstr = rstr.substr(rstr.length() - 4);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
@@ -1083,10 +1142,8 @@ inline long ceMmDateTime::my(){
 } 
 
 // Sasana year
-inline long ceMmDateTime::sy(){ 
-	long buddhistEraOffset = (this->mm() == 1 || (this->mm() == 2 && this->md() < 16)) ? 1181 : 1182;
-	long sy = this->my() + buddhistEraOffset;
-	return sy;
+inline long ceMmDateTime::sy(long k){ 
+	return ceMmDateTime::my2sy(this->my(),this->mm(),this->md(),k);
 } 
 
 // Myanmar year name
