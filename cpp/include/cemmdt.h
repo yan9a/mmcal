@@ -1,19 +1,391 @@
-// File: ceMmDateTime.cpp
+/////////////////////////////////////////////////////////////////////////////
+// File: cemmdt.h
 // Description: Modern Myanmar Calendrical Calculations
+// Version: 20250612
+//-------------------------------------------------------------------------
 // WebSite: https://yan9a.github.io/mmcal/
 // MIT License (https://opensource.org/licenses/MIT)
 // Copyright (c) 2018 Yan Naing Aye
 // Doc: http://cool-emerald.blogspot.com/2013/06/algorithm-program-and-calculation-of.html
+/////////////////////////////////////////////////////////////////////////////
 //-------------------------------------------------------------------------
-#include"ceMmDateTime.h"
-#include<math.h>
+#ifndef CEMMDATETIME_H
+#define CEMMDATETIME_H
 
-using namespace std;
-
+#include"cedt.h"
+#include<vector>
+#include<string>
 namespace ce {
+
+class ceMmDateTime : public ceDateTime
+{
+private:
+	long _syt; // Sasana year type, see syt(), and syt(long) for its getter and setter
+	//		default 0 = do not take account kason full moon day for Sasana year
+	//		1 = Sasana year starts on Kason full moon day
+public:
+	//-------------------------------------------------------------------------
+	// default constructor
+    ceMmDateTime();
+	//-------------------------------------------------------------------------
+	// Get Myanmar year constants depending on era
+	// Thanks to Myo Zarny and Wunna Ko for earlier Myanmar years data
+	// input: my -myanmar year
+	// output:  
+	//  EI = Myanmar calendar era id [1-3] : calculations methods/constants depends on era
+	//  WO = watat offset to compensate
+	//  NM = number of months to find excess days
+	//  EW = exception in watat year
+	static void GetMyConst(long my,double& EI,double& WO,double& NM,long& EW);
+	//-------------------------------------------------------------------------
+	// Search first dimension in a 2D array
+	// input: (k=key,A=array,u=size)
+	// output: (i=index)
+	static long bSearch2(long k,long (*A)[2], long u);
+	//-----------------------------------------------------------------------------
+	// Search a 1D array
+	// input: (k=key,A=array,u=size)
+	// output: (i=index)
+	static long bSearch1(long k,long* A, long u);
+	//-------------------------------------------------------------------------
+	// Check watat (intercalary month)
+	// input: (my -myanmar year)
+	// output:  ( 
+	//  watat - intercalary month [1=watat, 0=common]
+	//  fm - full moon day of 2nd Waso in jdn_mm (jdn+6.5 for MMT) 
+	//       [only valid when watat=1])
+	// dependency: GetMyConst(my)
+	static void cal_watat(long my, long& watat, long& fm); //get data for respective era
+	//-------------------------------------------------------------------------
+	// Check Myanmar Year
+	// input: (my -myanmar year)
+	// output:  ( myt :year type [0=common, 1=little watat, 2=big watat],
+	// tg1 : the 1st day of Tagu as jdn_mm (Julian Day Number for MMT)
+	// fm : full moon day of [2nd] Waso as Julain Day Number
+	// werr: watat error [0=ok, 1= error])
+	// dependency: cal_watat(my)
+	static void cal_my(long my, long& myt, long& tg1, long& fm, long& werr);
+	//-------------------------------------------------------------------------
+	// Julian day number to Myanmar date
+	// input: (jdn -julian day number)
+	// output:  (
+	// myt =year type [0=common, 1=little watat, 2=big watat],
+	// my = year,
+	// mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//   Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11, 
+	//   Tabaung=12, Late Tagu=13, Late Kason=14 ],
+	// md = day of the month [1 to 30])
+	// dependency: cal_my(my)
+	static void j2m(double jd, long& myt, long& my, long& mm, long& md);
+	//-------------------------------------------------------------------------
+	// Get moon phase from day of the month, month, and year type.
+	// input: (
+	//    md= day of the month [1-30], 
+	//    mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//           Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//           Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//    myt = year type [0=common, 1=little watat, 2=big watat])
+	// output: (mp =moon phase [0=waxing, 1=full moon, 2=waning, 3=new moon])
+	static long cal_mp(long md,long mm,long myt);
+	//-------------------------------------------------------------------------
+	// Get length of month from month, and year type.
+	// input: (
+	//    mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//           Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//           Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//    myt = year type [0=common, 1=little watat, 2=big watat])
+	// output: (mml = length of the month [29 or 30 days])
+	static long cal_mml(long mm,long myt);
+	//-------------------------------------------------------------------------
+	// Get the apparent length of the year from year type.
+	// input: ( myt = year type [0=common, 1=little watat, 2=big watat])
+	// output: ( myl= year length [354, 384, or 385 days])
+	static long cal_myl(long myt);
+	//-------------------------------------------------------------------------
+	// Get fortnight day from month day
+	// input: ( md= day of the month [1-30])
+	// output: (mf= fortnight day [1 to 15])
+	static long cal_mf(long md);
+	//-------------------------------------------------------------------------
+	// Get day of month from fortnight day, moon phase, and length of the month
+	// input: ( 
+	//   mf = fortnight day [1 to 15], 
+	//   mp = moon phase [0=waxing, 1=full moon, 2=waning, 3=new moon]
+	//   mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//          Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//          Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//   myt = year type [0=common, 1=little watat, 2=big watat])
+	// output: ( md = day of the month [1-30])
+	static long cal_md(long mf,long mp,long mm,long myt);
+	//-------------------------------------------------------------------------
+	// Myanmar date to Julian day number
+	// input:  (
+	//  my = year,
+	//  mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//    Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//    Tabaung=12 , Late Tagu=13, Late Kason=14 ],
+	//  md = day of the month [1-30]
+	// output: (jd -julian day number)
+	// dependency: cal_my(my)
+	static long m2j(long my,long mm,long md);
+	//-------------------------------------------------------------------------
+	// Myanmar year to Sasana year
+	// input:  (
+	//  my = year,
+	//  mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//      Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//      Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//  md= day of the month [1-30], 
+	//  k = optional argument [
+	//		default 0 = do not take account kason full moon day for Sasana year
+	//		1 = Sasana year starts on Kason full moon day
+	//	]
+	// output: (sy -Sasana year)
+	// 
+	// Description: Pull Request #9 by Chan Mrate Ko Ko
+	// Proposal to mark Kason full moon day (Buddha's birthday) as the start of the Sasana year.
+	// This suggestion references certain versions of the Shan and Rakhine Calendars.
+	// It aligns with Shan culture, where the new year begins on the first day of Nadaw,
+	// incorporating the lunar phase into the new year calculation.
+	// Conversely, Burmese culture sets the new year independently of the moon phase.
+	// This update offers flexibility in defining the Sasana year which is preferable to enforcing a single fixed approach.
+	static long my2sy(long my, long mm, long md, long k = 0);
+	//-------------------------------------------------------------------------
+	// Checking Astrological days
+	// More details @ http://cool-emerald.blogspot.sg/2013/12/myanmar-astrological-calendar-days.html
+	//-------------------------------------------------------------------------
+	// Get sabbath day and sabbath eve from day of the month, month, and year type.
+	// input: (
+	//    md= day of the month [1-30], 
+	//    mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//         Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//    myt = year type [0=common, 1=little watat, 2=big watat])
+	// output: ( [1=sabbath, 2=sabbath eve, 0=else])
+	static long cal_sabbath(long md, long mm, long myt);
+	//-------------------------------------------------------------------------
+	// Get yatyaza from month, and weekday
+	// input: (
+	//    mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//         Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
+	// output: ( [1=yatyaza, 0=else])
+	static long cal_yatyaza(long mm, long wd);
+	//-------------------------------------------------------------------------
+	// Get pyathada from month, and weekday
+	// input: (
+	//    mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//         Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
+	// output: ( [1=pyathada, 2=afternoon pyathada, 0=else])
+	static long cal_pyathada(long mm, long wd);
+	//-------------------------------------------------------------------------
+	// nagahle 
+	// input: (
+	//    mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//         Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//         Tabaung=12, Late Tagu=13, Late Kason=14 ])
+	// output: ( [0=west, 1=north, 2=east, 3=south])
+	static long cal_nagahle(long mm);
+	//-------------------------------------------------------------------------
+	// mahabote 
+	// input: (
+	//  my = year,
+	//  wd= weekday  [0=sat, 1=sun, ..., 6=fri])
+	// output: ( [0=Binga, 1=Atun, 2=Yaza, 3=Adipati, 4= Marana, 5=Thike, 6=Puti])
+	static long cal_mahabote(long my, long wd);
+	//-------------------------------------------------------------------------
+	// nakhat 
+	// input: ( my = year )
+	// output: ( [0=orc, 1=elf, 2=human] )
+	static long cal_nakhat(long my);
+	//-------------------------------------------------------------------------
+	// thamanyo 
+	// input: (
+	//    mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//         Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
+	// output: ( [1=thamanyo, 0=else])
+	static long cal_thamanyo(long mm, long wd);
+	//-------------------------------------------------------------------------
+	// Get amyeittasote
+	// input: (
+	//    md= day of the month [1-30], 
+	//    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
+	// output: ( [1=amyeittasote, 0=else])
+	static long cal_amyeittasote(long md, long wd);
+	//-------------------------------------------------------------------------
+	// Get warameittugyi
+	// input: (
+	//    md= day of the month [1-30], 
+	//    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
+	// output: ( [1=warameittugyi, 0=else])
+	static long cal_warameittugyi(long md, long wd);
+	//-------------------------------------------------------------------------
+	// Get warameittunge
+	// input: (
+	//    md= day of the month [1-30], 
+	//    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
+	// output: ( [1=warameittunge, 0=else])
+	static long cal_warameittunge(long md, long wd);
+	//-------------------------------------------------------------------------
+	// Get yatpote
+	// input: (
+	//    md= day of the month [1-30], 
+	//    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
+	// output: ( [1=yatpote, 0=else])
+	static long cal_yatpote(long md, long wd);
+	//-------------------------------------------------------------------------
+	// Get thamaphyu
+	// input: (
+	//    md= day of the month [1-30], 
+	//    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
+	// output: ( [1=thamaphyu, 0=else])
+	static long cal_thamaphyu(long md, long wd);
+	//-------------------------------------------------------------------------
+	// Get nagapor
+	// input: (
+	//    md= day of the month [1-30], 
+	//    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
+	// output: ( [1=nagapor, 0=else])
+	static long cal_nagapor(long md, long wd);
+	//-------------------------------------------------------------------------
+	// yatyotema 
+	// input: (
+	//    mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//         Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//    md= day of the month [1-30])
+	// output: ( [1=yatyotema, 0=else])
+	static long cal_yatyotema(long mm, long md);
+	//-------------------------------------------------------------------------
+	// mahayatkyan 
+	// input: (
+	//    mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//         Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//    md= day of the month [1-30])
+	// output: ( [1=mahayatkyan, 0=else])
+	static long cal_mahayatkyan(long mm, long md);
+	//-------------------------------------------------------------------------
+	// shanyat 
+	// input: (
+	//    mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//         Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//    md= day of the month [1-30])
+	// output: ( [1=shanyat, 0=else])
+	static long cal_shanyat(long mm, long md);
+	//-------------------------------------------------------------------------
+	// get astrological information
+	// input: (jdn: Julian Day Number)
+	// output: (array of strings)
+	static std::vector<std::string> cal_astro(long jdn);
+	// End of checking Astrological days
+	//-------------------------------------------------------------------------
+	// Get holidays
+	// input: (jdn=Julian Day Number)
+	// output: ( array of strings)
+	// Thanks to Ye Lin Kyaw and Aye Nyein for the knowledge about 
+	// the Myanmar calendar and the new year
+	static std::vector<std::string> cal_holiday(long jdn);
+	//-------------------------------------------------------------------------
+	// DoE : Date of Easter using  "Meeus/Jones/Butcher" algorithm
+	// Reference: Peter Duffett-Smith, Jonathan Zwart',
+	//  "Practical Astronomy with your Calculator or Spreadsheet,"
+	//  4th Etd, Cambridge university press, 2011. Page-4.
+	// input: (y=year)
+	// output: (j=julian day number)
+	// dependency: w2j()
+	static long DoE(long y);
+	//-------------------------------------------------------------------------
+	// Get other holidays
+	// input: (jdn: Julian Day Number)
+	// output: (array of strings)
+	// dependency: DoE(), j2w()
+	static std::vector<std::string> cal_holiday2(long jdn);
+	//-------------------------------------------------------------------------
+	// jd to date string in Myanmar calendar 
+	// input: (jd:julian date,
+	//  fs: format string [Optional argument: "&y &M &P &ff"]
+	//  tz : time zone offset in hours (Optional, e.g. 8 for GMT +8))
+	// output: date string in Myanmar calendar according to fm 
+	// where formatting strings are as follows
+	// &yyyy : Myanmar year [0000-9999, e.g. 1380]
+	// &YYYY : Sasana year [0000-9999, e.g. 2562]
+	// &y : Myanmar year [0-9999, e.g. 138]
+	// &mm : month with zero padding [01-14]
+	// &M : month [e.g. January]
+	// &m : month [1-14]
+	// &P : moon phase [e.g. waxing, waning, full moon, or new moon]
+	// &dd : day of the month with zero padding [01-31]
+	// &d : day of the month [1-31]
+	// &ff : fortnight day with zero padding [01-15]
+	// &f : fortnight day [1-15]
+	static std::string j2ms(double jd, std::string fs="&y &M &P &ff", double tz=0);
+	//-------------------------------------------------------------------------
+	// get properties	
+	long myt(); // Myanmar year type	
+	long my(); // Myanmar year
+
+	// Sasana year type
+	//		default 0 = do not take account kason full moon day for Sasana year
+	//		1 = Sasana year starts on Kason full moon day
+	long syt(); 
+	void syt(long t);
+
+	// Get Sasana year
+	long sy(); 
+
+	std::string my_name(); // Myanmar year name
+		
+	long mm(); // Myanmar month [1-14]
+	// [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//  Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//  Tabaung=12, Late Tagu=13, Late Kason=14 ]
+	
+	long md(); // Myanmar day of the month [1-30]
+	long mp(); // Moon phase [0=waxing, 1=full moon, 2=waning, 3=new moon]
+	long mf(); // Fortnight day [1-15]	
+	std::string sabbath(); // get sabbath string
+	std::string yatyaza(); // get yatyaza string
+	std::string pyathada(); // get pyathada string
+	std::string nagahle(); // get nagahle direction
+	std::string mahabote(); // get mahabote direction
+	std::vector<std::string>  astro(); // get the array of astrological days
+	std::vector<std::string> holidays(); // get the array of public holidays
+	std::vector<std::string> holidays2(); // get the array of other holidays
+	//-------------------------------------------------------------------------
+	// get Myanmar Date String
+	// input: (
+	//  fs: format string [Optional argument: "&y &M &P &ff"]
+	//  tz : time zone offset in hours (Optional, e.g. 8 for GMT +8))
+	// output: date string in Myanmar calendar according to fm 
+	// where formatting strings are as follows
+	// &yyyy : Myanmar year [0000-9999, e.g. 1380]
+	// &YYYY : Sasana year [0000-9999, e.g. 2562]
+	// &y : Myanmar year [0-9999, e.g. 138]
+	// &mm : month with zero padding [01-14]
+	// &M : month [e.g. January]
+	// &m : month [1-14]
+	// &P : moon phase [e.g. waxing, waning, full moon, or new moon]
+	// &dd : day of the month with zero padding [01-31]
+	// &d : day of the month [1-31]
+	// &ff : fortnight day with zero padding [01-15]
+	// &f : fortnight day [1-15]
+	std::string ToMString(std::string fs="&y &M &P &ff");
+	//-------------------------------------------------------------------------
+};
+
+/////////////////////////////////////////////////////////////////////////////
+// Implementation
+
 //-------------------------------------------------------------------------
 // default constructor
-ceMmDateTime::ceMmDateTime():ceDateTime()
+inline ceMmDateTime::ceMmDateTime():ceDateTime(),_syt(0)
 {
 
 }
@@ -26,7 +398,7 @@ ceMmDateTime::ceMmDateTime():ceDateTime()
 //  WO = watat offset to compensate
 //  NM = number of months to find excess days
 //  EW = exception in watat year
-void ceMmDateTime::GetMyConst(long my, double& EI, double& WO, double& NM, long& EW)
+inline void ceMmDateTime::GetMyConst(long my, double& EI, double& WO, double& NM, long& EW)
 {
 	EW = 0; long (*fme)[2]; long* wte; long i=-1,uf,uw;
 	// The third era (the era after Independence 1312 ME and after)
@@ -84,7 +456,7 @@ void ceMmDateTime::GetMyConst(long my, double& EI, double& WO, double& NM, long&
 // Search first dimension in a 2D array
 // input: (k=key,A=array,u=size)
 // output: (i=index)
-long ceMmDateTime::bSearch2(long k,long (*A)[2], long u) {
+inline long ceMmDateTime::bSearch2(long k,long (*A)[2], long u) {
 	long i = 0; long l = 0; u--;
 	while(u>=l) {
 		i=long(floor((l+u)/2));
@@ -97,7 +469,7 @@ long ceMmDateTime::bSearch2(long k,long (*A)[2], long u) {
 // Search a 1D array
 // input: (k=key,A=array,u=size)
 // output: (i=index)
-long ceMmDateTime::bSearch1(long k,long* A, long u) {
+inline long ceMmDateTime::bSearch1(long k,long* A, long u) {
 	long i=0; long l=0; u--;
 	while(u>=l) {
 		i=long(floor((l+u)/2));
@@ -114,7 +486,7 @@ long ceMmDateTime::bSearch1(long k,long* A, long u) {
 //  fm - full moon day of 2nd Waso in jdn_mm (jdn+6.5 for MMT) 
 //       [only valid when watat=1])
 // dependency: GetMyConst(my)
-void ceMmDateTime::cal_watat(long my, long& watat, long& fm) {//get data for respective era	
+inline void ceMmDateTime::cal_watat(long my, long& watat, long& fm) {//get data for respective era	
 	double SY=1577917828.0/4320000.0; //solar year (365.2587565)
 	double LM=1577917828.0/53433336.0; //lunar month (29.53058795)
 	double MO=1954168.050623; //beginning of 0 ME for MMT
@@ -146,7 +518,7 @@ void ceMmDateTime::cal_watat(long my, long& watat, long& fm) {//get data for res
 // fm : full moon day of [2nd] Waso as Julain Day Number
 // werr: watat error [0=ok, 1= error])
 // dependency: cal_watat(my)
-void ceMmDateTime::cal_my(long my, long& myt, long& tg1, long& fm, long& werr) {
+inline void ceMmDateTime::cal_my(long my, long& myt, long& tg1, long& fm, long& werr) {
 	long yd = 0, nd = 0, y1watat, y1fm, y2watat, y2fm;  werr = 0;
 	ceMmDateTime::cal_watat(my,y2watat,y2fm); myt = y2watat;
 	do { yd++; ceMmDateTime::cal_watat(my - yd,y1watat,y1fm); } while (y1watat == 0 && yd < 3);
@@ -168,7 +540,7 @@ void ceMmDateTime::cal_my(long my, long& myt, long& tg1, long& fm, long& werr) {
   //   Tabaung=12, Late Tagu=13, Late Kason=14 ],
   // md = day of the month [1 to 30])
 // dependency: cal_my(my)
-void ceMmDateTime::j2m(double jd, long& myt, long& my, long& mm, long& md) {
+inline void ceMmDateTime::j2m(double jd, long& myt, long& my, long& mm, long& md) {
 	long jdn=long(round(jd));//convert jdn to integer
 	double SY=1577917828.0/4320000.0; //solar year (365.2587565)
 	double MO=1954168.050623; //beginning of 0 ME
@@ -195,7 +567,7 @@ void ceMmDateTime::j2m(double jd, long& myt, long& my, long& mm, long& md) {
 //           Tabaung=12, Late Tagu=13, Late Kason=14 ], 
 //    myt = year type [0=common, 1=little watat, 2=big watat])
 // output: (mp =moon phase [0=waxing, 1=full moon, 2=waning, 3=new moon])
-long ceMmDateTime::cal_mp(long md,long mm,long myt) {
+inline long ceMmDateTime::cal_mp(long md,long mm,long myt) {
 	long mml=ceMmDateTime::cal_mml(mm,myt);
 	return long(floor((md+1)/16)+floor(md/16)+floor(md/mml));
 }
@@ -207,7 +579,7 @@ long ceMmDateTime::cal_mp(long md,long mm,long myt) {
 //           Tabaung=12, Late Tagu=13, Late Kason=14 ], 
 //    myt = year type [0=common, 1=little watat, 2=big watat])
 // output: (mml = length of the month [29 or 30 days])
-long ceMmDateTime::cal_mml(long mm,long myt) {
+inline long ceMmDateTime::cal_mml(long mm,long myt) {
 	long mml=30-mm%2;//month length
 	if(mm==3) mml+=long(floor(myt/2));//adjust if Nayon in big watat
 	return mml;
@@ -216,14 +588,14 @@ long ceMmDateTime::cal_mml(long mm,long myt) {
 // Get the apparent length of the year from year type.
 // input: ( myt = year type [0=common, 1=little watat, 2=big watat])
 // output: ( myl= year length [354, 384, or 385 days])
-long ceMmDateTime::cal_myl(long myt) {
+inline long ceMmDateTime::cal_myl(long myt) {
 	return (354+(1-long(floor(1/(myt+1))))*30+long(floor(myt/2)));
 }
 //-------------------------------------------------------------------------
 // Get fortnight day from month day
 // input: ( md= day of the month [1-30])
 // output: (mf= fortnight day [1 to 15])
-long ceMmDateTime::cal_mf(long md) {
+inline long ceMmDateTime::cal_mf(long md) {
 	return (md-15*long(floor(md/16)));
 }
 //-------------------------------------------------------------------------
@@ -236,7 +608,7 @@ long ceMmDateTime::cal_mf(long md) {
 //          Tabaung=12, Late Tagu=13, Late Kason=14 ], 
 //   myt = year type [0=common, 1=little watat, 2=big watat])
 // output: ( md = day of the month [1-30])
-long ceMmDateTime::cal_md(long mf,long mp,long mm,long myt) {
+inline long ceMmDateTime::cal_md(long mf,long mp,long mm,long myt) {
 	long mml=ceMmDateTime::cal_mml(mm,myt);
 	long m1=mp%2; long m2=long(floor(mp/2));
 	return (m1*(15+m2*(mml-15))+(1-m1)*(mf+15*m2));
@@ -251,7 +623,7 @@ long ceMmDateTime::cal_md(long mf,long mp,long mm,long myt) {
 //  md = day of the month [1-30]
 // output: (jd -julian day number)
 // dependency: cal_my(my)
-long ceMmDateTime::m2j(long my,long mm,long md) {
+inline long ceMmDateTime::m2j(long my,long mm,long md) {
 	long b,c,dd,myl,mmt;
 	long myt,tg1,fm,werr;
 	ceMmDateTime::cal_my(my,myt,tg1,fm,werr);//check year
@@ -262,6 +634,31 @@ long ceMmDateTime::m2j(long my,long mm,long md) {
 		+b*long(floor((mm+12)/16));	
 	myl=354+(1-c)*30+b; dd+=mmt*myl;//adjust day count with year length
 	return (dd+tg1-1);
+}
+//-------------------------------------------------------------------------
+// Myanmar year to Sasana year
+// input:  (
+//  my = year,
+//  mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+//      Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+//      Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+//  md= day of the month [1-30], 
+//  k = optional argument [
+//		default 0 = do not take account kason full moon day for Sasana year
+//		1 = Sasana year starts on Kason full moon day
+//	]
+// output: (sy -Sasana year)
+// 
+// Description: Pull Request #9 by Chan Mrate Ko Ko
+// Proposal to mark Kason full moon day (Buddha's birthday) as the start of the Sasana year.
+// This suggestion references certain versions of the Shan and Rakhine Calendars.
+// It aligns with Shan culture, where the new year begins on the first day of Nadaw,
+// incorporating the lunar phase into the new year calculation.
+// Conversely, Burmese culture sets the new year independently of the moon phase.
+// This update offers flexibility in defining the Sasana year which is preferable to enforcing a single fixed approach.
+inline long ceMmDateTime::my2sy(long my, long mm, long md, long k) {
+	long buddhistEraOffset = ((mm == 1 || (mm == 2 && md < 15)) && (k==1)) ? 1181 : 1182;
+	return (my + buddhistEraOffset); 
 }
 //-------------------------------------------------------------------------
 //Checking Astrological days
@@ -275,7 +672,7 @@ long ceMmDateTime::m2j(long my,long mm,long md) {
 //         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
 //    myt = year type [0=common, 1=little watat, 2=big watat])
 // output: ( [1=sabbath, 2=sabbath eve, 0=else])
-long ceMmDateTime::cal_sabbath(long md, long mm, long myt) {
+inline long ceMmDateTime::cal_sabbath(long md, long mm, long myt) {
 	long mml = ceMmDateTime::cal_mml(mm, myt);
 	long s = 0; if ((md == 8) || (md == 15) || (md == 23) || (md == mml)) s = 1;
 	if ((md == 7) || (md == 14) || (md == 22) || (md == (mml - 1))) s = 2;
@@ -289,7 +686,7 @@ long ceMmDateTime::cal_sabbath(long md, long mm, long myt) {
 //         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
 //    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
 // output: ( [1=yatyaza, 0=else])
-long ceMmDateTime::cal_yatyaza(long mm, long wd) {
+inline long ceMmDateTime::cal_yatyaza(long mm, long wd) {
 	//first waso is considered waso
 	long m1 = mm % 4; long yatyaza = 0; long wd1 = long(floor(m1 / 2)) + 4;
 	long wd2 = ((1 - long(floor(m1 / 2))) + m1 % 2)*(1 + 2 * (m1 % 2));
@@ -304,7 +701,7 @@ long ceMmDateTime::cal_yatyaza(long mm, long wd) {
 //         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
 //    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
 // output: ( [1=pyathada, 2=afternoon pyathada, 0=else])
-long ceMmDateTime::cal_pyathada(long mm, long wd) {
+inline long ceMmDateTime::cal_pyathada(long mm, long wd) {
 	//first waso is considered waso
 	long m1 = mm % 4; long pyathada = 0; long wda[] = { 1, 3, 3, 0, 2, 1, 2 };
 	if ((m1 == 0) && (wd == 4)) pyathada = 2;//afternoon pyathada
@@ -318,7 +715,7 @@ long ceMmDateTime::cal_pyathada(long mm, long wd) {
 //         Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
 //         Tabaung=12, Late Tagu=13, Late Kason=14 ])
 // output: ( [0=west, 1=north, 2=east, 3=south])
-long ceMmDateTime::cal_nagahle(long mm) {
+inline long ceMmDateTime::cal_nagahle(long mm) {
 	if (mm <= 0) mm = 4;//first waso is considered waso
 	return long(floor((mm % 12) / 3));
 }
@@ -328,12 +725,12 @@ long ceMmDateTime::cal_nagahle(long mm) {
 //  my = year,
 //  wd= weekday  [0=sat, 1=sun, ..., 6=fri])
 // output: ( [0=Binga, 1=Atun, 2=Yaza, 3=Adipati, 4= Marana, 5=Thike, 6=Puti])
-long ceMmDateTime::cal_mahabote(long my, long wd) { return ((my - wd) % 7); }
+inline long ceMmDateTime::cal_mahabote(long my, long wd) { return ((my - wd) % 7); }
 //-------------------------------------------------------------------------
 // nakhat 
 // input: ( my = year )
 // output: ( [0=orc, 1=elf, 2=human] )
-long ceMmDateTime::cal_nakhat(long my) { return (my % 3); }
+inline long ceMmDateTime::cal_nakhat(long my) { return (my % 3); }
 //-------------------------------------------------------------------------
 // thamanyo 
 // input: (
@@ -342,7 +739,7 @@ long ceMmDateTime::cal_nakhat(long my) { return (my % 3); }
 //         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
 //    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
 // output: ( [1=thamanyo, 0=else])
-long ceMmDateTime::cal_thamanyo(long mm, long wd) {
+inline long ceMmDateTime::cal_thamanyo(long mm, long wd) {
 	long mmt = long(floor(mm / 13)); mm = mm % 13 + mmt; // to 1-12 with month type
 	if (mm <= 0) mm = 4;//first waso is considered waso (looks no need here)
 	long thamanyo = 0;
@@ -358,7 +755,7 @@ long ceMmDateTime::cal_thamanyo(long mm, long wd) {
 //    md= day of the month [1-30], 
 //    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
 // output: ( [1=amyeittasote, 0=else])
-long ceMmDateTime::cal_amyeittasote(long md, long wd) {
+inline long ceMmDateTime::cal_amyeittasote(long md, long wd) {
 	long mf = md - 15 * (long)floor(md / 16);//get fortnight day [0-15]
 	long amyeittasote = 0; long wda[] = { 5, 8, 3, 7, 2, 4, 1 };
 	if (mf == wda[wd]) amyeittasote = 1;
@@ -370,7 +767,7 @@ long ceMmDateTime::cal_amyeittasote(long md, long wd) {
 //    md= day of the month [1-30], 
 //    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
 // output: ( [1=warameittugyi, 0=else])
-long ceMmDateTime::cal_warameittugyi(long md, long wd) {
+inline long ceMmDateTime::cal_warameittugyi(long md, long wd) {
 	long mf = md - 15 * (long)floor(md / 16);//get fortnight day [0-15]
 	long warameittugyi = 0; long wda[] = { 7, 1, 4, 8, 9, 6, 3 };
 	if (mf == wda[wd]) warameittugyi = 1;
@@ -382,7 +779,7 @@ long ceMmDateTime::cal_warameittugyi(long md, long wd) {
 //    md= day of the month [1-30], 
 //    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
 // output: ( [1=warameittunge, 0=else])
-long ceMmDateTime::cal_warameittunge(long md, long wd) {
+inline long ceMmDateTime::cal_warameittunge(long md, long wd) {
 	long mf = md - 15 * (long)floor(md / 16);//get fortnight day [0-15]
 	long warameittunge = 0; long wn = (wd + 6) % 7;
 	if ((12 - mf) == wn) warameittunge = 1;
@@ -394,7 +791,7 @@ long ceMmDateTime::cal_warameittunge(long md, long wd) {
 //    md= day of the month [1-30], 
 //    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
 // output: ( [1=yatpote, 0=else])
-long ceMmDateTime::cal_yatpote(long md, long wd) {
+inline long ceMmDateTime::cal_yatpote(long md, long wd) {
 	long mf = md - 15 * (long)floor(md / 16);//get fortnight day [0-15]
 	long yatpote = 0; long wda[] = { 8, 1, 4, 6, 9, 8, 7 };
 	if (mf == wda[wd]) yatpote = 1;
@@ -406,7 +803,7 @@ long ceMmDateTime::cal_yatpote(long md, long wd) {
 //    md= day of the month [1-30], 
 //    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
 // output: ( [1=thamaphyu, 0=else])
-long ceMmDateTime::cal_thamaphyu(long md, long wd) {
+inline long ceMmDateTime::cal_thamaphyu(long md, long wd) {
 	long mf = md - 15 * (long)floor(md / 16);//get fortnight day [0-15]
 	long thamaphyu = 0; long wda[] = { 1, 2, 6, 6, 5, 6, 7 };
 	if (mf == wda[wd]) thamaphyu = 1;
@@ -420,7 +817,7 @@ long ceMmDateTime::cal_thamaphyu(long md, long wd) {
 //    md= day of the month [1-30], 
 //    wd= weekday  [0=sat, 1=sun, ..., 6=fri])
 // output: ( [1=nagapor, 0=else])
-long ceMmDateTime::cal_nagapor(long md, long wd) {
+inline long ceMmDateTime::cal_nagapor(long md, long wd) {
 	long nagapor = 0; long wda[] = { 26, 21, 2, 10, 18, 2, 21 };
 	if (md == wda[wd]) nagapor = 1;
 	long wdb[] = { 17, 19, 1, 0, 9, 0, 0 }; if (md == wdb[wd]) nagapor = 1;
@@ -435,7 +832,7 @@ long ceMmDateTime::cal_nagapor(long md, long wd) {
 //         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
 //    md= day of the month [1-30])
 // output: ( [1=yatyotema, 0=else])
-long ceMmDateTime::cal_yatyotema(long mm, long md) {
+inline long ceMmDateTime::cal_yatyotema(long mm, long md) {
 	long mmt = long(floor(mm / 13)); mm = mm % 13 + mmt; // to 1-12 with month type
 	if (mm <= 0) mm = 4;//first waso is considered waso
 	long mf = md - 15 * (long)floor(md / 16);//get fortnight day [0-15]
@@ -451,7 +848,7 @@ long ceMmDateTime::cal_yatyotema(long mm, long md) {
 //         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
 //    md= day of the month [1-30])
 // output: ( [1=mahayatkyan, 0=else])
-long ceMmDateTime::cal_mahayatkyan(long mm, long md) {
+inline long ceMmDateTime::cal_mahayatkyan(long mm, long md) {
 	if (mm <= 0) mm = 4;//first waso is considered waso
 	long mf = md - 15 * (long)floor(md / 16);//get fortnight day [0-15]
 	long mahayatkyan = 0; long m1 = ((long)floor((mm % 12) / 2) + 4) % 6 + 1;
@@ -466,7 +863,7 @@ long ceMmDateTime::cal_mahayatkyan(long mm, long md) {
 //         Tabaung=12, Late Tagu=13, Late Kason=14 ], 
 //    md= day of the month [1-30])
 // output: ( [1=shanyat, 0=else])
-long ceMmDateTime::cal_shanyat(long mm, long md) {
+inline long ceMmDateTime::cal_shanyat(long mm, long md) {
 	long mmt = long(floor(mm / 13)); mm = mm % 13 + mmt; // to 1-12 with month type
 	if (mm <= 0) mm = 4;//first waso is considered waso
 	long mf = md - 15 * (long)floor(md / 16);//get fortnight day [0-15]
@@ -478,9 +875,9 @@ long ceMmDateTime::cal_shanyat(long mm, long md) {
 // get astrological information
 // input: (jdn: Julian Day Number)
 // output: (array of strings)
-std::vector<std::string> ceMmDateTime::cal_astro(long jdn) {
+inline std::vector<std::string> ceMmDateTime::cal_astro(long jdn) {
 	// jdn=(long)round(jdn);
-	long myt,my,mm,md; vector<string> hs; 
+	long myt,my,mm,md; std::vector<std::string> hs; 
 	ceMmDateTime::j2m(jdn,myt,my,mm,md);
 	long wd=(jdn+2)%7;//week day [0=sat, 1=sun, ..., 6=fri]
 	if(ceMmDateTime::cal_thamanyo(mm,wd)) {hs.push_back("thamanyo");}
@@ -503,12 +900,12 @@ std::vector<std::string> ceMmDateTime::cal_astro(long jdn) {
 // output: ( array of strings)
 // Thanks to Ye Lin Kyaw and Aye Nyein for the knowledge about 
 // the Myanmar calendar and the new year
-std::vector<std::string> ceMmDateTime::cal_holiday(long jdn) {
+inline std::vector<std::string> ceMmDateTime::cal_holiday(long jdn) {
 	// jdn=(long)round(jdn);
 	long myt,my,mm,md,mp,mmt,gy,gm,gd,gh,gn; double gs;
 	ceMmDateTime::j2m(jdn,myt,my,mm,md);
 	mp=ceMmDateTime::cal_mp(md,mm,myt);
-	mmt=(long)floor(mm/13); vector<string> hs;
+	mmt=(long)floor(mm/13); std::vector<std::string> hs;
 	ceDateTime::j2w(jdn,gy,gm,gd,gh,gn,gs);
 	//---------------------------------
 	// Thingyan
@@ -573,7 +970,7 @@ std::vector<std::string> ceMmDateTime::cal_holiday(long jdn) {
 // input: (y=year)
 // output: (j=julian day number)
 // dependency: w2j()
-long ceMmDateTime::DoE(long y) {
+inline long ceMmDateTime::DoE(long y) {
 	long a,b,c,d,e,f,g,h,i,k,l,m,p,q,n;
 	a=y%19;
 	b=(long)floor(y/100); c=y%100;
@@ -592,12 +989,12 @@ long ceMmDateTime::DoE(long y) {
 // input: (jdn: Julian Day Number)
 // output: (array of strings)
 // dependency: DoE(), j2w()
-std::vector<std::string> ceMmDateTime::cal_holiday2(long jdn) {
+inline std::vector<std::string> ceMmDateTime::cal_holiday2(long jdn) {
 	// jdn=(long)round(jdn);
 	long myt,my,mm,md,mp,mmt,gy,gm,gd,gh,gn; double gs;
 	ceMmDateTime::j2m(jdn,myt,my,mm,md);
 	mp=ceMmDateTime::cal_mp(md,mm,myt);
-	mmt=(long)floor(mm/13); vector<string> hs;
+	mmt=(long)floor(mm/13); std::vector<std::string> hs;
 	ceDateTime::j2w(jdn,gy,gm,gd,gh,gn,gs);
 	//---------------------------------
 	// holidays on gregorian calendar	
@@ -653,7 +1050,8 @@ std::vector<std::string> ceMmDateTime::cal_holiday2(long jdn) {
 // output: date string in Myanmar calendar according to fm 
 // where formatting strings are as follows
 // &yyyy : Myanmar year [0000-9999, e.g. 1380]
-// &YYYY : Sasana year [0000-9999, e.g. 2562]
+// &YYYY : Sasana year neglection moon phase [0000-9999, e.g. 2562]
+// &SSSS : Sasana year starting at Kason full moon day [0000-9999, e.g. 2562]
 // &y : Myanmar year [0-9999, e.g. 138]
 // &mm : month with zero padding [01-14]
 // &M : month [e.g. January]
@@ -663,37 +1061,42 @@ std::vector<std::string> ceMmDateTime::cal_holiday2(long jdn) {
 // &d : day of the month [1-31]
 // &ff : fortnight day with zero padding [01-15]
 // &f : fortnight day [1-15]
-std::string ceMmDateTime::j2ms(double jd, std::string fs, double tz) {	
+inline std::string ceMmDateTime::j2ms(double jd, std::string fs, double tz) {	
 	jd+=tz/24.0;
 	long jdn=(long)round(jd);
 	long myt,my,mm,md,mp,mf; 
 	ceMmDateTime::j2m(jdn,myt,my,mm,md);
 	mp=ceMmDateTime::cal_mp(md,mm,myt);
 	mf=ceMmDateTime::cal_mf(md);
-	string mma[]={"First Waso","Tagu","Kason","Nayon","Waso","Wagaung","Tawthalin",
+	std::string mma[]={"First Waso","Tagu","Kason","Nayon","Waso","Wagaung","Tawthalin",
 	"Thadingyut","Tazaungmon","Nadaw","Pyatho","Tabodwe","Tabaung","Late Tagu","Late Kason"};
-	string mpa[]={"Waxing","Full Moon","Waning","New Moon"};
+	std::string mpa[]={"Waxing","Full Moon","Waning","New Moon"};
 	// replace format string with values
-	string fm=fs; string fstr,rstr;
+	std::string fm=fs; std::string fstr,rstr;
 	//--------------------------------------------------------
 	fstr = "&yyyy";
-	rstr = string(4, '0') + to_string(my); 
+	rstr = std::string(4, '0') + std::to_string(my); 
 	rstr = rstr.substr(rstr.length() - 4);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
-	long buddhistEraOffset = (mm == 1 || (mm == 2 && md < 16)) ? 1181 : 1182;
-	long sy = my + buddhistEraOffset; //Sasana year
+	long sy = ceMmDateTime::my2sy(my,mm,md,0); //Sasana year neglecting moon phase
 	fstr = "&YYYY";
-	rstr = string(4, '0') + to_string(my); 
+	rstr = std::string(4, '0') + std::to_string(sy); 
+	rstr = rstr.substr(rstr.length() - 4);
+	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
+	//--------------------------------------------------------
+	long sy2 = ceMmDateTime::my2sy(my,mm,md,1); //Sasana year to start on Kason full moon day
+	fstr = "&SSSS";
+	rstr = std::string(4, '0') + std::to_string(sy2); 
 	rstr = rstr.substr(rstr.length() - 4);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "&y";
-	rstr = to_string(my);
+	rstr = std::to_string(my);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "&mm";
-	rstr = string(2, '0') + to_string(mm);
+	rstr = std::string(2, '0') + std::to_string(mm);
 	rstr = rstr.substr(rstr.length() - 2);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
@@ -702,7 +1105,7 @@ std::string ceMmDateTime::j2ms(double jd, std::string fs, double tz) {
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "&m";
-	rstr = to_string(mm);
+	rstr = std::to_string(mm);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "&P";
@@ -710,21 +1113,21 @@ std::string ceMmDateTime::j2ms(double jd, std::string fs, double tz) {
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "&dd";
-	rstr = string(2, '0') + to_string(md);
+	rstr = std::string(2, '0') + std::to_string(md);
 	rstr = rstr.substr(rstr.length() - 2);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "&d";
-	rstr = to_string(md);
+	rstr = std::to_string(md);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "&ff";
-	rstr = string(2, '0') + to_string(mf);
+	rstr = std::string(2, '0') + std::to_string(mf);
 	rstr = rstr.substr(rstr.length() - 2);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "&f";
-	rstr = to_string(mf);
+	rstr = std::to_string(mf);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	return fm;
@@ -733,32 +1136,41 @@ std::string ceMmDateTime::j2ms(double jd, std::string fs, double tz) {
 // get properties
 
 // Myanmar year type
-long ceMmDateTime::myt(){ 
+inline long ceMmDateTime::myt(){ 
 	long myt,my,mm,md; 
 	ceMmDateTime::j2m(this->jdnl(),myt,my,mm,md);
 	return myt;
 } 
 
 // Myanmar year
-long ceMmDateTime::my(){ 
+inline long ceMmDateTime::my(){ 
 	long myt,my,mm,md; 
 	ceMmDateTime::j2m(this->jdnl(),myt,my,mm,md);
 	return my;
 } 
 
+// Sasana year type
+//		default 0 = do not take account kason full moon day for Sasana year
+//		1 = Sasana year starts on Kason full moon day
+inline long ceMmDateTime::syt() {
+	return this->_syt;
+} 
+
+inline void ceMmDateTime::syt(long t) {
+	this->_syt = t;
+}
+
 // Sasana year
-long ceMmDateTime::sy(){ 
-	long buddhistEraOffset = (this->mm() == 1 || (this->mm() == 2 && this->md() < 16)) ? 1181 : 1182;
-	long sy = this->my() + buddhistEraOffset;
-	return sy;
+inline long ceMmDateTime::sy(){ 
+	return ceMmDateTime::my2sy(this->my(),this->mm(),this->md(),this->syt());
 } 
 
 // Myanmar year name
-string ceMmDateTime::my_name(){ 
+inline std::string ceMmDateTime::my_name(){ 
 	// "ပုဿနှစ်","မာခနှစ်","ဖ္လကိုန်နှစ်","စယ်နှစ်",
 	//	"ပိသျက်နှစ်","စိဿနှစ်","အာသတ်နှစ်","သရဝန်နှစ်",
 	//	"ဘဒြနှစ်","အာသိန်နှစ်","ကြတိုက်နှစ်","မြိက္ကသိုဝ်နှစ်"
-	string yna[]={"Hpusha","Magha","Phalguni","Chitra",
+	std::string yna[]={"Hpusha","Magha","Phalguni","Chitra",
 		"Visakha","Jyeshtha","Ashadha","Sravana",
 		"Bhadrapaha","Asvini","Krittika","Mrigasiras"};
 	return yna[this->my()%12];
@@ -768,81 +1180,81 @@ string ceMmDateTime::my_name(){
 // [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
 //  Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
 //  Tabaung=12, Late Tagu=13, Late Kason=14 ]
-long ceMmDateTime::mm(){ 
+inline long ceMmDateTime::mm(){ 
 	long myt,my,mm,md; 
 	ceMmDateTime::j2m(this->jdnl(),myt,my,mm,md);
 	return mm;
 } 
 
 // Myanmar day of the month [1-30]
-long ceMmDateTime::md(){ 
+inline long ceMmDateTime::md(){ 
 	long myt,my,mm,md; 
 	ceMmDateTime::j2m(this->jdnl(),myt,my,mm,md);
 	return md;
 } 
 
 // Moon phase [0=waxing, 1=full moon, 2=waning, 3=new moon]
-long ceMmDateTime::mp(){ 
+inline long ceMmDateTime::mp(){ 
 	long myt,my,mm,md; 
 	ceMmDateTime::j2m(this->jdnl(),myt,my,mm,md);
 	return ceMmDateTime::cal_mp(md,mm,myt);
 } 
 
 // Fortnight day [1-15]
-long ceMmDateTime::mf() {
+inline long ceMmDateTime::mf() {
 	return ceMmDateTime::cal_mf(this->md());
 }
 
 // get sabbath string
-string ceMmDateTime::sabbath() {
+inline std::string ceMmDateTime::sabbath() {
 	long myt,my,mm,md; 
 	ceMmDateTime::j2m(this->jdnl(),myt,my,mm,md);
 	long sb=ceMmDateTime::cal_sabbath(md,mm,myt);
-	string str="";
+	std::string str="";
 	if(sb==1) str="Sabbath";
 	else if(sb==2) str="Sabbath Eve";
 	return str;
 }
 
 // get yatyaza string
-string ceMmDateTime::yatyaza() {
+inline std::string ceMmDateTime::yatyaza() {
 	long v=ceMmDateTime::cal_yatyaza(this->mm(),this->w());
 	return (v?"Yatyaza":"");
 }
 
 // get pyathada string
-string ceMmDateTime::pyathada() {
+inline std::string ceMmDateTime::pyathada() {
 	long v=ceMmDateTime::cal_pyathada(this->mm(),this->w());
-	string pa[]={"","Pyathada","Afternoon Pyathada"};
+	std::string pa[]={"","Pyathada","Afternoon Pyathada"};
 	return pa[v%3];
 }
 
 // get nagahle direction
-string ceMmDateTime::nagahle() {
+inline std::string ceMmDateTime::nagahle() {
 	long v=ceMmDateTime::cal_nagahle(this->mm());
-	string pa[]={"West","North","East","South"};
+	std::string pa[]={"West","North","East","South"};
 	return pa[v%4];
 }
 
 // get mahabote direction
-string ceMmDateTime::mahabote() {
+inline std::string ceMmDateTime::mahabote() {
 	long v=ceMmDateTime::cal_mahabote(this->my(),this->w());
-	string pa[]={"Binga","Atun","Yaza","Adipati","Marana","Thike","Puti"};
+	std::string pa[]={"Binga","Atun","Yaza","Adipati","Marana","Thike","Puti"};
 	return pa[v%7];
 }
 
 // get the array of astrological days
-vector<string> ceMmDateTime::astro() {
+inline std::vector<std::string> ceMmDateTime::astro() {
 	return ceMmDateTime::cal_astro(this->jdnl());
 }
 
 // get the array of public holidays
-vector<string> ceMmDateTime::holidays() {
+inline std::vector<std::string> ceMmDateTime::holidays() {
 	return ceMmDateTime::cal_holiday(this->jdnl());
 }
 
 // get the array of other holidays
-vector<string> ceMmDateTime::holidays2() {
+inline std::vector<std::string> ceMmDateTime::holidays2() {
 	return ceMmDateTime::cal_holiday2(this->jdnl());
 }
 
@@ -854,7 +1266,7 @@ vector<string> ceMmDateTime::holidays2() {
 // output: date string in Myanmar calendar according to fm 
 // where formatting strings are as follows
 // &yyyy : Myanmar year [0000-9999, e.g. 1380]
-// &YYYY : Sasana year [0000-9999, e.g. 2562]
+// &YYYY : Sasana year [0000-9999, e.g. 2562] (it checks Sasana year type)
 // &y : Myanmar year [0-9999, e.g. 138]
 // &mm : month with zero padding [01-14]
 // &M : month [e.g. January]
@@ -864,9 +1276,22 @@ vector<string> ceMmDateTime::holidays2() {
 // &d : day of the month [1-31]
 // &ff : fortnight day with zero padding [01-15]
 // &f : fortnight day [1-15]
-string ceMmDateTime::ToMString(string fs) {
+inline std::string ceMmDateTime::ToMString(std::string fs) {
+	if(this->syt()==1){ // replace &YYYY with &SSSS
+		std::string from = "&YYYY";
+    	std::string to = "&SSSS";
+
+    	size_t pos = 0;
+    	while ((pos = fs.find(from, pos)) != std::string::npos) {
+			fs.replace(pos, from.length(), to);
+			pos += to.length();  // Move past the replacement
+    	}
+	}
 	return ceMmDateTime::j2ms(this->jd(),fs,this->tz());
 }
 //-------------------------------------------------------------------------
+/////////////////////////////////////////////////////////////////////////////
 
-} //namespace ce
+} // namespace ce
+
+#endif // CEMMDATETIME_H

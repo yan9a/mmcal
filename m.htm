@@ -14,7 +14,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 	<link rel='stylesheet' href='mc_s.css'>
 	<script src='./javascript/ceMmDateTime.js'></script>
 	<script>
-		// Version: 20200422
+		// Version: 20250612
 		// Required: ./javascript/ceMmDateTime.js
 		//----------------------------------------------------------------------------
 		//Start of UI ################################################################
@@ -231,14 +231,17 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 		//output: (str: html string)
 		function UIContent() {
 			var r, eml, i, js, je, tstr;
+			var syt = uis.Lang == 4 ? 1 : 0;
 			//------------------------------------------------------------------------
 			var Cday = new ceMmDateTime(); // start of month
 			Cday.SetTimezone(0);
+			Cday.syt = syt;
 			Cday.SetMDateTime(uis.cy, uis.cm, uis.cd); // time zone is irrelevant
 			//------------------------------------------------------------------------
 			//Find julian day number of start of the month 
 			var MS = new ceMmDateTime(); // start of month
 			MS.SetTimezone(0); // time zone is irrelevant
+			MS.syt = syt;
 			MS.SetCT(uis.Type);
 			MS.SetMDateTime(uis.y, uis.m, 1, 12, 0, 0, 0);
 			js = MS.jdn;//Find julian day number of start of
@@ -246,6 +249,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 			je = js + eml - 1;
 			var ME = new ceMmDateTime(); // end of month
 			ME.SetTimezone(0);
+			ME.syt = syt;
 			ME.SetCT(uis.Type);
 			ME.SetJD(je);
 			//------------------------------------------------------------------------
@@ -259,6 +263,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 			r = (MS.w + 6) % 7; eml = Math.ceil((eml + r) / 7) * 7;
 			var M = new ceMmDateTime(); // end of month
 			M.SetTimezone(0);
+			M.syt = syt;
 			M.SetCT(uis.Type);
 			for (i = 0; i < eml; i++) {
 				if ((i % 7) == 0) str += "<tr>";
@@ -409,6 +414,8 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 		function ShowDay(js) {
 			var str = "", tstr = "";
 			var M = new ceMmDateTime(js, 0, uis.Type);
+			var syt = uis.Lang == 4 ? 1 : 0; // if Shan, set Sasana year type to 1
+			M.syt = syt;
 			//display English day
 			str += "<div class='DayHead' onclick='ShowMonth();'>" + M.ToString("%y-%M-%dd") + "</div>";
 

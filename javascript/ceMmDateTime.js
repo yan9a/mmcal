@@ -1,7 +1,7 @@
 // File: ceMmDateTime.js
 // Description: Modern Myanmar Calendrical Calculations
 //-------------------------------------------------------------------------
-// WebSite: https://yan9a.github.io/mcal/
+// WebSite: https://yan9a.github.io/mmcal/
 // MIT License (https://opensource.org/licenses/MIT)
 // Copyright (c) 2018 Yan Naing Aye
 // Doc: http://cool-emerald.blogspot.com/2013/06/algorithm-program-and-calculation-of.html
@@ -456,8 +456,11 @@ class ceDateTime {
 
 class ceMmDateTime extends ceDateTime {
 	//-------------------------------------------------------------------------
-	constructor(m_jd, m_tz, m_ct = 0, m_SG = 2361222) {
+	constructor(m_jd, m_tz, m_ct = 0, m_SG = 2361222, m_syt = 0) {
 		super(m_jd, m_tz, m_ct, m_SG);
+		this.m_syt = m_syt; // Sasana year type
+		// default 0 = do not take account kason full moon day for Sasana year
+		// 1 = Sasana year starts on Kason full moon day
 	}
 	//-------------------------------------------------------------------------
 	// Get Myanmar year constants depending on era
@@ -688,6 +691,31 @@ class ceMmDateTime extends ceDateTime {
 			+ b * Math.floor((mm + 12) / 16);
 		myl = 354 + (1 - c) * 30 + b; dd += mmt * myl;//adjust day count with year length
 		return (dd + yo.tg1 - 1);
+	}
+	//-------------------------------------------------------------------------
+	// Myanmar year to Sasana year
+	// input:  (
+	//  my = year,
+	//  mm = month [Tagu=1, Kason=2, Nayon=3, 1st Waso=0, (2nd) Waso=4, Wagaung=5, 
+	//      Tawthalin=6, Thadingyut=7, Tazaungmon=8, Nadaw=9, Pyatho=10, Tabodwe=11,  
+	//      Tabaung=12, Late Tagu=13, Late Kason=14 ], 
+	//  md= day of the month [1-30], 
+	//  k = optional argument [
+	//		default 0 = do not take account kason full moon day for Sasana year
+	//		1 = Sasana year starts on Kason full moon day
+	//	]
+	// output: (sy -Sasana year)
+	// 
+	// Description: Pull Request #9 by Chan Mrate Ko Ko
+	// Proposal to mark Kason full moon day (Buddha's birthday) as the start of the Sasana year.
+	// This suggestion references certain versions of the Shan and Rakhine Calendars.
+	// It aligns with Shan culture, where the new year begins on the first day of Nadaw,
+	// incorporating the lunar phase into the new year calculation.
+	// Conversely, Burmese culture sets the new year independently of the moon phase.
+	// This update offers flexibility in defining the Sasana year which is preferable to enforcing a single fixed approach.
+	static my2sy(my, mm, md, k = 0) {
+			var buddhistEraOffset = ((mm == 1 || (mm == 2 && md < 15)) && (k==1)) ? 1181 : 1182;
+			return (my + buddhistEraOffset); 
 	}
 	//-------------------------------------------------------------------------
 	// set Myanmar date time for a timezone and a calendar type
@@ -1123,7 +1151,8 @@ class ceMmDateTime extends ceDateTime {
 	// output: date string in Myanmar calendar according to fm 
 	// where formatting strings are as follows
 	// &yyyy : Myanmar year [0000-9999, e.g. 1380]
-	// &YYYY : Sasana year [0000-9999, e.g. 2562]
+	// &YYYY : Sasana year neglection moon phase [0000-9999, e.g. 2562]
+	// &SSSS : Sasana year starting at Kason full moon day [0000-9999, e.g. 2562]
 	// &y : Myanmar year [0-9999, e.g. 138]
 	// &mm : month with zero padding [01-14]
 	// &M : month [e.g. January]
@@ -1150,12 +1179,13 @@ class ceMmDateTime extends ceDateTime {
 		fstr = "&yyyy"; re = new RegExp(fstr, 'g');
 		rstr = "0000" + my.toString(); rstr = rstr.substr(rstr.length - 4); fm = fm.replace(re, rstr);
 		//--------------------------------------------------------
-		// var sy = my + 1182; //Sasana year
-		var buddhistEraOffset = (mm == 1 || (mm == 2 && md < 16)) ? 1181 : 1182;
-		var sy = my + buddhistEraOffset; //Sasana year
-
+		var sy = ceMmDateTime.my2sy(my,mm,md,0); // Sasana year neglecting moon phase
 		fstr = "&YYYY"; re = new RegExp(fstr, 'g');
 		rstr = "0000" + sy.toString(); rstr = rstr.substr(rstr.length - 4); fm = fm.replace(re, rstr);
+		//--------------------------------------------------------
+		var sy2 = ceMmDateTime.my2sy(my,mm,md,1); // Sasana year to start on Kason full moon day
+		fstr = "&SSSS"; re = new RegExp(fstr, 'g');
+		rstr = "0000" + sy2.toString(); rstr = rstr.substr(rstr.length - 4); fm = fm.replace(re, rstr);
 		//--------------------------------------------------------
 		fstr = "&y"; re = new RegExp(fstr, 'g');
 		rstr = my.toString(); fm = fm.replace(re, rstr);
@@ -1201,10 +1231,17 @@ class ceMmDateTime extends ceDateTime {
 		return yo.my;
 	}
 
+	set syt(val){
+		this.m_syt = val;
+	}
+	// Sasana year type
+	get syt() {
+		return this.m_syt;
+	}
+
 	// Sasana year
 	get sy() {
-		var buddhistEraOffset = (this.mm == 1 || (this.mm == 2 && this.md < 16)) ? 1181 : 1182;
-		return (this.my + buddhistEraOffset);
+		return ceMmDateTime.my2sy(this.my,this.mm,this.md,this.syt);
 	}
 
 	// Myanmar year name
@@ -1316,7 +1353,7 @@ class ceMmDateTime extends ceDateTime {
 	// output: date string in Myanmar calendar according to fm 
 	// where formatting strings are as follows
 	// &yyyy : Myanmar year [0000-9999, e.g. 1380]
-	// &YYYY : Sasana year [0000-9999, e.g. 2562]
+	// &YYYY : Sasana year [0000-9999, e.g. 2562] (it checks Sasana year type)
 	// &mm : month with zero padding [01-14]
 	// &M : month [e.g. Tagu]
 	// &m : month [1-14]
@@ -1326,6 +1363,10 @@ class ceMmDateTime extends ceDateTime {
 	// &ff : fortnight day with zero padding [01-15]
 	// &f : fortnight day [1-15]
 	ToMString(fs = "&yyyy &M &P &ff") {
+		if(this.m_syt) { // replace &YYYY with &SSSS
+			var fstr = "&YYYY"; var re = new RegExp(fstr, 'g');
+			fs = fs.replace(re, "&SSSS");
+		}
 		return ceMmDateTime.j2ms(this.jd, fs, this.tz);
 	}
 

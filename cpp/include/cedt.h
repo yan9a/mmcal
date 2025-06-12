@@ -1,24 +1,269 @@
-// File: ceDateTime.cpp
+/////////////////////////////////////////////////////////////////////////////
+// File: ceDateTime.h
 // Description: Simple C++ Date/time class
 // WebSite: https://yan9a.github.io/mmcal/
 // MIT License (https://opensource.org/licenses/MIT)
 // Copyright (c) 2018 Yan Naing Aye
+/////////////////////////////////////////////////////////////////////////////
 
-#include "ceDateTime.h"
-#include<math.h>
-#include <algorithm>
-#ifdef ceWINDOWS
-	#include<windows.h>	
-#elif defined(ceLINUX)
-	#include<sys/time.h>
+#ifndef CEDATETIME_H
+#define CEDATETIME_H
+
+#ifndef CE_MACROS_H
+#define CE_MACROS_H
+
+#define CE_DBG_PRINT 0 // print dbg mes
+
+#if defined(_WIN64) || defined(__WIN32__) || defined(_WIN32) || defined(WIN32) || defined(__WINDOWS__) || defined(__TOS_WIN__) || defined(__CYGWIN__)
+	#ifndef CE_WINDOWS
+		#define CE_WINDOWS
+	#endif
+#elif defined(__linux__) || defined(unix) || defined(__unix) || defined(__unix__)
+	#ifndef CE_LINUX
+		#define CE_LINUX
+	#endif
+#else
+	#ifndef CE_NOS
+		#define CE_NOS
+	#endif
 #endif
-using namespace std;
+
+#if defined(__x86_64) || defined(__x86_64__) || defined(__amd64__) || defined(__amd64)
+	#ifndef CE_x86_64
+		#define CE_x86_64
+	#endif
+#elif defined(__arm__) || defined(_M_ARM)
+	#ifndef CE_ARM
+		#define CE_ARM
+	#endif
+#else
+	#ifndef CE_NARCH
+		#define CE_NARCH
+	#endif
+#endif
+
+#endif // CE_MACROS_H
+
+#include<string>
+#include<cmath>
+#include <algorithm>
+#if defined(CE_WINDOWS)
+	#include<windows.h>
+	#include<time.h>
+#elif defined(CE_LINUX)
+	#include<sys/time.h>
+#endif 
 
 namespace ce {
+
+class ceDateTime
+{
+private:    
+    double m_tz; // time zone for this particular instance 
+    double m_jd; // julian date in UTC
+    long m_ct; // calendar type [0=British (default), 1=Gregorian, 2=Julian]
+	long m_SG; // Beginning of Gregorian calendar in JDN [default=2361222]
+public:    
+    // Time to Fraction of day starting from 12 noon
+    // input: (h=hour, n=minute, s=second) output: (d: fraction of day)
+    static double t2d(long h,long n,double s);
+
+    //Western date to Julian date
+	//Credit4 Gregorian2JD: http://www.cs.utsa.edu/~cs1063/projects/Spring2011/Project1/jdn-explanation.html
+    //input: (y: year, m: month, d: day, h=hour, n=minute, s=second
+    // ct:calendar type [Optional argument: 0=British (default), 1=Gregorian, 2=Julian]
+    // SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
+    //     Gregorian start in British calendar (1752/Sep/14 = 2361222)
+    //output: Julian date
+    static double w2j(long year, long month, long day, long hour=12, long minute=0, double second=0, long ct=0, long SG=2361222);
+
+    //Julian date to Western date
+    //Credit4 Gregorian date: http://pmyers.pcug.org.au/General/JulianDates.htm
+    //Credit4 Julian Calendar: http://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
+    //input: (jd:julian date,
+    // ct:calendar type [Optional argument: 0=British (default), 1=Gregorian, 2=Julian]
+    // SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
+    //output: Western date (y=year, m=month, d=day, h=hour, n=minute, s=second)
+    static void j2w(double jd, long& year, long& month, long& day, long& hour, long& minute, double& second, long ct=0, long SG=2361222);
+
+    // unix time to julian date
+    static double u2j(time_t ut);
+
+    // julian date to unix time
+    static time_t j2u(double jd);
+
+    // Compile time string
+    static std::string compiletime();
+
+#ifndef CE_NOS
+    // get current time in julian date
+    static double jdnow();
+
+    // get local time zone offset between local time and UTC in hours (e.g. 8 for UTC +8)
+    static double ltzoh();
+
+    // Set local date time of the system
+    // need super user privileges
+	static void SetSystemLocalTime(int year, int month, int day,int hour, int minute, int second);
+
+	// set time to now
+	void Set2Now();
+
+	// set time zone in hours to the system's local time zone
+	void SetTimezone();//set to local time zone
+
+	ceDateTime();//default constructor
+
+#endif //CE_NOS
+
+    // jd to date time string
+    // input: (jd:julian date,
+    //  fm: format [Optional argument: "%Www %y-%mm-%dd %HH:%nn:%ss %zz"]
+    //  tz : time zone offset in hours (e.g. 8 for GMT +8)
+    //  ct:calendar type [Optional argument: 0=British (default), 1=Gregorian, 2=Julian]
+    //  SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
+    // output: date time string according to fm where formatting strings are as follows
+    // %yyyy : year [0000-9999, e.g. 2018]
+    // %yy : year [00-99 e.g. 18]
+    // %y : year [0-9999, e.g. 201]
+    // %MMM : month [e.g. JAN]
+    // %Mmm : month [e.g. Jan]
+    // %mm : month with zero padding [01-12]
+    // %M : month [e.g. January]
+    // %m : month [1-12]
+    // %dd : day with zero padding [01-31]
+    // %d : day [1-31]
+    // %HH : hour [00-23]
+    // %hh : hour [01-12]
+    // %H : hour [0-23]
+    // %h : hour [1-12]
+    // %AA : AM or PM
+    // %aa : am or pm
+    // %nn : minute with zero padding [00-59]
+    // %n : minute [0-59]
+    // %ss : second [00-59]
+    // %s : second [0-59]
+    // %lll : millisecond [000-999]
+    // %l : millisecond [0-999]
+    // %WWW : Weekday [e.g. SAT]
+    // %Www : Weekday [e.g. Sat]
+    // %W : Weekday [e.g. Saturday]
+    // %w : Weekday number [0=sat, 1=sun, ..., 6=fri]
+    // %zz : time zone (e.g. +08, +06:30)
+    static std::string j2s(double jd, std::string fm="%Www %y-%mm-%dd %HH:%nn:%ss %zz", double tz=0, long ct=0, long SG=2361222);
+
+    // convert date time string to jd
+    // inputs
+    //  tstr : time string
+    //    accepts following formats
+    //    1: yyyy-mm-dd hh:nn:ss
+    //    2: yyyy-mm-dd hh:nn:ss.ttt
+    //    3: yyyymmddhhnnss
+    //    4: yyyymmddhhnnssttt
+    //  tz : time zone offset in hours
+    //   [optional argument: 0 - UTC]
+    //  ct:calendar type [Optional argument: 0=British (default), 1=Gregorian, 2=Julian]
+    //  SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
+    // output 
+    //  jd: julian date 
+    //    positive integer: ok
+    //    -1 : error
+    static double s2j(std::string tstr, double tz=0, long ct=0, long SG=2361222);   
+
+    // set time zone in hours for this instance
+	void SetTimezone(double tz);
+
+    // set time in jd
+    void SetJD(double jd);
+
+    // set in unix time
+    void SetUnixTime(time_t ut);
+
+    // set date time for a timezone and a calendar type
+    void SetDateTime(long year, long month, long day, long hour=12, long minute=0, double second=0, double tz=0, long ct=0, long SG=2361222);
+
+    // set time using a date time string
+    void SetDateTimeString(std::string tstr, double tz=0, long ct=0, long SG=2361222);    
+
+    // set calendar type [0=British (default), 1=Gregorian, 2=Julian]
+    void SetCT(long ct);
+
+    //-------------------------------------------------------------------------
+    // set Beginning of Gregorian calendar in JDN [default=2361222]
+    void SetSG(long sg);
+
+    // Get Date Time string
+    // input: (fm: format [Optional argument: "%Www %y-%mm-%dd %HH:%nn:%ss %zz"])
+    // output: date time string according to fm where formatting strings are as follows
+    // %yyyy : year [0000-9999, e.g. 2018]
+    // %yy : year [00-99 e.g. 18]
+    // %y : year [0-9999, e.g. 201]
+    // %MMM : month [e.g. JAN]
+    // %Mmm : month [e.g. Jan]
+    // %mm : month with zero padding [01-12]
+    // %M : month [e.g. January]
+    // %m : month [1-12]
+    // %dd : day with zero padding [01-31]
+    // %d : day [1-31]
+    // %HH : hour [00-23]
+    // %hh : hour [01-12]
+    // %H : hour [0-23]
+    // %h : hour [1-12]
+    // %AA : AM or PM
+    // %aa : am or pm
+    // %nn : minute with zero padding [00-59]
+    // %n : minute [0-59]
+    // %ss : second [00-59]
+    // %s : second [0-59]
+    // %lll : millisecond [000-999]
+    // %l : millisecond [0-999]
+    // %WWW : Weekday [e.g. SAT]
+    // %Www : Weekday [e.g. Sat]
+    // %W : Weekday [e.g. Saturday]
+    // %w : Weekday number [0=sat, 1=sun, ..., 6=fri]
+    // %zz : time zone (e.g. +08, +06:30)
+	std::string ToString(std::string fm = "%Www %y-%mm-%dd %HH:%nn:%ss %zz");
+
+	// filter input string to get digits only
+	static std::string GetDigits(std::string str);
+
+	// find a string and replace all occurances
+	static std::string ReplaceAll(std::string str,std::string fstr,std::string rstr);
+
+	double jd(); // julian date
+    double jdl(); // julian date for this time zone
+	long jdn(); // julian day number
+    long jdnl(); // julian day number for this time zone
+	long y(); // year
+	long m(); // month
+	long d(); // day
+	long h(); // hour [0-23]
+	long n(); // minute
+	long s(); // second
+	long l(); // millisecond
+	long w(); // weekday [0=sat, 1=sun, ..., 6=fri]
+	long ut(); // unix time
+	double tz(); // time zone 
+    long ct(); // calendar type [0=British (default), 1=Gregorian, 2=Julian]
+    long SG(); // Beginning of Gregorian calendar in JDN [default=2361222]
+    long mlen(); // length of this month
+    //-------------------------------------------------------------------------
+    // find the length of western month
+    // input: (y=year, m=month [Jan=1, ... , Dec=12],
+    //  ct:calendar type [Optional argument: 0=British (default), 1=Gregorian, 2=Julian])
+    //  SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
+    // output: (wml = length of the month)
+    static long wml(long y,long m,long ct=0,long SG=2361222);
+    //-------------------------------------------------------------------------
+};
+
+/////////////////////////////////////////////////////////////////////////////
+// Implementation
+
 //-------------------------------------------------------------------------
 // Time to Fraction of day starting from 12 noon
 // input: (h=hour, n=minute, s=second) output: (d: fraction of day)
-double ceDateTime::t2d(long h,long n,double s) 
+inline double ceDateTime::t2d(long h,long n,double s) 
 { 
     return ((double(h)-12)/24.0+double(n)/1440.0+s/86400.0);
 }
@@ -30,7 +275,7 @@ double ceDateTime::t2d(long h,long n,double s)
   // SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
   //     Gregorian start in British calendar (1752/Sep/14 = 2361222)
 //output: Julian date
-double ceDateTime::w2j(long y, long m, long d, long h, long n, double s, long ct, long SG)
+inline double ceDateTime::w2j(long y, long m, long d, long h, long n, double s, long ct, long SG)
 {
 	long  a = long(floor((14 - m) / 12)); y = y + 4800 - a; m = m + (12 * a) - 3;
 	long jd =long( d + floor((153 * m + 2) / 5) + (365 * y) + floor(y / 4));
@@ -53,7 +298,7 @@ double ceDateTime::w2j(long y, long m, long d, long h, long n, double s, long ct
   // ct:calendar type [Optional argument: 0=British (default), 1=Gregorian, 2=Julian]
   // SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
 //output: Western date (y=year, m=month, d=day, h=hour, n=minute, s=second)
-void ceDateTime::j2w(double jd,long& year, long& month, long& day, long& hour, long& minute, double& second, long ct, long SG) 
+inline void ceDateTime::j2w(double jd,long& year, long& month, long& day, long& hour, long& minute, double& second, long ct, long SG) 
 {
     long j,y,m,d,h,n;
     double jf,s;
@@ -81,22 +326,22 @@ void ceDateTime::j2w(double jd,long& year, long& month, long& day, long& hour, l
 }
 //-------------------------------------------------------------------------
 // convert unix timestamp to jd 
-double ceDateTime::u2j(time_t ut)
+inline double ceDateTime::u2j(time_t ut)
 {
 	//number of seconds from 1970 Jan 1 00:00:00 (UTC)
 	return (2440587.5+double(ut)/86400.0);//converte to day(/24h/60min/60sec) and to JD
 }
 //-------------------------------------------------------------------------
 // julian date to unix time
-time_t ceDateTime::j2u(double jd)
+inline time_t ceDateTime::j2u(double jd)
 {
 	return long(floor((jd-2440587.5)*86400.0+0.5));
 }
 //-------------------------------------------------------------------------
 // Compile time string
-string ceDateTime::compiletime()
+inline std::string ceDateTime::compiletime()
 {
-	string s=__DATE__;
+	std::string s=__DATE__;
     s+=" ";
     s+=__TIME__;
 	//s+=" ";
@@ -104,19 +349,19 @@ string ceDateTime::compiletime()
 	return s;
 }
 //-------------------------------------------------------------------------
-#ifndef ceSYSTEMINDEPENDENT
+#ifndef CE_NOS
 // get current time in julian date
-double ceDateTime::jdnow()
+inline double ceDateTime::jdnow()
 {
     //number of seconds from 1970 Jan 1 00:00:00 (UTC)
     time_t ut = time(0);//now
     double jd=ceDateTime::u2j(ut);
     double ms=0;//milliseconds
-#ifdef ceWINDOWS	
+#ifdef CE_WINDOWS	
 	SYSTEMTIME wt;
 	GetSystemTime(&wt);
 	ms=double(wt.wMilliseconds);
-#elif defined(ceLINUX)
+#elif defined(CE_LINUX)
 	timeval time;
 	gettimeofday(&time,NULL);
 	ms=double(time.tv_usec)/1000.0;	
@@ -126,7 +371,7 @@ double ceDateTime::jdnow()
 }
 //-------------------------------------------------------------------------
 // get local time zone offset between local time and UTC in hours (e.g. 8 for GMT +8)
-double ceDateTime::ltzoh()
+inline double ceDateTime::ltzoh()
 {
 	double jdu= ceDateTime::jdnow();//utc
 	//http://pubs.opengroup.org/onlinepubs/7908799/xsh/time.h.html
@@ -143,9 +388,9 @@ double ceDateTime::ltzoh()
 // need super user privileges
 // https://www.linuxquestions.org/questions/programming-9/c-code-to-change-date-time-on-linux-707384/
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ms724936(v=vs.85).aspx
-void ceDateTime::SetSystemLocalTime(int year, int month, int day,int hour, int minute, int second)
+inline void ceDateTime::SetSystemLocalTime(int year, int month, int day,int hour, int minute, int second)
 {
-#ifdef ceWINDOWS
+#ifdef CE_WINDOWS
   //For Windows
   SYSTEMTIME lt;
   GetLocalTime(&lt);
@@ -156,7 +401,7 @@ void ceDateTime::SetSystemLocalTime(int year, int month, int day,int hour, int m
   lt.wMinute=minute;
   lt.wSecond=second;
   SetLocalTime(&lt);
-#elif defined(ceLINUX)
+#elif defined(CE_LINUX)
   //For POSX
   time_t mytime = time(0);
   struct tm* tm_ptr = localtime(&mytime);
@@ -179,27 +424,27 @@ void ceDateTime::SetSystemLocalTime(int year, int month, int day,int hour, int m
 
 //-------------------------------------------------------------------------
 // set local time zone
-void ceDateTime::SetTimezone()
+inline void ceDateTime::SetTimezone()
 {
 	this->m_tz = ceDateTime::ltzoh();
 }
 //-------------------------------------------------------------------------
 // set time to now
-void ceDateTime::Set2Now()
+inline void ceDateTime::Set2Now()
 {
 	this->m_jd = ceDateTime::jdnow();
 }
 //-------------------------------------------------------------------------
-#endif // ceSYSTEMINDEPENDENT
-ceDateTime::ceDateTime()
+#endif // CE_NOS
+inline ceDateTime::ceDateTime()
 {
-#ifndef ceSYSTEMINDEPENDENT
+#ifndef CE_NOS
 	this->SetTimezone();
 	this->Set2Now();
 #else
 	this->SetTimezone(0);
 	this->SetUnixTime(0);
-#endif // ceSYSTEMINDEPENDENT
+#endif // CE_NOS
 	this->m_ct=0;
 	this->m_SG=2361222;
 }
@@ -238,7 +483,7 @@ ceDateTime::ceDateTime()
 // %W : Weekday [e.g. Saturday]
 // %w : Weekday number [0=sat, 1=sun, ..., 6=fri]
 // %zz : time zone (e.g. +08, +06:30)
-string ceDateTime::j2s(double jd, string fm, double tz, long ct, long SG)
+inline std::string ceDateTime::j2s(double jd, std::string fm, double tz, long ct, long SG)
 {
 	long year,month,day,hour,minute;
 	double second;
@@ -250,25 +495,25 @@ string ceDateTime::j2s(double jd, string fm, double tz, long ct, long SG)
     long wd=(jdn+2)%7;//week day [0=sat, 1=sun, ..., 6=fri]
 	long h = hour % 12;
 	if (h == 0) h = 12;
-    string W[]={"Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"};
-	string M[] = {"January","February","March","April","May","June","July","August","September","October","November","December"};
+    std::string W[]={"Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"};
+	std::string M[] = {"January","February","March","April","May","June","July","August","September","October","November","December"};
 
     // replace format string with values
-	string fstr,rstr;
+	std::string fstr,rstr;
 	//--------------------------------------------------------
 	fstr = "%yyyy";
-	rstr = string(4, '0') + to_string(year); 
+	rstr = std::string(4, '0') + std::to_string(year); 
 	rstr = rstr.substr(rstr.length() - 4);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%yy";
 	long y = year % 100;
-	rstr = string(2, '0') + to_string(y);
+	rstr = std::string(2, '0') + std::to_string(y);
 	rstr = rstr.substr(rstr.length() - 2);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%y";
-	rstr = to_string(year);
+	rstr = std::to_string(year);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%MMM";
@@ -283,7 +528,7 @@ string ceDateTime::j2s(double jd, string fm, double tz, long ct, long SG)
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%mm";
-	rstr = string(2, '0') + to_string(month);
+	rstr = std::string(2, '0') + std::to_string(month);
 	rstr = rstr.substr(rstr.length() - 2);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
@@ -292,34 +537,34 @@ string ceDateTime::j2s(double jd, string fm, double tz, long ct, long SG)
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%m";
-	rstr = to_string(month);
+	rstr = std::to_string(month);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%dd";
-	rstr = string(2, '0') + to_string(day);
+	rstr = std::string(2, '0') + std::to_string(day);
 	rstr = rstr.substr(rstr.length() - 2);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%d";
-	rstr = to_string(day);
+	rstr = std::to_string(day);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%HH";
-	rstr = string(2, '0') + to_string(hour);
+	rstr = std::string(2, '0') + std::to_string(hour);
 	rstr = rstr.substr(rstr.length() - 2);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%hh";
-	rstr = string(2, '0') + to_string(h);
+	rstr = std::string(2, '0') + std::to_string(h);
 	rstr = rstr.substr(rstr.length() - 2);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%H";
-	rstr = to_string(hour);
+	rstr = std::to_string(hour);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%h";
-	rstr = to_string(h);
+	rstr = std::to_string(h);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%AA";
@@ -331,30 +576,30 @@ string ceDateTime::j2s(double jd, string fm, double tz, long ct, long SG)
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%nn";
-	rstr = string(2, '0') + to_string(minute);
+	rstr = std::string(2, '0') + std::to_string(minute);
 	rstr = rstr.substr(rstr.length() - 2);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%n";
-	rstr = to_string(minute);
+	rstr = std::to_string(minute);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%ss";
-	rstr = string(2, '0') + to_string(s);
+	rstr = std::string(2, '0') + std::to_string(s);
 	rstr = rstr.substr(rstr.length() - 2);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%s";
-	rstr = to_string(s);
+	rstr = std::to_string(s);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%lll";
-	rstr = string(3, '0') + to_string(l);
+	rstr = std::string(3, '0') + std::to_string(l);
 	rstr = rstr.substr(rstr.length() - 3);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%l";
-	rstr = to_string(l);
+	rstr = std::to_string(l);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%WWW";
@@ -373,17 +618,17 @@ string ceDateTime::j2s(double jd, string fm, double tz, long ct, long SG)
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%w";
-	rstr = to_string(wd);
+	rstr = std::to_string(wd);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
 	fstr = "%zz";
-	string tzs = tz < 0 ? "-" : "+";
-	string tzh = string(2, '0') + to_string(long(floor(tz)));
+	std::string tzs = tz < 0 ? "-" : "+";
+	std::string tzh = std::string(2, '0') + std::to_string(long(floor(tz)));
 	tzh = tzh.substr(tzh.length() - 2);
 	rstr = tzs+tzh;
 	double tzf = tz - floor(tz);
 	if (tzf > 0) {
-		tzh = string(2, '0') + to_string(long(floor(tzf*60.0+0.5)));
+		tzh = std::string(2, '0') + std::to_string(long(floor(tzf*60.0+0.5)));
 		tzh = tzh.substr(tzh.length() - 2);
 		rstr += ":"+tzh;
 	}
@@ -410,9 +655,9 @@ string ceDateTime::j2s(double jd, string fm, double tz, long ct, long SG)
 //  jd: julian date 
 //    positive integer: ok
 //    -1 : error
-double ceDateTime::s2j(string tstr, double tz, long ct, long SG)
+inline double ceDateTime::s2j(std::string tstr, double tz, long ct, long SG)
 {
-    string str,pstr;
+    std::string str,pstr;
     long y=0,m=0,d=0,h=12,n=0;
     double jd=-1;
     double s=0,ls=0;
@@ -436,37 +681,37 @@ double ceDateTime::s2j(string tstr, double tz, long ct, long SG)
 }
 //-------------------------------------------------------------------------
 // set time zone in hours for this instance
-void ceDateTime::SetTimezone(double tz)//set time zone
+inline void ceDateTime::SetTimezone(double tz)//set time zone
 {
     if(tz<=14 || tz>=(-12)){ this->m_tz=tz; }
 }
 //-------------------------------------------------------------------------
 // set time in jd
-void ceDateTime::SetJD(double jd)
+inline void ceDateTime::SetJD(double jd)
 {
 	this->m_jd=jd;
 }
 //-------------------------------------------------------------------------
 // set in unix time
-void ceDateTime::SetUnixTime(time_t ut)
+inline void ceDateTime::SetUnixTime(time_t ut)
 {
     this->m_jd= ceDateTime::u2j(ut);
 }
 //-------------------------------------------------------------------------
 // set date time for a timezone and a calendar type
-void ceDateTime::SetDateTime(long year, long month, long day, long hour, long minute, double second, double tz, long ct, long SG)
+inline void ceDateTime::SetDateTime(long year, long month, long day, long hour, long minute, double second, double tz, long ct, long SG)
 {
     this->m_jd= ceDateTime::w2j(year,month,day,hour,minute,second,ct,SG)-tz/24.0;
 }
 //-------------------------------------------------------------------------
 // set calendar type [0=British (default), 1=Gregorian, 2=Julian]
-void ceDateTime::SetCT(long ct)
+inline void ceDateTime::SetCT(long ct)
 {
     this->m_ct=ct%3;
 }
 //-------------------------------------------------------------------------
 // set Beginning of Gregorian calendar in JDN [default=2361222]
-void ceDateTime::SetSG(long sg)
+inline void ceDateTime::SetSG(long sg)
 {
     this->m_SG=sg;
 }
@@ -483,7 +728,7 @@ void ceDateTime::SetSG(long sg)
 //   [optional argument: 0 - UTC]
 //  ct:calendar type [Optional argument: 0=British (default), 1=Gregorian, 2=Julian]
 //  SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
-void ceDateTime::SetDateTimeString(std::string tstr, double tz, long ct, long SG)
+inline void ceDateTime::SetDateTimeString(std::string tstr, double tz, long ct, long SG)
 {
 	double jd= ceDateTime::s2j(tstr, tz, ct, SG);
 	if (jd >= 0) this->m_jd = jd;
@@ -519,15 +764,15 @@ void ceDateTime::SetDateTimeString(std::string tstr, double tz, long ct, long SG
 // %W : Weekday [e.g. Saturday]
 // %w : Weekday number [0=sat, 1=sun, ..., 6=fri]
 // %zz : time zone (e.g. +08, +06:30)
-string ceDateTime::ToString(string fm)
+inline std::string ceDateTime::ToString(std::string fm)
 {
 	return ceDateTime::j2s(this->m_jd, fm, this->m_tz,this->m_ct,this->m_SG);
 }
 //-------------------------------------------------------------------------
 // filter input string to get digits only
-string ceDateTime::GetDigits(string str)
+inline std::string ceDateTime::GetDigits(std::string str)
 {
-	string ostr = "";
+	std::string ostr = "";
 	size_t len = str.length();
 	if (len>0) {
 		for (size_t i = 0; i<len; i++)
@@ -537,59 +782,59 @@ string ceDateTime::GetDigits(string str)
 }
 //-------------------------------------------------------------------------
 // find a string and replace all occurances
-std::string ceDateTime::ReplaceAll(std::string str, std::string fstr, std::string rstr)
+inline std::string ceDateTime::ReplaceAll(std::string str, std::string fstr, std::string rstr)
 {
 	size_t i = 0;
 	while (true) {
 		i = str.find(fstr, i);
-		if (i == string::npos) break;
+		if (i == std::string::npos) break;
 		str.replace(i, fstr.length(), rstr);
 		i += rstr.length();
 	}
 	return str;
 }
 //-------------------------------------------------------------------------
-double ceDateTime::jd() { return this->m_jd; }
-double ceDateTime::jdl() { return (this->m_jd+this->m_tz/24.0); } // jd for this time zone
-long ceDateTime::jdn() { return long(round(this->m_jd)); }
-long ceDateTime::jdnl() { return (long)round(this->m_jd+this->m_tz/24.0); } // jdn for this time zone
-long ceDateTime::y() { 
+inline double ceDateTime::jd() { return this->m_jd; }
+inline double ceDateTime::jdl() { return (this->m_jd+this->m_tz/24.0); } // jd for this time zone
+inline long ceDateTime::jdn() { return long(round(this->m_jd)); }
+inline long ceDateTime::jdnl() { return (long)round(this->m_jd+this->m_tz/24.0); } // jdn for this time zone
+inline long ceDateTime::y() { 
 	long y,m,d,h,n; double s;
 	ceDateTime::j2w(this->jdl(),y,m,d,h,n,s,this->m_ct,this->m_SG);
 	return y; 
 } // year
 
-long ceDateTime::m() { 
+inline long ceDateTime::m() { 
 	long y,m,d,h,n; double s;
 	ceDateTime::j2w(this->jdl(),y,m,d,h,n,s,this->m_ct,this->m_SG);
 	return m; 
 } // month
 
-long ceDateTime::d() { 
+inline long ceDateTime::d() { 
 	long y,m,d,h,n; double s;
 	ceDateTime::j2w(this->jdl(),y,m,d,h,n,s,this->m_ct,this->m_SG);
 	return d; 
 } // day
-long ceDateTime::h() { 
+inline long ceDateTime::h() { 
 	long y,m,d,h,n; double s;
 	ceDateTime::j2w(this->jdl(),y,m,d,h,n,s,this->m_ct,this->m_SG);
 	return h; 
 } // hour [0-23]
 
-long ceDateTime::n() { 
+inline long ceDateTime::n() { 
 	long y,m,d,h,n; double s;
 	ceDateTime::j2w(this->jdl(),y,m,d,h,n,s,this->m_ct,this->m_SG);
 	return n; 
 } // minute
 
-long ceDateTime::s() { 
+inline long ceDateTime::s() { 
 	long y,m,d,h,n; double s;
 	ceDateTime::j2w(this->jdl(),y,m,d,h,n,s,this->m_ct,this->m_SG);
 	long si=(long)floor(s); //shold not take round to make sure s<60
 	return si;  
 } // second
 
-long ceDateTime::l() { 
+inline long ceDateTime::l() { 
 	long y,m,d,h,n; double s;
 	ceDateTime::j2w(this->jdl(),y,m,d,h,n,s,this->m_ct,this->m_SG);
 	long si=(long)floor(s); //shold not take round to make sure s<60
@@ -597,13 +842,13 @@ long ceDateTime::l() {
 	return l;
 } // millisecond
 
-long ceDateTime::w() { return (this->jdnl()+2)%7;} // weekday [0=sat, 1=sun, ..., 6=fri]
+inline long ceDateTime::w() { return (this->jdnl()+2)%7;} // weekday [0=sat, 1=sun, ..., 6=fri]
 
-long ceDateTime::ut() { return ceDateTime::j2u(this->m_jd);} // unix time
-double ceDateTime::tz() { return this->m_tz; } // time zone in hour 
-long ceDateTime::ct(){ return this->m_ct; } // calendar type [0=British (default), 1=Gregorian, 2=Julian]
-long ceDateTime::SG(){ return this->m_SG; } // Beginning of Gregorian calendar in JDN [default=2361222]
-long ceDateTime::mlen() // length of this month
+inline long ceDateTime::ut() { return ceDateTime::j2u(this->m_jd);} // unix time
+inline double ceDateTime::tz() { return this->m_tz; } // time zone in hour 
+inline long ceDateTime::ct(){ return this->m_ct; } // calendar type [0=British (default), 1=Gregorian, 2=Julian]
+inline long ceDateTime::SG(){ return this->m_SG; } // Beginning of Gregorian calendar in JDN [default=2361222]
+inline long ceDateTime::mlen() // length of this month
 	{ return ceDateTime::wml(this->y(),this->m(),m_ct,m_SG); } 
 //-------------------------------------------------------------------------
 // find the length of western month
@@ -611,7 +856,7 @@ long ceDateTime::mlen() // length of this month
 //  ct:calendar type [Optional argument: 0=British (default), 1=Gregorian, 2=Julian])
 //  SG: Beginning of Gregorian calendar in JDN [Optional argument: (default=2361222)])
 // output: (wml = length of the month)
-long ceDateTime::wml(long y,long m,long ct,long SG) {
+inline long ceDateTime::wml(long y,long m,long ct,long SG) {
 	long j1,j2; long m2=m+1; long  y2=y;
 	if(m2>12){y2++; m2%=12;}
 	j1=long(ceDateTime::w2j(y,m,1,12,0,0,ct,SG));
@@ -619,4 +864,8 @@ long ceDateTime::wml(long y,long m,long ct,long SG) {
 	return (j2-j1);
 }
 //-------------------------------------------------------------------------
-} //namespace ce
+/////////////////////////////////////////////////////////////////////////////
+
+} // namespace ce
+
+#endif // CEDATETIME_H
