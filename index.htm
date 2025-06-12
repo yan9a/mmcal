@@ -14,7 +14,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 	<link rel='stylesheet' href='mc_s.css'>
 	<script src='./javascript/ceMmDateTime.js'></script>
 	<script>
-		// Version: 20200422
+		// Version: 20250612
 		// Required: ./javascript/ceMmDateTime.js
 		//----------------------------------------------------------------------------
 		//Start of UI ################################################################
@@ -28,7 +28,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 			y: dt.getFullYear(), m: (1 + dt.getMonth()), d: dt.getDate(),//y,m,d to display
 			cy: dt.getFullYear(), cm: (1 + dt.getMonth()), cd: dt.getDate(),//current y,m,d
 			BY: 640, EY: 2140, //beginning and end of the calendar,
-			LT: 1700, UT: 2022,//lower and upper threshold for accurate years
+			LT: 1700, UT: 2140,//lower and upper threshold for accurate years
 		};
 		//-------------------------------------------------------------------------
 		//initialize the calendar
@@ -176,13 +176,16 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 		//output: (str: html string)
 		function UIContent() {
 			var r, i, js, je, eml, tstr;
+			var syt = uis.Lang == 4 ? 1 : 0;
 			//------------------------------------------------------------------------
 			var Cday = new ceMmDateTime(); // start of month
 			Cday.SetTimezone(0);
+			Cday.syt = syt;
 			Cday.SetDateTime(uis.cy, uis.cm, uis.cd, 12, 0, 0, 0); // time zone is irrelevant
 			//------------------------------------------------------------------------
 			var MS = new ceMmDateTime(); // start of month
 			MS.SetTimezone(0);
+			MS.syt = syt;
 			MS.SetDateTime(uis.y, uis.m, 1, 12, 0, 0, 0, uis.Type); // time zone is irrelevant
 			js = MS.jdn;//Find julian day number of start of
 			//the month according to calendar type
@@ -190,6 +193,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 			je = js + eml - 1;//Julian day number of end of the month
 			var ME = new ceMmDateTime(); // end of month
 			ME.SetTimezone(0);
+			ME.syt = syt;
 			ME.SetJD(je);
 			//------------------------------------------------------------------------
 			//Start of the table for calendar days
@@ -203,6 +207,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 			var M = new ceMmDateTime(); // end of month
 			M.SetTimezone(0);
 			M.SetCT(uis.Type);
+			M.syt = syt; // if Shan culture, start Sasana year depending on moon phase, i.e. Kason full moon
 			for (i = 0; i < eml; i++) {
 				if ((i % 7) == 0) str += "<tr>";
 				//start of checking valid day to display
@@ -349,6 +354,8 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 		function ShowDay(js) {
 			var str = "", tstr = "";
 			var M = new ceMmDateTime(js, 0, uis.Type);
+			var syt = uis.Lang == 4 ? 1 : 0; // if Shan, set Sasana year type to 1
+			M.syt = syt;			
 			//display English day
 			str += "<div class='DayHead' onclick='ShowMonth();'>" + M.ToString("%y-%M-%dd") + "</div>";
 

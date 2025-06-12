@@ -65,7 +65,7 @@ It consists of the following files
 
 Example C++ program can be seen at 
 
->    [https://github.com/yan9a/mmcal/blob/master/cpp/eg/cedate/cedate.cpp](https://github.com/yan9a/mmcal/blob/master/cpp/eg/cedate/cedate.cpp)
+>    [https://github.com/yan9a/mmcal/blob/master/cpp/test/cedate/cedate.cpp](https://github.com/yan9a/mmcal/blob/master/cpp/test/cedate/cedate.cpp)
 
 
 #### Windows
@@ -73,7 +73,7 @@ Example C++ program can be seen at
 For Windows, you can use MSVC and cmake as follows.
 
 ```
-cd cpp/eg/cedate/
+cd cpp/test/cedate/
 mkdir buildw
 cd buildw
 cmake .. 
@@ -86,7 +86,7 @@ cmake --build . --config Release
 Alternatively, if you want to build the program using MinGW and CMake, you can build it as follows.
 
 ```
-cd cpp/eg/cedate/
+cd cpp/test/cedate/
 mkdir buildw
 cd buildw
 cmake .. -G "MinGW Makefiles"
@@ -108,7 +108,7 @@ $ cd mmcal
 Thereafter, you can navigate to the example folder, build it using cmake, and run it as follows.
 
 ```
-$ cd cpp/eg/cedate
+$ cd cpp/test/cedate
 $ mkdir build
 $ cd build
 $ cmake ..

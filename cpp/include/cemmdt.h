@@ -1,6 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // File: cemmdt.h
 // Description: Modern Myanmar Calendrical Calculations
+// Version: 20250612
+//-------------------------------------------------------------------------
 // WebSite: https://yan9a.github.io/mmcal/
 // MIT License (https://opensource.org/licenses/MIT)
 // Copyright (c) 2018 Yan Naing Aye
@@ -18,6 +20,9 @@ namespace ce {
 class ceMmDateTime : public ceDateTime
 {
 private:
+	long _syt; // Sasana year type, see syt(), and syt(long) for its getter and setter
+	//		default 0 = do not take account kason full moon day for Sasana year
+	//		1 = Sasana year starts on Kason full moon day
 public:
 	//-------------------------------------------------------------------------
 	// default constructor
@@ -326,12 +331,15 @@ public:
 	long myt(); // Myanmar year type	
 	long my(); // Myanmar year
 
-	// Sasana year
-	//  k = optional argument [
+	// Sasana year type
 	//		default 0 = do not take account kason full moon day for Sasana year
 	//		1 = Sasana year starts on Kason full moon day
-	//	]
-	long sy(long k = 0); 
+	long syt(); 
+	void syt(long t);
+
+	// Get Sasana year
+	long sy(); 
+
 	std::string my_name(); // Myanmar year name
 		
 	long mm(); // Myanmar month [1-14]
@@ -377,7 +385,7 @@ public:
 
 //-------------------------------------------------------------------------
 // default constructor
-inline ceMmDateTime::ceMmDateTime():ceDateTime()
+inline ceMmDateTime::ceMmDateTime():ceDateTime(),_syt(0)
 {
 
 }
@@ -1141,9 +1149,20 @@ inline long ceMmDateTime::my(){
 	return my;
 } 
 
+// Sasana year type
+//		default 0 = do not take account kason full moon day for Sasana year
+//		1 = Sasana year starts on Kason full moon day
+inline long ceMmDateTime::syt() {
+	return this->_syt;
+} 
+
+inline void ceMmDateTime::syt(long t) {
+	this->_syt = t;
+}
+
 // Sasana year
-inline long ceMmDateTime::sy(long k){ 
-	return ceMmDateTime::my2sy(this->my(),this->mm(),this->md(),k);
+inline long ceMmDateTime::sy(){ 
+	return ceMmDateTime::my2sy(this->my(),this->mm(),this->md(),this->syt());
 } 
 
 // Myanmar year name
@@ -1247,7 +1266,7 @@ inline std::vector<std::string> ceMmDateTime::holidays2() {
 // output: date string in Myanmar calendar according to fm 
 // where formatting strings are as follows
 // &yyyy : Myanmar year [0000-9999, e.g. 1380]
-// &YYYY : Sasana year [0000-9999, e.g. 2562]
+// &YYYY : Sasana year [0000-9999, e.g. 2562] (it checks Sasana year type)
 // &y : Myanmar year [0-9999, e.g. 138]
 // &mm : month with zero padding [01-14]
 // &M : month [e.g. January]
@@ -1258,6 +1277,16 @@ inline std::vector<std::string> ceMmDateTime::holidays2() {
 // &ff : fortnight day with zero padding [01-15]
 // &f : fortnight day [1-15]
 inline std::string ceMmDateTime::ToMString(std::string fs) {
+	if(this->syt()==1){ // replace &YYYY with &SSSS
+		std::string from = "&YYYY";
+    	std::string to = "&SSSS";
+
+    	size_t pos = 0;
+    	while ((pos = fs.find(from, pos)) != std::string::npos) {
+			fs.replace(pos, from.length(), to);
+			pos += to.length();  // Move past the replacement
+    	}
+	}
 	return ceMmDateTime::j2ms(this->jd(),fs,this->tz());
 }
 //-------------------------------------------------------------------------
