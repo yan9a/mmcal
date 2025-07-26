@@ -14,7 +14,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 	<link rel='stylesheet' href='mc_s.css'>
 	<script src='./javascript/ceMmDateTime.js'></script>
 	<script>
-		// Version: 20250612
+		// Version: 20250726
 		// Required: ./javascript/ceMmDateTime.js
 		//----------------------------------------------------------------------------
 		//Start of UI ################################################################
@@ -176,16 +176,16 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 		//output: (str: html string)
 		function UIContent() {
 			var r, i, js, je, eml, tstr;
-			var syt = uis.Lang == 4 ? 1 : 0;
+			var syt = uis.Lang == 4 ? 1 : 0; // if Shan culture, set Sasana year type to 1 
 			//------------------------------------------------------------------------
 			var Cday = new ceMmDateTime(); // start of month
 			Cday.SetTimezone(0);
-			Cday.syt = syt;
+			Cday.syt = syt; // sasana year type
 			Cday.SetDateTime(uis.cy, uis.cm, uis.cd, 12, 0, 0, 0); // time zone is irrelevant
 			//------------------------------------------------------------------------
 			var MS = new ceMmDateTime(); // start of month
 			MS.SetTimezone(0);
-			MS.syt = syt;
+			MS.syt = syt; 
 			MS.SetDateTime(uis.y, uis.m, 1, 12, 0, 0, 0, uis.Type); // time zone is irrelevant
 			js = MS.jdn;//Find julian day number of start of
 			//the month according to calendar type

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // File: cemmdt.h
 // Description: Modern Myanmar Calendrical Calculations
-// Version: 20250612
+// Version: 20250726
 //-------------------------------------------------------------------------
 // WebSite: https://yan9a.github.io/mmcal/
 // MIT License (https://opensource.org/licenses/MIT)
@@ -22,7 +22,9 @@ class ceMmDateTime : public ceDateTime
 private:
 	long _syt; // Sasana year type, see syt(), and syt(long) for its getter and setter
 	//		default 0 = do not take account kason full moon day for Sasana year
-	//		1 = Sasana year starts on Kason full moon day
+	//		1 = Sasana year starts on the first day of Tagu
+	//		2 = Sasana year starts on Kason full moon day
+
 public:
 	//-------------------------------------------------------------------------
 	// default constructor
@@ -137,14 +139,17 @@ public:
 	//      Tabaung=12, Late Tagu=13, Late Kason=14 ], 
 	//  md= day of the month [1-30], 
 	//  k = optional argument [
-	//		default 0 = do not take account kason full moon day for Sasana year
-	//		1 = Sasana year starts on Kason full moon day
+	//  	default 0 = year depends only on the sun, do not take account moon phase for Sasana year
+	//  	1 = Sasana year starts on the first day of Tagu 
+	//  	2 = Sasana year starts on Kason full moon day
 	//	]
 	// output: (sy -Sasana year)
 	// 
 	// Description: Pull Request #9 by Chan Mrate Ko Ko
 	// Proposal to mark Kason full moon day (Buddha's birthday) as the start of the Sasana year.
 	// This suggestion references certain versions of the Shan and Rakhine Calendars.
+	// On the other hand, the Sasana year starts on the first day of Tagu 
+	// Ref: https://my.wikipedia.org/wiki/%E1%80%9E%E1%80%AC%E1%80%9E%E1%80%94%E1%80%AC_%E1%80%9E%E1%80%80%E1%80%B9%E1%80%80%E1%80%9B%E1%80%AC%E1%80%87%E1%80%BA
 	// It aligns with Shan culture, where the new year begins on the first day of Nadaw,
 	// incorporating the lunar phase into the new year calculation.
 	// Conversely, Burmese culture sets the new year independently of the moon phase.
@@ -315,7 +320,9 @@ public:
 	// output: date string in Myanmar calendar according to fm 
 	// where formatting strings are as follows
 	// &yyyy : Myanmar year [0000-9999, e.g. 1380]
-	// &YYYY : Sasana year [0000-9999, e.g. 2562]
+	// &YYYY : Sasana year regardless of moon phase [0000-9999, e.g. 2562]
+	// &XXXX : Sasana year starting at the first day of Tagu [0000-9999, e.g. 2562]
+	// &ZZZZ : Sasana year starting at Kason full moon day [0000-9999, e.g. 2562]
 	// &y : Myanmar year [0-9999, e.g. 138]
 	// &mm : month with zero padding [01-14]
 	// &M : month [e.g. January]
@@ -333,7 +340,8 @@ public:
 
 	// Sasana year type
 	//		default 0 = do not take account kason full moon day for Sasana year
-	//		1 = Sasana year starts on Kason full moon day
+	//		1 = Sasana year starts on the first day of Tagu
+	//		2 = Sasana year starts on Kason full moon day
 	long syt(); 
 	void syt(long t);
 
@@ -366,7 +374,7 @@ public:
 	// output: date string in Myanmar calendar according to fm 
 	// where formatting strings are as follows
 	// &yyyy : Myanmar year [0000-9999, e.g. 1380]
-	// &YYYY : Sasana year [0000-9999, e.g. 2562]
+	// &YYYY : Sasana year [0000-9999, e.g. 2562] (it checks sanana year type)
 	// &y : Myanmar year [0-9999, e.g. 138]
 	// &mm : month with zero padding [01-14]
 	// &M : month [e.g. January]
@@ -644,20 +652,29 @@ inline long ceMmDateTime::m2j(long my,long mm,long md) {
 //      Tabaung=12, Late Tagu=13, Late Kason=14 ], 
 //  md= day of the month [1-30], 
 //  k = optional argument [
-//		default 0 = do not take account kason full moon day for Sasana year
-//		1 = Sasana year starts on Kason full moon day
+	//  	default 0 = year depends only on the sun, do not take account moon phase for Sasana year
+	//  	1 = Sasana year starts on the first day of Tagu 
+	//  	2 = Sasana year starts on Kason full moon day
 //	]
 // output: (sy -Sasana year)
 // 
 // Description: Pull Request #9 by Chan Mrate Ko Ko
 // Proposal to mark Kason full moon day (Buddha's birthday) as the start of the Sasana year.
 // This suggestion references certain versions of the Shan and Rakhine Calendars.
+// On the other hand, the Sasana year starts on the first day of Tagu 
+// Ref: https://my.wikipedia.org/wiki/%E1%80%9E%E1%80%AC%E1%80%9E%E1%80%94%E1%80%AC_%E1%80%9E%E1%80%80%E1%80%B9%E1%80%80%E1%80%9B%E1%80%AC%E1%80%87%E1%80%BA
 // It aligns with Shan culture, where the new year begins on the first day of Nadaw,
 // incorporating the lunar phase into the new year calculation.
 // Conversely, Burmese culture sets the new year independently of the moon phase.
 // This update offers flexibility in defining the Sasana year which is preferable to enforcing a single fixed approach.
 inline long ceMmDateTime::my2sy(long my, long mm, long md, long k) {
-	long buddhistEraOffset = ((mm == 1 || (mm == 2 && md < 15)) && (k==1)) ? 1181 : 1182;
+	long buddhistEraOffset = 1182;
+	if(k==1){
+		if (mm >=13 ) buddhistEraOffset = 1183; // if late Tagu or late Kason, then Sasana year is next year
+	}
+	else if (k == 2) {
+		if ((mm == 1) || (mm == 2 && md < 15)) buddhistEraOffset = 1181; // if before Kason full moon, then previous year
+	}
 	return (my + buddhistEraOffset); 
 }
 //-------------------------------------------------------------------------
@@ -1050,8 +1067,9 @@ inline std::vector<std::string> ceMmDateTime::cal_holiday2(long jdn) {
 // output: date string in Myanmar calendar according to fm 
 // where formatting strings are as follows
 // &yyyy : Myanmar year [0000-9999, e.g. 1380]
-// &YYYY : Sasana year neglection moon phase [0000-9999, e.g. 2562]
-// &SSSS : Sasana year starting at Kason full moon day [0000-9999, e.g. 2562]
+// &YYYY : Sasana year regardless of moon phase [0000-9999, e.g. 2562]
+// &XXXX : Sasana year starting at the first day of Tagu [0000-9999, e.g. 2562]
+// &ZZZZ : Sasana year starting at Kason full moon day [0000-9999, e.g. 2562]
 // &y : Myanmar year [0-9999, e.g. 138]
 // &mm : month with zero padding [01-14]
 // &M : month [e.g. January]
@@ -1085,8 +1103,14 @@ inline std::string ceMmDateTime::j2ms(double jd, std::string fs, double tz) {
 	rstr = rstr.substr(rstr.length() - 4);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
 	//--------------------------------------------------------
-	long sy2 = ceMmDateTime::my2sy(my,mm,md,1); //Sasana year to start on Kason full moon day
-	fstr = "&SSSS";
+	long sy1 = ceMmDateTime::my2sy(my,mm,md,1); //Sasana year to start on the first day of Tagu
+	fstr = "&XXXX";	
+	rstr = std::string(4, '0') + std::to_string(sy1); 
+	rstr = rstr.substr(rstr.length() - 4);
+	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
+	//--------------------------------------------------------
+	long sy2 = ceMmDateTime::my2sy(my,mm,md,2); //Sasana year to start on Kason full moon day
+	fstr = "&ZZZZ";
 	rstr = std::string(4, '0') + std::to_string(sy2); 
 	rstr = rstr.substr(rstr.length() - 4);
 	fm = ceDateTime::ReplaceAll(fm, fstr, rstr);
@@ -1151,7 +1175,8 @@ inline long ceMmDateTime::my(){
 
 // Sasana year type
 //		default 0 = do not take account kason full moon day for Sasana year
-//		1 = Sasana year starts on Kason full moon day
+//		1 = Sasana year starts on the first day of Tagu
+//		2 = Sasana year starts on Kason full moon day
 inline long ceMmDateTime::syt() {
 	return this->_syt;
 } 
@@ -1277,9 +1302,19 @@ inline std::vector<std::string> ceMmDateTime::holidays2() {
 // &ff : fortnight day with zero padding [01-15]
 // &f : fortnight day [1-15]
 inline std::string ceMmDateTime::ToMString(std::string fs) {
-	if(this->syt()==1){ // replace &YYYY with &SSSS
+	if(this->syt()==1){ // replace &YYYY with &XXXX
 		std::string from = "&YYYY";
-    	std::string to = "&SSSS";
+    	std::string to = "&XXXX";
+
+    	size_t pos = 0;
+    	while ((pos = fs.find(from, pos)) != std::string::npos) {
+			fs.replace(pos, from.length(), to);
+			pos += to.length();  // Move past the replacement
+    	}
+	}
+	else if(this->syt()==2){ // replace &YYYY with &ZZZZ
+		std::string from = "&YYYY";
+    	std::string to = "&ZZZZ";
 
     	size_t pos = 0;
     	while ((pos = fs.find(from, pos)) != std::string::npos) {
