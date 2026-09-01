@@ -45,3 +45,6 @@ x64/
 Testing/
 Debug/
 Release/
+
+# Node
+node_modules/
