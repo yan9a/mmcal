@@ -1,0 +1,75 @@
+name: Lint
+
+on:
+  push:
+    branches: ['*']
+  pull_request:
+    branches:
+      - master
+      - dev
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-latest
+    # Skip pull_request runs for branches within this repo, since the push event already
+    # ran (and will run) the same commit. Still runs for pull requests from forks.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    steps:
+      - uses: actions/checkout@v4
+
+      # turns clang-format's file:line:col: error: ... output into inline annotations
+      - name: Register problem matcher
+        run: echo "::add-matcher::.github/problem-matchers/gcc-diagnostic.json"
+
+      - name: Check C/C++ formatting
+        # Fails if any file would be reformatted by clang-format (config in .clang-format)
+        run: |
+          find cpp -type f \( -name "*.cpp" -o -name "*.h" -o -name "*.c" \) \
+            -exec clang-format --dry-run --Werror -style=file {} +
+
+  clang-tidy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    steps:
+      - uses: actions/checkout@v4
+
+      # turns clang-tidy's file:line:col: warning: ... output into inline annotations
+      - name: Register problem matcher
+        run: echo "::add-matcher::.github/problem-matchers/gcc-diagnostic.json"
+
+      - name: Install clang-tidy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-tidy
+
+      - name: Configure CMake (generate compile_commands.json)
+        run: cmake -B build -S cpp/test/cedate -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Run clang-tidy
+        # header-filter includes cpp/include so the shared headers are analyzed too, not just cedate.cpp
+        run: |
+          clang-tidy -p build cpp/test/cedate/cedate.cpp \
+            --header-filter='.*/include/.*'
+
+  javascript-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting (JS, CSS, HTML, Markdown, JSON)
+        # on failure, print the actual diff so the offending lines are visible in the log
+        run: |
+          npx prettier --check . && exit 0
+          echo "::group::Formatting diff (prettier --write)"
+          npx prettier --write .
+          git --no-pager diff
+          echo "::endgroup::"
+          exit 1
