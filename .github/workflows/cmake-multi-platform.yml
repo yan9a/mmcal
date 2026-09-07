@@ -4,13 +4,18 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: 
+    branches: ["*"]
+  pull_request:
+    branches:
       - master
       - dev
-      
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    # Skip pull_request runs for branches within this repo, since the push event already
+    # ran (and will run) the same commit. Still runs for pull requests from forks.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
 
     strategy:
       # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
@@ -68,8 +73,8 @@ jobs:
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
-    #- name: Test
-      # working-directory: ${{ steps.strings.outputs.build-output-dir }}
+    - name: Test
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      # run: ctest --build-config ${{ matrix.build_type }}
+      run: ctest --build-config ${{ matrix.build_type }} --output-on-failure

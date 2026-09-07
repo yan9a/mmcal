@@ -47,8 +47,8 @@
 
 #include <algorithm>
 #include <cmath>
-#include <string>
 #include <ctime>
+#include <string>
 #if defined(CE_WINDOWS)
 #include <time.h>
 #include <windows.h>

@@ -4,3 +4,6 @@ set (CMAKE_CXX_STANDARD 11)
 include_directories(../../include)
 set(SOURCES cedate.cpp)
 add_executable(cedate ${SOURCES})
+
+enable_testing()
+add_test(NAME cedate COMMAND cedate)

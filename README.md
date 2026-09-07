@@ -74,6 +74,7 @@ cmake ..
 # multi-configuration generators
 cmake --build . --config Release
 .\Release\cedate.exe
+ctest -C Release
 ```
 
 Alternatively, if you want to build the program using MinGW and CMake, you can build it as follows.
@@ -85,6 +86,7 @@ cd buildw
 cmake .. -G "MinGW Makefiles"
 mingw32-make.exe all
 .\cedate
+ctest
 ```
 
 #### Linux
@@ -107,6 +109,7 @@ $ cd build
 $ cmake ..
 $ make
 $ ./cedate
+$ ctest
 ```
 
 ### Code formatting
