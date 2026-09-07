@@ -469,7 +469,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
         try {
           var ih = chron.hSearch(M.jdn); //search for historical date
           if (ih >= 0) {
-            str += "<br/><p class='HLabel'>Chronicled</p>";
+            str += "<br/><p class='HLabel'>History</p>";
           }
         } catch (err) {}
         str = x.T(str, uis.Lang);
@@ -578,7 +578,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
           var ih = chron.hSearch(M.jdn); //search for historical date
           if (ih >= 0) {
             str +=
-              "<p class='MCAstro DaFontSize'>Chronicled: " +
+              "<p class='MCAstro DaFontSize'>History: " +
               chron.chronicle(M.jdn) +
               '</p>';
           }
@@ -621,7 +621,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
         //accuracy
         if (uis.y < uis.LT || uis.y > uis.UT)
           str +=
-            "<p class='DaFoot'>Important note: the accuracy of this Myanmar date is in question!</p>";
+            "<p class='DaFoot'>This Myanmar date is outside the verified accuracy range.</p>";
 
         //Back button
         str +=
