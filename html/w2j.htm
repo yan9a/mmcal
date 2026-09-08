@@ -80,6 +80,7 @@
         de.value = dn;
         var he = document.getElementById('h');
         var hn = Number(he.value);
+        hn = Math.min(23, Math.max(0, hn));
         he.value = hn;
         var ne = document.getElementById('n');
         var nn = Number(ne.value);

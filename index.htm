@@ -651,6 +651,10 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
     <div id="mcalg"></div>
     <script>
       initc();
+      ceMmChronicleDataReady.then(() => {
+        chron = new ceMmChronicle();
+        DisplayUI(0);
+      });
     </script>
   </body>
 </html>
