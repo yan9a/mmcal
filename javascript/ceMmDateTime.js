@@ -7,18 +7,36 @@
 // Copyright (c) 2018 Yan Naing Aye
 // Doc: http://cool-emerald.blogspot.com/2013/06/algorithm-program-and-calculation-of.html
 //-------------------------------------------------------------------------
+// Usage: <script src="./javascript/ceMmDateTime.js"></script>
+// Await ceMmChronicleDataReady before creating or rendering ceMmChronicle data.
+// Example: ceMmChronicleDataReady.then(() => new ceMmChronicle());
 (() => {
   const baseUrl = new URL('.', document.currentScript.src);
+  const chronicleData = [
+    ['chronicle-rulers.json', 'ceMmChronicleRulers'],
+    ['chronicle-dynasties.json', 'ceMmChronicleDynasties', {}],
+    ['chronicle-events.json', 'ceMmChronicleEvents'],
+  ];
 
-  [
-    'chronicle-rulers.js',
-    'chronicle-dynasties.js',
-    'chronicle-events.js',
-  ].forEach((filename) => {
-    document.write(
-      `<script src="${new URL(filename, baseUrl).href}"><\/script>`,
-    );
-  });
+  for (const [, globalName, fallback = []] of chronicleData) {
+    globalThis[globalName] = fallback;
+  }
+
+  globalThis.ceMmChronicleDataReady = Promise.all(
+    chronicleData.map(async ([filename, globalName, fallback = []]) => {
+      const dataUrl = new URL(filename, baseUrl);
+      try {
+        const response = await fetch(dataUrl, {
+          signal: AbortSignal.timeout(3000),
+        });
+        if (!response.ok)
+          throw new Error(`Unable to load chronicle data: ${dataUrl}`);
+        globalThis[globalName] = JSON.parse(await response.text());
+      } catch {
+        globalThis[globalName] = fallback;
+      }
+    }),
+  );
 })();
 //-------------------------------------------------------------------------
 class ceDateTime {
