@@ -73,3 +73,12 @@ jobs:
           git --no-pager diff
           echo "::endgroup::"
           exit 1
+
+  chronicle-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check chronicle data
+        run: python3 util/check-chronicle.py
