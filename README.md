@@ -112,6 +112,16 @@ $ ./cedate
 $ ctest
 ```
 
+### Chronicle data
+
+When updating **[chronicle-events.json](javascript/chronicle-events.json)**, keep entries in non-decreasing `Julian Day Number` order. `ceMmChronicle.hSearch()` uses binary search to find events.
+
+Run the following check from the repository root before committing event changes:
+
+```
+python3 util/check-chronicle.py
+```
+
 ### Code formatting
 
 #### Prettier (JS, CSS, HTML, Markdown, JSON)
