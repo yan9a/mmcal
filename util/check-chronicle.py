@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 EVENTS_FILE = Path(__file__).resolve().parent.parent / "javascript" / "chronicle-events.json"
-JDN_KEY = "Julian Day Number"
+JDN_KEY = "jdn"
 
 
 def main() -> int:

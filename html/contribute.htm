@@ -1,0 +1,212 @@
+﻿<!doctype html>
+<html
+  class="v2"
+  dir="ltr"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:b="http://www.google.com/2005/gml/b"
+  xmlns:data="http://www.google.com/2005/gml/data"
+  xmlns:expr="http://www.google.com/2005/gml/expr"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="description"
+      content="How to contribute chronicle events (from stone inscriptions, bells, and other historical sources) to the Myanmar Calendar project's chronicle-events.json file."
+    />
+    <meta
+      name="keywords"
+      content="Myanmar calendar, chronicle, contribute, stone inscription"
+    />
+    <meta name="author" content="Emerald" />
+    <title>Contribute - Myanmar Calendar</title>
+    <!-- ---------------------------------------------------------------------- -->
+    <link href="play.css" rel="stylesheet" />
+    <style type="text/css">
+      @font-face {
+        font-family: 'Tharlon';
+        font-style: normal;
+        font-weight: 400;
+        src: url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.eot);
+        src:
+          url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.eot?#iefix)
+            format('embedded-opentype'),
+          url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.woff2)
+            format('woff2'),
+          url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.woff)
+            format('woff'),
+          url(//fonts.gstatic.com/ea/tharlon/v3/Tharlon-Regular.ttf)
+            format('truetype');
+      }
+      body {
+        font-size: 14px;
+        background-color: #111111;
+        font-family: 'Play', sans-serif;
+        text-align: left;
+        line-height: 2;
+        color: #999999;
+      }
+      a {
+        text-decoration: none;
+        color: #cca6f2;
+      }
+      a:hover {
+        text-decoration: underline;
+        color: #cca6f2;
+      }
+      h1,
+      h3 {
+        color: #7ece7e;
+      }
+      .DW {
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        width: 800px;
+        background-color: #222222;
+        padding: 50px;
+        box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+      }
+      td,
+      th {
+        padding: 10px;
+        border: 1px solid #666666;
+      }
+      table {
+        border: 1px solid #666666;
+        margin: 0px;
+        padding: 0px;
+        border-spacing: 0px;
+        border-collapse: collapse;
+      }
+      pre,
+      textarea {
+        color: #7ece7e;
+        background-color: #111111;
+        border: 1px solid #333333;
+        padding: 5px;
+      }
+      hr {
+        border: 1px solid #333333;
+      }
+      .CalS {
+        background-color: #111111;
+        border: 1px solid #333333;
+        padding: 10px;
+        color: #cca6f2;
+      }
+    </style>
+    <!-- ---------------------------------------------------------------------- -->
+  </head>
+  <body>
+    <div class="DW">
+      <h2><a href="../index.htm">Myanmar Calendar</a></h2>
+      <br />
+      <hr />
+      <!-- ---------------------------------------------------------------------- -->
+
+      <h3>Contribute</h3>
+      Contribute chronicle events from stone inscriptions, bells, and other
+      historical sources to the JSON file below. Each event is a JSON object
+      placed inside the array, and the array must be kept in non-decreasing
+      <b>jdn</b> (Julian Day Number) order since
+      <span class="CalS">ceMmChronicle.hSearch()</span> looks up events using
+      binary search.<br /><br />
+      <a href="../javascript/chronicle-events.json">Chronicle Events JSON</a
+      ><br />
+      <br />
+      To add an event: fork the repository, add your entry in the correct
+      position by
+      <b>jdn</b>, then run
+      <span class="CalS">python3 util/check-chronicle.py</span> from the
+      repository root to confirm the ordering is valid before submitting a pull
+      request.<br />
+      <br />
+      <hr />
+      <!-- ---------------------------------------------------------------------- -->
+
+      <h3>Meaning of Each Field</h3>
+      <br />
+      <table>
+        <tr>
+          <th>Field</th>
+          <th>Meaning</th>
+        </tr>
+        <tr>
+          <td>jdn</td>
+          <td>
+            Julian Day Number of the event, used as the sort key and search key.
+          </td>
+        </tr>
+        <tr>
+          <td>my</td>
+          <td>Myanmar year corresponding to the date.</td>
+        </tr>
+        <tr>
+          <td>mm</td>
+          <td>Myanmar month name corresponding to the date.</td>
+        </tr>
+        <tr>
+          <td>mp</td>
+          <td>Moon phase (Waxing, Full moon, Waning, or New moon).</td>
+        </tr>
+        <tr>
+          <td>fd</td>
+          <td>Fortnight day, from 1 to 15.</td>
+        </tr>
+        <tr>
+          <td>dow</td>
+          <td>Day of the week corresponding to the date.</td>
+        </tr>
+        <tr>
+          <td>desc</td>
+          <td>
+            Short one-line description of the event, shown in the calendar when
+            a matching date is selected.
+          </td>
+        </tr>
+        <tr>
+          <td>fullText</td>
+          <td>
+            Optional longer excerpt or transcription related to the event, such
+            as inscription text. Leave as an empty string if not available.
+          </td>
+        </tr>
+        <tr>
+          <td>images</td>
+          <td>
+            Optional array of image file names related to the event. Leave as an
+            empty array if not available.
+          </td>
+        </tr>
+      </table>
+      <br />
+      Example entry:<br />
+      <pre>
+{
+  "jdn": 2150320,
+  "my": 537,
+  "mm": "Kason",
+  "mp": "Waxing",
+  "fd": 10,
+  "dow": "Friday",
+  "desc": "Foundation of a monastery, land and servants donated.",
+  "fullText": "",
+  "images": []
+}</pre>
+      <br />
+      <hr />
+      <!-- ---------------------------------------------------------------------- -->
+      <h3>Relating Myanmar Calendar Date and Julian Day Number</h3>
+
+      <br />
+      If a stone script contains a Myanmar Calendar date, you can relate it to
+      the Julian Day Number by checking the following Myanmar to English
+      calendar. Go the corresponding myanmar year, and month. Then click on the
+      corresponding day to find its Julian Day Number.
+      <a href="../m.htm">Myanmar to English Calendar</a><br />
+      <br /><br />
+      <hr />
+      <!-- ---------------------------------------------------------------------- -->
+    </div>
+  </body>
+</html>

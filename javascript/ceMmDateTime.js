@@ -2390,7 +2390,7 @@ class ceMmChronicle {
     var str = '';
     var i = this.hSearch(jdn);
     if (i >= 0) {
-      str = this.m_ev[i]['Description'];
+      str = this.m_ev[i]['desc'];
     }
     return str;
   }
@@ -2404,8 +2404,8 @@ class ceMmChronicle {
     var u = this.m_ev.length - 1;
     while (u >= l) {
       i = Math.floor((l + u) / 2); // calculate midpoint
-      if (this.m_ev[i]['Julian Day Number'] < jdn) l = i + 1;
-      else if (this.m_ev[i]['Julian Day Number'] > jdn) u = i - 1;
+      if (this.m_ev[i]['jdn'] < jdn) l = i + 1;
+      else if (this.m_ev[i]['jdn'] > jdn) u = i - 1;
       else {
         return i;
       } // found
