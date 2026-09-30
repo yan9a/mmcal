@@ -2,6 +2,7 @@
 <html
   class="v2"
   dir="ltr"
+  lang="my"
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:b="http://www.google.com/2005/gml/b"
   xmlns:data="http://www.google.com/2005/gml/data"
@@ -580,7 +581,9 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
             str +=
               "<p class='DaFontSize HLabel'>History: " +
               chron.chronicle(M.jdn) +
-              '</p>';
+              "<a class='DaFontSize AnchorFootMC' href='./html/chronicles.htm?jdn=" +
+              M.jdn +
+              "'> Read more...</a> </p>";
           }
         } catch (err) {}
 

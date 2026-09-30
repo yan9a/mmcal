@@ -631,7 +631,9 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
             str +=
               "<p class='DaFontSize HLabel'>History: " +
               chron.chronicle(M.jdn) +
-              '</p>';
+              "<a class='DaFontSize AnchorFootMC' href='./html/chronicles.htm?jdn=" +
+              M.jdn +
+              "'> Read more...</a> </p>";
           }
         } catch (err) {}
 
