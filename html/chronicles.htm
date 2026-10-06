@@ -94,18 +94,57 @@
         padding: 10px;
         color: #cca6f2;
       }
-      .expandable {
+      .chronicleRow {
         cursor: pointer;
       }
-      .expandable td {
+      .chronicleRow td {
         white-space: pre-wrap;
         word-break: break-word;
       }
-      .expandable:hover {
+      .chronicleRow:hover {
         background-color: #2a2a2a;
       }
       .hl {
         background-color: #333318;
+      }
+      .fulltextOverlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+      .fulltextOverlay[hidden] {
+        display: none;
+      }
+      .fulltextModal {
+        position: relative;
+        max-width: 700px;
+        max-height: 80vh;
+        overflow: auto;
+        background-color: #222222;
+        border: 1px solid #666666;
+        padding: 20px;
+        box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+      }
+      .fulltextModal pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        border: none;
+        background: none;
+        padding: 0;
+      }
+      .fulltextClose {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #111111;
+        color: #cca6f2;
+        border: 1px solid #666666;
+        padding: 5px 10px;
+        cursor: pointer;
       }
     </style>
     <!-- ---------------------------------------------------------------------- -->
@@ -121,8 +160,8 @@
 
       <h3>Chronicles</h3>
       A collection of historical events from stone inscriptions, bells, and
-      other sources, organized in chronological order. Click a row to expand or
-      collapse its full description. Link directly to an event with
+      other sources, organized in chronological order. Click a row to link
+      directly to it, or link to an event with
       <span class="CalS">chronicles.htm?jdn=&lt;Julian Day Number&gt;</span>.
       <!-- ---------------------------------------------------------------------- -->
       <br /><br /><br />
@@ -130,11 +169,7 @@
         <thead>
           <tr>
             <th>Julian Day Number</th>
-            <th>Myanmar Year</th>
-            <th>Myanmar Month</th>
-            <th>Moon Phase</th>
-            <th>Fortnight Day</th>
-            <th>Day of the Week</th>
+            <th>Date</th>
             <th>Description</th>
             <th>Full Text</th>
             <th>Images</th>
@@ -142,35 +177,74 @@
         </thead>
         <tbody id="chronicleBody">
           <tr>
-            <td colspan="9">Loading chronicles...</td>
+            <td colspan="5">Loading chronicles...</td>
           </tr>
         </tbody>
       </table>
       <br />
 
+      <div id="fulltextOverlay" class="fulltextOverlay" hidden>
+        <div class="fulltextModal">
+          <button type="button" id="fulltextClose" class="fulltextClose">
+            Close
+          </button>
+          <pre id="fulltextContent"></pre>
+        </div>
+      </div>
+
       <!-- ---------------------------------------------------------------------- -->
       <script type="text/javascript">
-        // Columns shown as-is; desc/fullText are truncated until the row is clicked.
-        var chronicleFields = ['jdn', 'my', 'mm', 'mp', 'fd', 'dow'];
-        var TRUNCATE_LEN = 60;
-        var jdnRowMap = {}; // jdn -> { tr, tdDesc, tdFull, ev }, for URL-driven navigation
+        var jdnRowMap = {}; // jdn -> tr, for URL-driven navigation
+        var fulltextOverlay = document.getElementById('fulltextOverlay');
+        var fulltextContent = document.getElementById('fulltextContent');
 
-        function truncate(text, maxLen) {
-          text = text || '';
-          return text.length > maxLen
-            ? text.slice(0, maxLen).trimEnd() + '...'
-            : text;
+        // Combine my/mm/mp/fd/dow into one readable Date column.
+        function formatChronicleDate(ev) {
+          return (
+            'Year ' +
+            ev.my +
+            ', ' +
+            ev.mm +
+            ', ' +
+            ev.mp +
+            ' ' +
+            ev.fd +
+            ', ' +
+            ev.dow
+          );
         }
 
-        function setExpanded(state, expand) {
-          state.tr.classList.toggle('expanded', expand);
-          state.tdDesc.textContent = expand
-            ? state.ev.desc || ''
-            : truncate(state.ev.desc, TRUNCATE_LEN);
-          state.tdFull.textContent = expand
-            ? state.ev.fullText || ''
-            : truncate(state.ev.fullText, TRUNCATE_LEN);
+        // Fetch and render as text so non-ASCII (Myanmar) content decodes as UTF-8 correctly.
+        function openFulltext(url) {
+          fulltextContent.textContent = 'Loading...';
+          fulltextOverlay.hidden = false;
+          fetch(url)
+            .then(function (res) {
+              if (!res.ok) throw new Error('Unable to load full text: ' + url);
+              return res.text();
+            })
+            .then(function (text) {
+              fulltextContent.textContent = text;
+            })
+            .catch(function () {
+              fulltextContent.textContent = 'Unable to load full text.';
+            });
         }
+
+        function closeFulltext() {
+          fulltextOverlay.hidden = true;
+          fulltextContent.textContent = '';
+        }
+
+        document
+          .getElementById('fulltextClose')
+          .addEventListener('click', closeFulltext);
+        fulltextOverlay.addEventListener('click', function (e) {
+          if (e.target === fulltextOverlay) closeFulltext();
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') closeFulltext();
+        });
 
         function highlightRow(tr) {
           document.querySelectorAll('.hl').forEach(function (el) {
@@ -179,7 +253,7 @@
           if (tr) tr.classList.add('hl');
         }
 
-        // Reflect the expanded row in the URL so it can be copied/shared or linked from index.htm.
+        // Reflect the selected row in the URL so it can be copied/shared or linked from index.htm.
         function updateUrlJdn(jdn) {
           var url = new URL(location.href);
           if (jdn) url.searchParams.set('jdn', jdn);
@@ -188,32 +262,44 @@
         }
 
         function jumpToJdn(jdn, scroll) {
-          var state = jdn && jdnRowMap[jdn];
-          if (!state) return;
-          setExpanded(state, true);
-          highlightRow(state.tr);
+          var tr = jdn && jdnRowMap[jdn];
+          if (!tr) return;
+          highlightRow(tr);
           if (scroll !== false)
-            state.tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function chronicleRow(ev) {
           var tr = document.createElement('tr');
           tr.id = 'evt-' + ev.jdn;
-          tr.classList.add('expandable');
-          tr.title = 'Click to expand/collapse details';
+          tr.classList.add('chronicleRow');
+          tr.title = 'Click to link to this row';
 
-          chronicleFields.forEach(function (key) {
-            var td = document.createElement('td');
-            td.textContent = ev[key] ?? '';
-            tr.appendChild(td);
-          });
+          var tdJdn = document.createElement('td');
+          tdJdn.textContent = ev.jdn ?? '';
+          tr.appendChild(tdJdn);
+
+          var tdDate = document.createElement('td');
+          tdDate.textContent = formatChronicleDate(ev);
+          tr.appendChild(tdDate);
 
           var tdDesc = document.createElement('td');
-          tdDesc.textContent = truncate(ev.desc, TRUNCATE_LEN);
+          tdDesc.textContent = ev.desc ?? '';
           tr.appendChild(tdDesc);
 
           var tdFull = document.createElement('td');
-          tdFull.textContent = truncate(ev.fullText, TRUNCATE_LEN);
+          if (ev.fullText) {
+            var fullA = document.createElement('a');
+            fullA.href = '../fulltext/' + encodeURIComponent(ev.fullText);
+            fullA.rel = 'noopener noreferrer';
+            fullA.textContent = 'View';
+            fullA.addEventListener('click', function (e) {
+              e.preventDefault(); // show it in the overlay instead of navigating to the raw file
+              e.stopPropagation(); // don't trigger row navigation when opening the full text
+              openFulltext(fullA.href);
+            });
+            tdFull.appendChild(fullA);
+          }
           tr.appendChild(tdFull);
 
           var tdImg = document.createElement('td');
@@ -225,20 +311,17 @@
             a.rel = 'noopener noreferrer';
             a.textContent = fn;
             a.addEventListener('click', function (e) {
-              e.stopPropagation(); // don't toggle the row when opening an image
+              e.stopPropagation(); // don't trigger row navigation when opening an image
             });
             tdImg.appendChild(a);
           });
           tr.appendChild(tdImg);
 
-          var state = { tr: tr, tdDesc: tdDesc, tdFull: tdFull, ev: ev };
-          jdnRowMap[ev.jdn] = state;
+          jdnRowMap[ev.jdn] = tr;
 
           tr.addEventListener('click', function () {
-            var expand = !tr.classList.contains('expanded');
-            setExpanded(state, expand);
-            highlightRow(expand ? tr : null);
-            updateUrlJdn(expand ? ev.jdn : null);
+            highlightRow(tr);
+            updateUrlJdn(ev.jdn);
           });
 
           return tr;
@@ -251,7 +334,7 @@
           if (!events.length) {
             var tr0 = document.createElement('tr');
             var td0 = document.createElement('td');
-            td0.colSpan = 9;
+            td0.colSpan = 5;
             td0.textContent = 'No chronicle events found.';
             tr0.appendChild(td0);
             tbody.appendChild(tr0);
@@ -266,13 +349,10 @@
           jumpToJdn(new URLSearchParams(location.search).get('jdn'));
         });
 
-        // Keep the table in sync with browser back/forward navigation.
+        // Keep the highlighted row in sync with browser back/forward navigation.
         window.addEventListener('popstate', function () {
           var jdn = new URLSearchParams(location.search).get('jdn');
-          Object.keys(jdnRowMap).forEach(function (key) {
-            setExpanded(jdnRowMap[key], key === jdn);
-          });
-          highlightRow(jdn && jdnRowMap[jdn] ? jdnRowMap[jdn].tr : null);
+          highlightRow(jdn && jdnRowMap[jdn] ? jdnRowMap[jdn] : null);
           if (jdn) jumpToJdn(jdn);
         });
       </script>
