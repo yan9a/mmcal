@@ -13,200 +13,201 @@ body {
   margin-left: auto;
   margin-right: auto;
   font-family:
-    'Myanmar Text', 'Myanmar MN', 'Droid Sans', Padauk, Myanmar3, Arial,
-    Helvetica, sans-serif;
+    Arial, Helvetica, 'Myanmar Text', 'Myanmar MN', 'Noto Sans Myanmar', Padauk,
+    Myanmar3, sans-serif;
 }
 
 /* Div container for day*/
 .DivContainerDay {
   width: 350px;
   font-family:
-    'Myanmar Text', 'Myanmar MN', 'Droid Sans', Padauk, Myanmar3, Arial,
-    Helvetica, sans-serif;
+    Arial, Helvetica, 'Myanmar Text', 'Myanmar MN', 'Noto Sans Myanmar', Padauk,
+    Myanmar3, sans-serif;
   color: #999999;
   background-color: #222222;
   padding: 20px;
   margin-left: auto;
   margin-right: auto;
   box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
-  font-size: 16px;
+  font-size: 1.0625rem;
+  line-height: 1.5;
   text-align: left;
 }
 
-/* Table container for controls*/
-.TableContainerCtrl {
-  border: 0px solid #333333;
-  margin: 2px;
-  padding: 0px;
-  border-spacing: 0px;
-  border-collapse: collapse;
+.CalendarToolbar {
+  color: #ccc;
+  margin-bottom: 0.625rem;
 }
 
-/* Table cell container for decrease month control*/
-.TdContainerBtnDec {
-  text-align: left;
-  vertical-align: top;
-  line-height: 150%;
-  margin: 0px;
-  padding: 0px;
-  width: 66px;
+.CalendarControls {
+  display: grid;
+  grid-template-columns:
+    3.375rem minmax(0, 1.15fr) minmax(0, 1.25fr) 3.375rem
+    minmax(0, 1.45fr) minmax(0, 1.25fr);
+  align-items: end;
+  gap: 0.75rem;
 }
 
-/* Button control decrease month */
-.BtnDec {
-  color: #999999;
-  padding: 5px;
-  margin: 0px;
-  text-align: left;
-  background-color: transparent;
-  border: 2px solid #333333;
-  font-size: 32px;
-  font-family: Arial, Helvetica, sans-serif;
-  width: 46px;
-  height: 64px;
+.CalendarField {
+  display: grid;
+  gap: 0.3125rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
-/* Table cell container for year control*/
-.TdContainerYear {
-  text-align: left;
-  vertical-align: top;
-  line-height: 150%;
-  margin: 0px;
-  padding: 0px;
-  width: 140px;
+.CalendarField label {
+  font-size: 0.9375rem;
+  line-height: 1.5;
 }
 
-/* Input year control*/
-.InpYear {
-  color: #999999;
-  padding: 5px;
-  margin: 0px;
-  text-align: left;
-  background-color: transparent;
-  border: 2px solid #333333;
-  font-size: 32px;
-  font-family: Arial, Helvetica, sans-serif;
-  width: 110px;
-  height: 50px;
+.YearRange,
+.YearError,
+.CalendarScrollHint {
+  font-size: 0.875rem;
+  line-height: 1.5;
 }
 
-/* Table cell container for month control*/
-.TdContainerMonth {
-  text-align: left;
-  vertical-align: top;
-  line-height: 150%;
-  margin: 0px;
-  padding: 0px;
-  width: 180px;
+.CalendarControls input,
+.CalendarControls select,
+.CalendarControls button,
+.TodayButton,
+.BtnBack {
+  box-sizing: border-box;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid #777;
+  border-radius: 4px;
+  background: #222;
+  color: #ddd;
+  color-scheme: dark;
+  font: inherit;
 }
 
-/* Select month control*/
-.InpMonth {
-  color: #999999;
-  padding: 5px;
-  margin: 0px;
-  text-align: left;
-  background-color: transparent;
-  border: 2px solid #333333;
-  font-size: 32px;
-  font-family: Arial, Helvetica, sans-serif;
-  width: 160px;
-  height: 64px;
+.CalendarControls input,
+.CalendarControls select,
+.CalendarControls button {
+  width: 100%;
+  min-height: 56px;
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.CalendarControls button {
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.CalendarSelect {
+  position: relative;
+  min-width: 0;
+}
+
+.CalendarSelect select {
   appearance: none;
-  -moz-appearance: none; /* Firefox */
-  -webkit-appearance: none; /* Safari and Chrome */
+  padding-inline: 0.75rem 2.15rem;
+  text-overflow: ellipsis;
 }
 
-/* Table cell container for increase month control*/
-.TdContainerBtnInc {
-  text-align: left;
-  vertical-align: top;
-  line-height: 150%;
-  margin: 0px;
-  padding: 0px;
-  width: 66px;
+.CalendarSelect::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: 0.875rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border: solid currentColor;
+  border-width: 0 1.5px 1.5px 0;
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
 }
 
-/* Button control increase month */
-.BtnInc {
-  color: #999999;
-  padding: 5px;
-  margin: 0px;
-  text-align: left;
-  background-color: transparent;
-  border: 2px solid #333333;
-  font-size: 32px;
-  font-family: Arial, Helvetica, sans-serif;
-  width: 46px;
-  height: 64px;
+.YearInput {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2rem;
+  gap: 0.375rem;
 }
 
-/* Table cell container for empty space*/
-.TdContainerSpace {
-  text-align: left;
-  vertical-align: top;
-  line-height: 150%;
-  margin: 0px;
-  padding: 0px;
-  width: 24px;
+.YearInput input {
+  min-width: 0;
 }
 
-/* Table cell container for calendar type control*/
-.TdContainerType {
-  text-align: left;
-  vertical-align: top;
-  line-height: 150%;
-  margin: 0px;
-  padding: 0px;
-  width: 190px;
+.YearSteps {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.25rem;
 }
 
-/* Select calendar type control*/
-.InpType {
-  color: #999999;
-  padding: 5px;
-  margin: 0px;
-  text-align: left;
-  background-color: transparent;
-  border: 2px solid #333333;
-  font-size: 32px;
-  font-family: Arial, Helvetica, sans-serif;
-  width: 170px;
-  height: 64px;
-  appearance: none;
-  -moz-appearance: none; /* Firefox */
-  -webkit-appearance: none; /* Safari and Chrome */
+.YearSteps button {
+  min-height: 26px;
+  padding: 0;
+  line-height: 1;
 }
 
-/* Table cell container for language control*/
-.TdContainerLanguage {
-  text-align: left;
-  vertical-align: top;
-  line-height: 150%;
-  margin: 0px;
-  padding: 0px;
-  width: 174px;
+.YearSteps button[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: default;
 }
 
-/* Select language control*/
-.InpLanguage {
-  color: #999999;
-  padding: 5px;
-  margin: 0px;
-  text-align: left;
-  background-color: transparent;
-  border: 2px solid #333333;
-  font-size: 32px;
-  font-family: Arial, Helvetica, sans-serif;
-  width: 170px;
-  height: 64px;
-  appearance: none;
-  -moz-appearance: none; /* Firefox */
-  -webkit-appearance: none; /* Safari and Chrome */
+.CalendarControls input[aria-invalid='true'] {
+  border-color: #ff8080;
+}
+
+.CalendarControls :focus-visible,
+.TodayButton:focus-visible,
+.BtnBack:focus-visible {
+  outline: 2px solid #cca6f2;
+  outline-offset: 2px;
+}
+
+.CalendarToolbarMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.375rem;
+}
+
+.TodayButton {
+  min-height: 36px;
+  padding-inline: 0.75rem;
+  cursor: pointer;
+}
+
+.YearRange {
+  margin: 0;
+}
+
+.YearError {
+  margin: 0.375rem 0 0;
+  color: #ffabab;
+}
+
+.YearError:empty {
+  margin: 0;
+}
+
+.CalendarLinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.CalendarLinks a {
+  font-size: 1rem;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
 
 /* Table for Myanmar Calendar*/
 .TableMC {
+  width: 100%;
   border: 1px solid #333333;
   margin: 0px;
   padding: 0px;
@@ -228,7 +229,7 @@ body {
   color: #cccccc;
   padding: 10px;
   margin: 0px;
-  font-size: 16px;
+  font-size: 1.0625rem;
 }
 
 /* Table footer row for Myanmar Calendar*/
@@ -283,30 +284,54 @@ body {
   text-align: left;
   vertical-align: top;
   padding: 8px;
-  line-height: 100%;
+  line-height: 1.35;
   border: 1px solid #333333;
   font-size: 14px;
   width: 120px;
   background-color: #222222;
 }
 
+.CalendarToolbar:lang(my) label,
+.CalendarToolbar:lang(my) .YearRange,
+.CalendarToolbar:lang(my) .YearError,
+.CalendarSelect select:is(:lang(my), :lang(mnw), :lang(shn), :lang(ksw)),
+.TableMC:lang(my) .TdMC,
+.TableMC:lang(my) .PThMC,
+.DivContainerDay:lang(my) {
+  line-height: 1.65;
+}
+
+.TdMC p {
+  margin: 0 0 0.1875rem;
+}
+
+.TdMC p:last-child {
+  margin-bottom: 0;
+}
+
+.TdMC p:empty {
+  display: none;
+}
+
+.TdMC .PTdMC {
+  font-size: 0.9375rem;
+}
+
 /* Primary day*/
 .PriDay {
   color: #cccccc;
-  font-size: 18px;
+  font-size: 1.25rem;
 }
 
 /* Primary day as today*/
 .PriDayToday {
   color: #cca6f2;
-  font-size: 18px;
+  font-size: 1.25rem;
   font-weight: bold;
   text-shadow: 1px 1px 2px #ff8080;
   border: 1px solid #333333;
-  padding-top: -8px;
   padding-left: 4px;
   padding-right: 4px;
-  padding-bottom: -8px;
   background-color: #662222;
   border-radius: 5px;
   -moz-border-radius: 5px;
@@ -316,25 +341,25 @@ body {
 /* Primary day as holiday*/
 .PriDayHoliday {
   color: #ff8080;
-  font-size: 18px;
+  font-size: 1.25rem;
 }
 
 /* Primary day as weekend*/
 .PriDayWeekend {
   color: #ff8080;
-  font-size: 18px;
+  font-size: 1.25rem;
 }
 
 /* Primary day as inaccuate*/
 .PriDayInaccu {
   color: #cca6f2;
-  font-size: 18px;
+  font-size: 1.25rem;
 }
 
 /* Sabbath day*/
 .MCSabbath {
   color: #7ece7e;
-  font-size: 12px;
+  font-size: 0.8125rem;
 }
 
 /* Secondary day*/
@@ -352,19 +377,19 @@ body {
 /* Public Holiday description*/
 .MCPubHol {
   color: #ff8080;
-  font-size: 12px;
+  font-size: 0.8125rem;
 }
 
 /* Holiday description*/
 .MCHol {
   color: #cca6f2;
-  font-size: 12px;
+  font-size: 0.8125rem;
 }
 
 /* Yatyaza and Pyathada*/
 .MCYtyz {
   color: #7ece7e;
-  font-size: 12px;
+  font-size: 0.8125rem;
 }
 
 /* Astrological day description*/
@@ -395,34 +420,24 @@ body {
   border: solid #cccccc 1px;
 }
 
-/* Button back to main */
 .BtnBack {
-  color: #999999;
-  padding: 3px;
-  margin: auto;
-  text-align: center;
-  background-color: transparent;
-  border: 1px solid #333333;
-  font-size: 14px;
-  font-family: Arial, Helvetica, sans-serif;
-  width: 100px;
-  height: 32px;
   display: block;
+  width: fit-content;
+  margin: 1rem auto 0;
+  cursor: pointer;
 }
 
 /*font size for day display*/
 .DaFontSize {
-  font-size: 16px;
+  font-size: inherit;
 }
 
 /* Historical day*/
 .HLabel {
   color: rgb(196, 196, 128);
   font-size: 14px;
-  padding-top: -8px;
   padding-left: 10px;
   padding-right: 10px;
-  padding-bottom: -8px;
   border-radius: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -435,12 +450,113 @@ body {
   padding: 10px;
   line-height: 150%;
   border: 1px solid #333333;
-  font-size: 18px;
+  font-size: 1.25rem;
   background-color: #444444;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: inherit;
+  font-weight: normal;
   color: #7ece7e;
+  margin: 0;
 }
 
 .DaFoot {
   font-size: 12px;
+}
+
+.DayButton {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0 4px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.DayButton.PriDayToday {
+  background-color: #662222;
+  border: 1px solid #333333;
+}
+
+.DayButton:focus-visible,
+.DayHead:focus-visible {
+  outline: 2px solid #cca6f2;
+  outline-offset: 2px;
+}
+
+.TdMC[onclick] {
+  cursor: pointer;
+}
+
+.CalendarScrollHint {
+  display: none;
+}
+
+@media (max-width: 855px) {
+  .DivContainerMonth {
+    width: 100%;
+  }
+
+  .DivContainerDay {
+    box-sizing: border-box;
+    max-width: 100%;
+    width: 390px;
+    overflow-wrap: anywhere;
+  }
+
+  #oc {
+    overflow-x: auto;
+  }
+
+  .TableMC {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 720px) {
+  .CalendarControls {
+    grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 1.15fr) 3rem;
+  }
+
+  .CalendarSetting {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 420px) {
+  .CalendarControls {
+    grid-template-columns: 2.75rem minmax(0, 1fr) minmax(0, 1.15fr) 2.75rem;
+    gap: 0.375rem;
+  }
+
+  .CalendarControls input,
+  .CalendarControls select {
+    font-size: 1.0625rem;
+  }
+
+  .CalendarField label {
+    overflow-wrap: anywhere;
+  }
+
+  .TdMC {
+    padding: 6px;
+  }
+
+  .CalendarSelect select {
+    padding-inline: 0.5rem 1.55rem;
+  }
+
+  .CalendarSelect::after {
+    inset-inline-end: 0.625rem;
+  }
+
+  .YearInput {
+    grid-template-columns: minmax(0, 1fr) 1.5rem;
+  }
+}
+
+@media (max-width: 615px) {
+  .CalendarScrollHint {
+    display: block;
+    margin: 0.375rem 0 0;
+    color: #bdbdbd;
+  }
 }

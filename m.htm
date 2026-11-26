@@ -24,6 +24,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
     <link rel="icon" type="image/ico" href="favicon.ico" />
     <link rel="stylesheet" href="mc_s.css" />
     <script src="./javascript/ceMmDateTime.js"></script>
+    <script src="./javascript/calendar-ui.js"></script>
     <script>
       // Version: 20260909
       // Required: ./javascript/ceMmDateTime.js
@@ -32,16 +33,14 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
       var x = new ceMmTranslate();
       var chron = new ceMmChronicle();
       var dt = new Date();
+      var selectedDay;
       //User Interface setting
       var uis = {
         Lang: undefined, //Language
         Type: 0, //Gregorian or Julian
         y: dt.getFullYear(),
         m: 1 + dt.getMonth(),
-        d: dt.getDate(), //y,m,d to display
         cy: dt.getFullYear(),
-        cm: 1 + dt.getMonth(),
-        cd: dt.getDate(), //current y,m,d
         BY: 2,
         EY: 1500, //beginning and end of the calendar,
         LT: 1062,
@@ -56,13 +55,13 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
           var L = ce.lang;
           var F = ce.style.fontFamily;
           if (F == 'Zawgyi-One') L = 'Zawgyi';
-          uis.Lang = SelectLang(L); //set a global variable for translation
+          uis.Lang = initialLanguage(SelectLang(L));
         }
         var M = new ceMmDateTime(); // end of month
-        uis.y = uis.cy = M.my;
-        uis.m = uis.cm = M.mm;
-        uis.d = uis.cd = M.md;
+        uis.y = M.my;
+        uis.m = M.mm;
         ce.innerHTML = UI();
+        mountToolbar();
       }
       //-------------------------------------------------------------------------
       //Select language
@@ -96,7 +95,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
         var SY = 1577917828 / 4320000; //solar year (365.2587565)
         var MO = 1954168.050623; //beginning of 0 ME
         var ema = [
-          '1st Waso',
+          'First Waso',
           'Tagu',
           'Kason',
           'Nayon',
@@ -131,7 +130,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
               "<option value='0'  " +
               (mm == 0 ? 'selected' : '') +
               '>' +
-              ema[0] +
+              x.T(ema[0], uis.Lang) +
               ' </option> ';
           }
           str +=
@@ -140,142 +139,50 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
             "'  " +
             (i == mm ? 'selected' : '') +
             '>' +
-            (i == 4 && M1.myt != 0 ? '2nd ' : '') +
-            ema[i] +
+            x.T((i == 4 && M1.myt != 0 ? 'Second ' : '') + ema[i], uis.Lang) +
             ' </option> ';
         }
         return str;
       }
       //-------------------------------------------------------------------------
-      //Produce html string for user interface
-      //this function is mainly for table that contains controls
-      //output: (str: html string)
       function UI() {
-        var str = '';
-        //Start of div container for month
-        str += "<div id='divMonth' class='DivContainerMonth'>";
-        //------------------------------------------------------------------------
-        //Start of table to accommodate controls
-        str += "<table class='TableContainerCtrl'> <tbody><tr>";
-        //Button for previous month
-        str +=
-          "<td class='TdContainerBtnDec'>\
-			<input type='button' id='decm' value='&lt;' onclick='emc(-1);'  \
-			class='BtnDec' title='Previous Month'></td>";
-        //Number input for year
-        str +=
-          "<td  class='TdContainerYear'> \
-			<input type='number' id='y' min='" +
-          uis.BY +
-          "' max='" +
-          uis.EY +
-          "' value='" +
-          uis.y.toString() +
-          "'onchange='DisplayUI(1)'  \
-			class='InpYear' title='Year'> </td> ";
-        //Select input for month
-        str +=
-          "<td  class='TdContainerMonth'>\
-			<select  id='m'  onchange='DisplayUI(2)'  \
-			class='InpMonth' title='Month'>";
-        str += mSelector(uis.y, uis.m);
-        str += '</select> </td>';
-        //Button for next month
-        str +=
-          "<td class='TdContainerBtnInc'>\
-			<input type='button' id='incm' value='&gt;' onclick='emc(1);'  \
-			class='BtnInc' title='Next Month'></td>";
-        //empty space
-        str += "<td class='TdContainerSpace'>&nbsp;</td>";
-        //Select input for calendar type
-        str +=
-          "<td class='TdContainerType'>\
-			<select  id='calType' class='InpType'  \
-			onchange='DisplayUI(3)' title='Calendar Type'>\
-				<option value='0'  " +
-          (uis.Type == 0 ? 'selected' : '') +
-          ">British </option> \
-				<option value='1'  " +
-          (uis.Type == 1 ? 'selected' : '') +
-          ">Gregorian </option> \
-				<option value='2'  " +
-          (uis.Type == 2 ? 'selected' : '') +
-          '>Julian </option> \
-			</select> </td>';
-        //Select input for language
-        str +=
-          "<td class='TdContainerLanguage'>\
-			<select  id='calLang' class='InpLanguage'  \
-			onchange='DisplayUI(4)' title='Language'>\
-				<option value='0'  " +
-          (uis.Lang == 0 ? 'selected' : '') +
-          ">English </option>\
-				<option value='1'  " +
-          (uis.Lang == 1 ? 'selected' : '') +
-          ">Myanmar </option>\
-				<option value='2'  " +
-          (uis.Lang == 2 ? 'selected' : '') +
-          ">Zawgyi </option>\
-				<option value='3'  " +
-          (uis.Lang == 3 ? 'selected' : '') +
-          ">Mon </option> \
-				<option value='4'  " +
-          (uis.Lang == 4 ? 'selected' : '') +
-          ">Tai </option> \
-                <option value='5'  " +
-          (uis.Lang == 5 ? 'selected' : '') +
-          ">S'Karen </option> \
-			</select> </td>";
-        str += '</tr></tbody></table>';
-        //End of table for the controls
-        //------------------------------------------------------------------------
-        //Division to accommodate calendar month
-        str += "<div id='oc'>" + UIContent() + '</div>';
-
-        str += '</div>';
-        //end of div container month
-        //------------------------------------------------------------------------
-        //Division to accommodate calendar day
-        str +=
-          "<div id='divDay' class='DivContainerDay' style='display:none;'></div>";
-        //------------------------------------------------------------------------
-        return str;
+        return `
+          <div id="divMonth" class="DivContainerMonth">
+            ${calendarToolbar('myanmarYear', mSelector(uis.y, uis.m))}
+            <div id="oc" lang="${calendarLanguage()}">${UIContent()}</div>
+          </div>
+          <div id="divDay" class="DivContainerDay" style="display:none"></div>
+        `;
       }
       //-----------------------------------------------------------------------------
+      function showToday() {
+        const today = ceMmDateTime.j2m(localTodayJdn());
+        uis.y = today.my;
+        uis.m = today.mm;
+        document.getElementById('m').innerHTML = mSelector(uis.y, uis.m);
+        showSelectedYear();
+        DisplayUI(0);
+        focusToday();
+      }
+
       //change month
       //input: (v: value [1: increase, -1: decrease])
-      function emc(v) {
-        var SY = 1577917828 / 4320000; //solar year (365.2587565)
-        var MO = 1954168.050623; //beginning of 0 ME
-        var me = document.getElementById('m');
-        var mn = Number(me.value);
-        var ye = document.getElementById('y');
-        var yn = Number(ye.value);
-        var j1 = Math.round(SY * yn + MO) + 1;
-        var j2 = Math.round(SY * (yn + 1) + MO);
-        var M1 = ceMmDateTime.j2m(j1);
-        var M2 = ceMmDateTime.j2m(j2);
-        var si = M1.mm;
-        var ei = M2.mm;
-        if (mn == 0) mn = v == 1 ? 4 : 3;
-        else if (mn == 4 && M1.myt != 0 && v != 1) mn = 0;
-        else if (mn == 3 && M1.myt != 0 && v == 1) mn = 0;
-        else {
-          mn += Number(v);
-          if (mn < si) {
-            mn += 12;
-            yn--;
-          } else if (mn > ei) {
-            mn = mn % 12;
-            yn++;
-          }
+      function emc(direction) {
+        const picker = document.getElementById('m');
+        const nextIndex = picker.selectedIndex + direction;
+
+        if (nextIndex >= 0 && nextIndex < picker.options.length) {
+          picker.selectedIndex = nextIndex;
+        } else {
+          const year = uis.y + direction;
+          if (year < uis.BY || year > uis.EY) return;
+          uis.y = year;
+          picker.innerHTML = mSelector(year, uis.m);
+          picker.selectedIndex = direction > 0 ? 0 : picker.options.length - 1;
         }
-        uis.y = yn;
-        uis.m = mn;
-        me.innerHTML = mSelector(uis.y, uis.m);
-        ye.value = yn;
-        var oce = document.getElementById('oc');
-        oce.innerHTML = UIContent(uis);
+
+        showSelectedYear();
+        DisplayUI(2);
       }
       //-------------------------------------------------------------------------
       //display UI
@@ -284,20 +191,18 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
       function DisplayUI(cev) {
         switch (cev) {
           case 1:
-            var ye = document.getElementById('y');
-            var yn = Number(ye.value);
-            if (yn < uis.BY) {
-              ye.value = yn = uis.BY;
-            } else if (yn > uis.EY) {
-              ye.value = yn = uis.EY;
-            } else {
-              ye.value = yn;
+            var year = readYear();
+            if (year === null) return;
+            if (year === uis.y) {
+              showSelectedYear();
+              return;
             }
-            uis.y = yn;
-            var me = document.getElementById('m');
-            uis.m = Number(me.value);
-            me.innerHTML = mSelector(uis.y, uis.m);
-            break; //year
+            uis.y = year;
+            showSelectedYear();
+            var picker = document.getElementById('m');
+            picker.innerHTML = mSelector(uis.y, uis.m);
+            uis.m = Number(picker.value);
+            break;
           case 2:
             var me = document.getElementById('m');
             uis.m = Number(me.value);
@@ -309,10 +214,12 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
           case 4:
             var le = document.getElementById('calLang');
             uis.Lang = SelectLang(le.value);
+            document.getElementById('m').innerHTML = mSelector(uis.y, uis.m);
+            localizeToolbar();
             break; //Language
-          //SelectLang: set a global variable in mc.js for translation
         }
         var oce = document.getElementById('oc');
+        oce.lang = calendarLanguage();
         oce.innerHTML = UIContent();
       }
       //-------------------------------------------------------------------------
@@ -322,10 +229,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
         var r, eml, i, js, je, tstr;
         var syt = uis.Lang == 4 ? 1 : 0; // if Shan, set Sasana year type to 1
         //------------------------------------------------------------------------
-        var Cday = new ceMmDateTime(); // start of month
-        Cday.SetTimezone(0);
-        Cday.syt = syt;
-        Cday.SetMDateTime(uis.cy, uis.cm, uis.cd); // time zone is irrelevant
+        const todayJdn = localTodayJdn();
         //------------------------------------------------------------------------
         //Find julian day number of start of the month
         var MS = new ceMmDateTime(); // start of month
@@ -362,14 +266,25 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
             M.SetJD(js);
             tstr = 'PriDay'; //Myanmar date and astrological days
             //Check holidays, weekend, inaccurate days and change style
-            if (js == Cday.jdn) tstr = 'PriDayToday';
+            if (js === todayJdn) tstr = 'PriDayToday';
             else if (M.holidays.length > 0) tstr = 'PriDayHoliday';
             else if (M.w == 0 || M.w == 1) tstr = 'PriDayWeekend';
             else if (uis.y < uis.LT || uis.y > uis.UT) tstr = 'PriDayInaccu';
 
             str += "<td class='TdMC' onclick='ShowDay(" + js + ")'>";
             str += "<p class='PTdMC'>";
-            str += "<span class='" + tstr + "'>" + M.d + '</span>'; //display English day
+            str +=
+              "<button type='button' class='DayButton " +
+              tstr +
+              "' id='day-" +
+              js +
+              "' " +
+              (js === todayJdn ? "aria-current='date' " : '') +
+              "aria-label='" +
+              x.T(M.ToString('%W, %M %d, %y'), uis.Lang) +
+              "'>" +
+              x.T(String(M.d), uis.Lang) +
+              '</button>';
 
             //sabbath and moon just beside English day
             str +=
@@ -441,18 +356,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
       //Produce html string for calendar day table footer
       //output: (str: html string)
       function tFoot() {
-        //table footer consists of various links
-        var str =
-          "<tfoot> <tr> <td colspan=7 class='TdFootMC'> \
-			<p class='PTdMC'>";
-        str +=
-          "<a class='AnchorFootMC' href='./'>\
-			E&gt;M Calendar </a> ";
-        str +=
-          "<a  class='AnchorFootMC'  style='float: right;' href=\
-			'./html/more.htm'> About</a>";
-        str += '</p></td></tr></tfoot>';
-        return str;
+        return calendarFooter('./', 'browseWestern');
       }
       //-------------------------------------------------------------------------
       //Produce html string for calendar day table weekday header row
@@ -521,7 +425,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
         try {
           var ih = chron.hSearch(M.jdn); //search for historical date
           if (ih >= 0) {
-            str += "<br/><p class='HLabel'>History</p>";
+            str += "<p class='HLabel'>History</p>";
           }
         } catch (err) {}
         str = x.T(str, uis.Lang);
@@ -532,6 +436,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
       //input: js (Julian day)
       //output: void
       function ShowDay(js) {
+        selectedDay = js;
         var str = '',
           tstr = '';
         var M = new ceMmDateTime(js, 0, uis.Type);
@@ -539,9 +444,9 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
         M.syt = syt;
         //display English day
         str +=
-          "<div class='DayHead' onclick='ShowMonth();'>" +
-          M.ToString('%y-%M-%dd') +
-          '</div>';
+          "<h1 class='DayHead' id='dayHeading' tabindex='-1'>" +
+          x.T(M.ToString('%y-%M-%dd'), uis.Lang) +
+          '</h1>';
 
         //displaying Myanmar date
         if (M.my >= 2) {
@@ -673,19 +578,18 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
 
         //accuracy
         if (uis.y < uis.LT || uis.y > uis.UT)
-          str +=
-            "<p class='DaFoot'>This Myanmar date is outside the verified accuracy range.</p>";
+          str += `<p class="DaFoot" lang="${uiLanguage()}">${uiLabel('accuracy')}</p>`;
 
-        //Back button
-        str +=
-          "<br/><input type='button' id='back2main' value='Back' onclick='ShowMonth();'  \
-			class='BtnBack' title='Back to main'>";
+        str += `<button type="button" id="back2main" class="BtnBack" lang="${uiLanguage()}"
+          onclick="ShowMonth()">${uiLabel('back')}</button>`;
 
         var ddiv = document.getElementById('divDay');
         ddiv.innerHTML = str;
+        ddiv.lang = calendarLanguage();
         ddiv.style.display = 'block';
         var mdiv = document.getElementById('divMonth');
         mdiv.style.display = 'none';
+        document.getElementById('dayHeading').focus();
       }
       //-------------------------------------------------------------------------
       //Show month and hide day
@@ -694,6 +598,7 @@ lunar, lunisolar, ဥပုသ္, ဥပုသ်, ရက္ရာဇာ, ရ�
         mdiv.style.display = 'block';
         var ddiv = document.getElementById('divDay');
         ddiv.style.display = 'none';
+        document.getElementById('day-' + selectedDay)?.focus();
       }
       //-----------------------------------------------------------------------------
       //End of UI ##################################################################
